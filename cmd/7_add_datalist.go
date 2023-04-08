@@ -1,0 +1,85 @@
+package main
+
+import (
+	"fmt"
+	"io/ioutil"
+	"log"
+	"time"
+
+	json "github.com/takoyaki-3/go-json"
+	. "github.com/takoyaki-3/butter/cmd/helper"
+)
+
+type DataItem struct {
+	GtfsID             string `json:"gtfs_id"`
+	AgencyID           string `json:"agency_id"`
+	Name               string `json:"name"`
+	License            string `json:"license"`
+	LicenseURL         string `json:"licenseUrl"`
+	ProviderURL        string `json:"providerUrl"`
+	ProviderName       string `json:"providerName"`
+	ProviderAgencyName string `json:"providerAgencyName"`
+	Memo               string `json:"memo"`
+	UpdatedAt          string `json:"updatedAt"`
+}
+
+type DataList struct {
+	Data []DataItem `json:"data_list"`
+}
+
+type Data []struct {
+	AgentName          string `json:"事業者名,omitempty"`
+	URL                string `json:"事業者名_url,omitempty"`
+	Prefecture         string `json:"都道府県,omitempty"`
+	GTFS               string `json:"GTFSフィード名,omitempty"`
+	License            string `json:"ライセンス,omitempty"`
+	LicenseURL         string `json:"ライセンス_url,omitempty"`
+	URLs               string `json:"URLs,omitempty"`
+	GTFSURL            string `json:"GTFS_url,omitempty"`
+	StartDate          string `json:"最新GTFS開始日,omitempty"`
+	EndDate            string `json:"最新GTFS終了日,omitempty"`
+	UpdateDate         string `json:"最終更新日,omitempty"`
+	Detail             string `json:"詳細,omitempty"`
+	GtfsID             string `json:"gtfs_id,omitempty"`
+	AlertURL           string `json:"Alert_url,omitempty"`
+	TripUpdateURL      string `json:"TripUpdate_url,omitempty"`
+	VehiclePositionURL string `json:"VehiclePosition_url,omitempty"`
+}
+
+func main() {
+	// RSA秘密鍵を読み込む
+	privateKeyBytes, err := ioutil.ReadFile("key.pem")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	//
+	data := Data{}
+	json.LoadFromPath("data.json", &data)
+
+	datalist := DataList{}
+
+	for _, v := range data {
+		t, err := time.Parse("2006-01-02", v.UpdateDate)
+		if err != nil {
+			continue
+			log.Fatalln(err)
+		}
+
+		datalist.Data = append(datalist.Data, DataItem{
+			GtfsID: v.GtfsID,
+			// AgencyID: v.,
+			Name:               v.AgentName,
+			License:            v.License,
+			LicenseURL:         v.LicenseURL,
+			ProviderURL:        v.GTFSURL,
+			ProviderName:       "",
+			ProviderAgencyName: "",
+			UpdatedAt:          t.Format("2006-01-02T15_04_05+09_00"),
+		})
+	}
+
+	json.DumpToFile(datalist, "dist/datalist.json")
+	err = AddSing("dist/datalist.json", privateKeyBytes)
+	fmt.Println(err)
+}
