@@ -1,0 +1,7 @@
+output.txt
+data.json
+gtfs/*
+dir_out/*
+dist/*
+*.pem
+s3-conf.json
