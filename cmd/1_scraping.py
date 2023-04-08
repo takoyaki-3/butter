@@ -30,4 +30,22 @@ with open('output.txt', 'w',encoding='utf-8') as f:
                         str = a.text
                     f.write(str+"_url"+":"+a.get('href')+"\n")  # <td>要素のテキストを表示する
 
+    f.write("-------------")
+
+    tobus = '''
+事業者名:東京都交通局
+事業者名_url:https://www.kotsu.metro.tokyo.jp
+都道府県:東京都
+GTFSフィード名:東京都交通局
+ライセンス:CC BY 4.0公開元:東京都交通局・公共交通オープンデータ協議会
+ライセンス_url:https://creativecommons.org/licenses/by/4.0/
+URLs:GTFS, VehiclePosition
+GTFS_url:https://api-public.odpt.org/api/v4/files/Toei/data/ToeiBus-GTFS.zip
+VehiclePosition_url:https://api-public.odpt.org/api/v4/gtfs/realtime/ToeiBus
+詳細:詳細
+'''
+
+    f.write(tobus)
+    f.write("-------------\n")
+
 driver.quit()

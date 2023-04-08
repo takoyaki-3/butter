@@ -19,9 +19,12 @@ with open('output.txt', 'r', encoding='utf-8') as f:
             # IDの設定
             if 'GTFS_url' in d:
               gtfs_id = d['GTFS_url']
-              gtfs_id = gtfs_id.split('https://api.gtfs-data.jp/v2/organizations/')[1]
-              gtfs_id = gtfs_id.split('/feeds/')[0]
-              d['gtfs_id'] = gtfs_id
+              if gtfs_id == 'https://api-public.odpt.org/api/v4/files/Toei/data/ToeiBus-GTFS.zip':
+                d['gtfs_id'] = 'ToeiBus'
+              else:
+                gtfs_id = gtfs_id.split('https://api.gtfs-data.jp/v2/organizations/')[1]
+                gtfs_id = gtfs_id.split('/feeds/')[0]
+                d['gtfs_id'] = gtfs_id
 
             data.append(d)  # リストに追加する
 
