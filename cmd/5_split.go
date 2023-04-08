@@ -3,10 +3,7 @@ package main
 import (
 	"archive/tar"
 	"compress/gzip"
-	"crypto/sha256"
-	"encoding/hex"
 	"fmt"
-	"io"
 	"log"
 	"math"
 	"os"
@@ -115,14 +112,14 @@ func split(file string, version string) error {
 	fileNum := int(math.Log2(float64(len(stopTimes))))/4/4 + 1
 	// fmt.Println(fileNum)
 	for stopID, stopTimes := range byStop {
-		hid := getBinaryBySHA256(stopID)[:fileNum]
+		hid := GetBinaryBySHA256(stopID)[:fileNum]
 		if _, ok := tarByStop[hid]; !ok {
 			tarByStop[hid] = map[string][]StopTime{}
 		}
 		tarByStop[hid][stopID] = stopTimes
 	}
 	for tripID, stopTimes := range byTrip {
-		hid := getBinaryBySHA256(tripID)[:fileNum]
+		hid := GetBinaryBySHA256(tripID)[:fileNum]
 		if _, ok := tarByTrip[hid]; !ok {
 			tarByTrip[hid] = map[string][]StopTime{}
 		}
@@ -257,51 +254,4 @@ func split(file string, version string) error {
 	}
 
 	return nil
-}
-
-func CopyDir(srcDir, dstDir string) error {
-
-	os.MkdirAll(dstDir, 0777)
-
-	err, files := filetool.DirWalk(srcDir, filetool.DirWalkOption{})
-	if err != nil {
-		return err
-	}
-	for _, file := range files {
-		if file.IsDir {
-			continue
-		}
-		err := Copy(file.Path, dstDir+"/"+file.Name)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func Copy(srcPath, dstPath string) error {
-	src, err := os.Open(srcPath)
-	if err != nil {
-		return err
-	}
-	defer src.Close()
-	dst, err := os.Create(dstPath)
-	if err != nil {
-		return err
-	}
-	defer dst.Close()
-	_, err = io.Copy(dst, src)
-	if err != nil {
-		return err
-	}
-	return err
-}
-
-func getBinaryBySHA256(s string) string {
-	r := sha256.Sum256([]byte(s))
-	return hex.EncodeToString(r[:])
-}
-
-func FileName2IntegratedFileName(s string) string {
-	return getBinaryBySHA256(s)
 }
