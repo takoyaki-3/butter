@@ -1,0 +1,70 @@
+├── 2023-04-08T20_51_45+09_00
+│   ├── GTFS
+│   │   ├── agency.txt
+│   │   ├── agency.txt.sig
+│   │   ├── calendar.txt
+│   │   ├── calendar.txt.sig
+│   │   ├── calendar_dates.txt
+│   │   ├── calendar_dates.txt.sig
+│   │   ├── fare_attributes.txt
+│   │   ├── fare_attributes.txt.sig
+│   │   ├── fare_rules.txt
+│   │   ├── fare_rules.txt.sig
+│   │   ├── feed_info.txt
+│   │   ├── feed_info.txt.sig
+│   │   ├── office_jp.txt
+│   │   ├── office_jp.txt.sig
+│   │   ├── routes.txt
+│   │   ├── routes.txt.sig
+│   │   ├── shapes.txt
+│   │   ├── shapes.txt.sig
+│   │   ├── stop_times.txt
+│   │   ├── stop_times.txt.sig
+│   │   ├── stops.txt
+│   │   ├── stops.txt.sig
+│   │   ├── transfers.txt
+│   │   ├── transfers.txt.sig
+│   │   ├── translations.txt
+│   │   ├── translations.txt.sig
+│   │   ├── trips.txt
+│   │   └── trips.txt.sig
+│   ├── byStops
+│   │   ├── 0.tar.gz
+│   │   ├── 1.tar.gz
+│   │   ├── 2.tar.gz
+│   │   ├── 3.tar.gz
+│   │   ├── 4.tar.gz
+│   │   ├── 5.tar.gz
+│   │   ├── 6.tar.gz
+│   │   ├── 7.tar.gz
+│   │   ├── 8.tar.gz
+│   │   ├── 9.tar.gz
+│   │   ├── a.tar.gz
+│   │   ├── b.tar.gz
+│   │   ├── c.tar.gz
+│   │   ├── d.tar.gz
+│   │   ├── e.tar.gz
+│   │   └── f.tar.gz
+│   ├── byTrips
+│   │   ├── 0.tar.gz
+│   │   ├── 1.tar.gz
+│   │   ├── 2.tar.gz
+│   │   ├── 3.tar.gz
+│   │   ├── 4.tar.gz
+│   │   ├── 5.tar.gz
+│   │   ├── 6.tar.gz
+│   │   ├── 7.tar.gz
+│   │   ├── 8.tar.gz
+│   │   ├── 9.tar.gz
+│   │   ├── a.tar.gz
+│   │   ├── b.tar.gz
+│   │   ├── c.tar.gz
+│   │   ├── d.tar.gz
+│   │   ├── e.tar.gz
+│   │   └── f.tar.gz
+│   ├── info.json
+│   ├── info.json.sig
+│   ├── stops.txt
+│   └── stops.txt.sig
+├── info.json
+└── info.json.sig
