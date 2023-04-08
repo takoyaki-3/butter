@@ -5,3 +5,4 @@ dir_out/*
 dist/*
 *.pem
 s3-conf.json
+*.exe
