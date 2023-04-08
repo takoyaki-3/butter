@@ -6,3 +6,5 @@ dist/*
 *.pem
 s3-conf.json
 *.exe
+*.txt
+*.csv
