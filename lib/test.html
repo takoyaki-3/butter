@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Test</title>
+
+  <script src="./fetch.js"></script>
+</head>
+<body>
+  <h1>Test</h1>
+
+  <script>
+    const main = async ()=>{
+        const datalist = (await Butter.GetDataList())
+        console.log(datalist)
+        const info = await Butter.GetInfo(datalist[0].gtfs_id)
+        console.log(info)
+        Butter.GetData(datalist[0].gtfs_id,info[0].version_id)
+        Butter.ext("https://pub-ad1f4a48b8ef46779b720e734b0c2e1d.r2.dev/v0.0.0/higashinecity.zip/2023-04-08T20_51_47+09_00/byStops/0.tar.gz")
+    }
+    main()
+  </script>
+</body>
+</html>
