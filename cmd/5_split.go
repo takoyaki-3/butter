@@ -1,15 +1,13 @@
 package main
 
 import (
-	"archive/tar"
-	"compress/gzip"
 	"fmt"
 	"log"
 	"math"
 	"os"
+	"time"
 
 	"io/ioutil"
-	"time"
 
 	"github.com/takoyaki-3/goc"
 
@@ -70,20 +68,25 @@ type StopTime struct {
 
 func split(file string, version string) error {
 
+	// 入力ファイルのディレクトリを設定
 	srcDir := "dir_out/" + file
-	dstDir := "dist/" + file[:len(file)-len(".zip")] + "/" + version
 
+	// 出力ファイルのディレクトリを設定
+	dstDir := "dist/" + file[:len(file)-len(".zip")] + "/" + version
+	
+	// stop_times.txtからStopTimeのスライスをロード
 	stopTimes := []StopTime{}
 	err := csvtag.LoadFromPath(srcDir+"/stop_times.txt", &stopTimes)
 	if err != nil {
 		return err
 	}
-	// tripを統合
+	// trips.txtからTripのスライスをロード
 	trips := []gtfs.Trip{}
 	err = csvtag.LoadFromPath(srcDir+"/trips.txt", &trips)
 	if err != nil {
 		return err
 	}
+	// StopTimesの各要素に対応するTrip情報を追加
 	for i, _ := range stopTimes {
 		tripID := stopTimes[i].TripID
 		for _, trip := range trips {
@@ -98,19 +101,22 @@ func split(file string, version string) error {
 			}
 		}
 	}
-
+	
+	// StopTimeのデータを停留所IDとTripIDでグループ化
 	byStop := map[string][]StopTime{}
 	byTrip := map[string][]StopTime{}
-
+	
 	for _, stopTime := range stopTimes {
 		byStop[stopTime.StopID] = append(byStop[stopTime.StopID], stopTime)
 		byTrip[stopTime.StopID] = append(byTrip[stopTime.StopID], stopTime)
 	}
-
+	
+	// グループ化されたデータをさらにハッシュ値によってサブグループ化
 	tarByStop := map[string]map[string][]StopTime{}
 	tarByTrip := map[string]map[string][]StopTime{}
 	fileNum := int(math.Log2(float64(len(stopTimes))))/4/4 + 1
-	// fmt.Println(fileNum)
+	
+	// 停留所IDでグループ化されたデータをハッシュ値によってサブグループ化
 	for stopID, stopTimes := range byStop {
 		hid := GetBinaryBySHA256(stopID)[:fileNum]
 		if _, ok := tarByStop[hid]; !ok {
@@ -118,6 +124,7 @@ func split(file string, version string) error {
 		}
 		tarByStop[hid][stopID] = stopTimes
 	}
+	// TripIDでグループ化されたデータをハッシュ値によってサブグループ化
 	for tripID, stopTimes := range byTrip {
 		hid := GetBinaryBySHA256(tripID)[:fileNum]
 		if _, ok := tarByTrip[hid]; !ok {
@@ -129,95 +136,42 @@ func split(file string, version string) error {
 	// 出力
 	os.MkdirAll(dstDir+"/byStops", 0777)
 	os.MkdirAll(dstDir+"/byTrips", 0777)
+
 	for hid, data := range tarByStop {
-		dist, err := os.Create(dstDir + "/byStops/" + hid + ".tar.gz")
+		tgz, err := NewTarGzWriter(dstDir + "/byStops/" + hid + ".tar.gz")
 		if err != nil {
 			panic(err)
 		}
-		defer dist.Close()
-
-		gw := gzip.NewWriter(dist)
-		defer gw.Close()
-
-		tw := tar.NewWriter(gw)
-		defer tw.Close()
+		defer tgz.Close()
 
 		for stopID, stopTimes := range data {
 			str, _ := csvtag.DumpToString(&stopTimes)
 			b := []byte(str)
-			// ヘッダを書き込み
-			if err := tw.WriteHeader(&tar.Header{
-				Name:    stopID,
-				Mode:    int64(777),
-				ModTime: time.Now().Truncate(24 * time.Hour),
-				Size:    int64(len(b)),
-			}); err != nil {
-				log.Fatalln(err)
-			}
-			tw.Write(b)
 
-			// 電子署名を追加
-			signBytes, err := Sing(b, privateKeyBytes)
+			err := tgz.AddDataWithSign(stopID, b, privateKeyBytes)
 			if err != nil {
 				log.Fatalln(err)
 			}
-			if err := tw.WriteHeader(&tar.Header{
-				Name:    stopID + ".sig",
-				Mode:    int64(777),
-				ModTime: time.Now().Truncate(24 * time.Hour),
-				Size:    int64(len(signBytes)),
-			}); err != nil {
-				log.Fatalln(err)
-			}
-			tw.Write(signBytes)
 		}
 	}
-	// 出力
-	os.MkdirAll("dist/byTrips", 0777)
+
 	for hid, data := range tarByTrip {
-		dist, err := os.Create(dstDir + "/byTrips/" + hid + ".tar.gz")
+		tgz, err := NewTarGzWriter(dstDir + "/byTrips/" + hid + ".tar.gz")
 		if err != nil {
 			panic(err)
 		}
-		defer dist.Close()
-
-		gw := gzip.NewWriter(dist)
-		defer gw.Close()
-
-		tw := tar.NewWriter(gw)
-		defer tw.Close()
+		defer tgz.Close()
 
 		for tripID, stopTimes := range data {
 			str, _ := csvtag.DumpToString(&stopTimes)
 			b := []byte(str)
-			// ヘッダを書き込み
-			if err := tw.WriteHeader(&tar.Header{
-				Name:    tripID,
-				Mode:    int64(777),
-				ModTime: time.Now().Truncate(24 * time.Hour),
-				Size:    int64(len(b)),
-			}); err != nil {
-				log.Fatalln(err)
-			}
-			tw.Write(b)
 
-			// 電子署名を追加
-			signBytes, err := Sing(b, privateKeyBytes)
+			err := tgz.AddDataWithSign(tripID, b, privateKeyBytes)
 			if err != nil {
 				log.Fatalln(err)
 			}
-			if err := tw.WriteHeader(&tar.Header{
-				Name:    tripID + ".sig",
-				Mode:    int64(777),
-				ModTime: time.Now().Truncate(24 * time.Hour),
-				Size:    int64(len(signBytes)),
-			}); err != nil {
-				log.Fatalln(err)
-			}
-			tw.Write(signBytes)
 		}
 	}
-	// 停留所情報の出力
 
 	// データコピー
 	err = Copy(srcDir+"/stops.txt", dstDir+"/stops.txt")
@@ -249,9 +203,5 @@ func split(file string, version string) error {
 		return err
 	}
 	err = AddSing(dstDir+"/info.json", privateKeyBytes)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
