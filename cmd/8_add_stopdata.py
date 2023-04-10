@@ -37,9 +37,44 @@ df_list = []
 for file in csv_files:
   df = pd.read_csv(file)
   df_list.append(df)
+  os.remove(file)
 
 # DataFrameを結合する
 merged_df = pd.concat(df_list)
 
-# 結合したDataFrameをCSVファイルに書き出す
-merged_df.to_csv('merged_csv_file.csv', index=False)
+# # 結合したDataFrameをCSVファイルに書き出す
+# merged_df.to_csv('merged_csv_file.csv', index=False)
+
+import pandas as pd
+import h3
+
+# H3 level to use for indexing
+H3_LEVEL = 7
+
+# Load stops.txt file into a pandas DataFrame
+df_stops = merged_df
+
+# Add H3 index column to DataFrame
+df_stops["h3index"] = df_stops.apply(lambda row: h3.geo_to_h3(row["stop_lat"], row["stop_lon"], H3_LEVEL), axis=1)
+
+# Get all unique H3 indexes in the DataFrame
+unique_h3indexes = df_stops["h3index"].unique()
+
+# Create a dictionary to store the stops for each H3 index
+h3index_to_stops_dict = {h3index: [] for h3index in unique_h3indexes}
+
+# Iterate through each stop and add it to the appropriate H3 index
+for index, row in df_stops.iterrows():
+    h3index = row["h3index"]
+    h3indexes_to_add = h3.k_ring(h3index, 1) # Get all H3 indexes within 1 ring of the current H3 index
+    for index_to_add in h3indexes_to_add:
+        if index_to_add in h3index_to_stops_dict:
+            h3index_to_stops_dict[index_to_add].append(row)
+
+# Save each H3 index's stops to a separate file
+os.mkdir('dist/byH3index')
+for h3index in unique_h3indexes:
+    df_h3index_stops = pd.DataFrame(h3index_to_stops_dict[h3index])
+    filename = f"dist/byH3index/{h3index}_stops.csv"
+    df_h3index_stops.to_csv(filename, index=False)
+
