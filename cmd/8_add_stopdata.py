@@ -20,17 +20,12 @@ for dir in subdirectories:
 
   # GTFS stop_times.txtファイルを読み込む
   stop_times = pd.read_csv('./dir_out/'+gtfsID+'.zip/stops.txt')
-
-  # H3レベル11のH3 Indexを生成して、各行に追加する
-  stop_times['h3index_8'] = stop_times.apply(lambda row: h3.geo_to_h3(row['stop_lat'], row['stop_lon'], 8), axis=1)
   stop_times['gtfs_id'] = gtfsID
 
   # インデックスを含むstop_times.txtファイルを書き出す
   filename = 'stop_times_with_h3index_' + gtfsID + '.txt'
   stop_times.to_csv(filename, index=False)
   csv_files.append(filename)
-
-print(csv_files)
 
 # CSVファイルを読み込んでDataFrameに追加する
 df_list = []
