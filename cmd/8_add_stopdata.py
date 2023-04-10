@@ -80,35 +80,35 @@ import pandas as pd
 from nltk.util import ngrams
 
 # N-gram length
-N = 3
+for N in range (1,3):
 
-# Load stops.txt file into a pandas DataFrame
-df_stops = pd.read_csv("merged_csv_file.csv")
+  # Load stops.txt file into a pandas DataFrame
+  df_stops = pd.read_csv("merged_csv_file.csv")
 
-# Create n-grams for each stop_name
-ngram_lists = df_stops["stop_name"].apply(lambda x: [''.join(ngram) for ngram in ngrams(x, N)])
+  # Create n-grams for each stop_name
+  ngram_lists = df_stops["stop_name"].apply(lambda x: [''.join(ngram) for ngram in ngrams(x, N)])
 
-# Flatten n-gram lists
-ngrams_flat = [ngram for ngram_list in ngram_lists for ngram in ngram_list]
+  # Flatten n-gram lists
+  ngrams_flat = [ngram for ngram_list in ngram_lists for ngram in ngram_list]
 
-# Get all unique n-grams
-unique_ngrams = list(set(ngrams_flat))
+  # Get all unique n-grams
+  unique_ngrams = list(set(ngrams_flat))
 
-# Create a dictionary to store the stops for each n-gram
-ngram_to_stops_dict = {}
+  # Create a dictionary to store the stops for each n-gram
+  ngram_to_stops_dict = {}
 
-# Iterate through each stop and add it to the appropriate n-gram
-for index, row in df_stops.iterrows():
-    stop_name = row["stop_name"]
-    ngrams_to_add = list(ngrams(stop_name, N))
-    for ngram_to_add in ngrams_to_add:
-        ngram_str = ''.join(ngram_to_add)
-        if ngram_str not in ngram_to_stops_dict:
-            ngram_to_stops_dict[ngram_str] = []
-        ngram_to_stops_dict[ngram_str].append(row)
+  # Iterate through each stop and add it to the appropriate n-gram
+  for index, row in df_stops.iterrows():
+      stop_name = row["stop_name"]
+      ngrams_to_add = list(ngrams(stop_name, N))
+      for ngram_to_add in ngrams_to_add:
+          ngram_str = ''.join(ngram_to_add)
+          if ngram_str not in ngram_to_stops_dict:
+              ngram_to_stops_dict[ngram_str] = []
+          ngram_to_stops_dict[ngram_str].append(row)
 
-# Save each n-gram's stops to a separate file
-for ngram in unique_ngrams:
-    df_ngram_stops = pd.DataFrame(ngram_to_stops_dict[ngram])
-    filename = f"dist/n-gram/{ngram}.csv"
-    df_ngram_stops.to_csv(filename, index=False)
+  # Save each n-gram's stops to a separate file
+  for ngram in unique_ngrams:
+      df_ngram_stops = pd.DataFrame(ngram_to_stops_dict[ngram])
+      filename = f"dist/n-gram/{ngram}.csv"
+      df_ngram_stops.to_csv(filename, index=False)
