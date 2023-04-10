@@ -137,17 +137,21 @@ func split(file string, version string) error {
 	os.MkdirAll(dstDir+"/byStops", 0777)
 	os.MkdirAll(dstDir+"/byTrips", 0777)
 
+	// tarByStopのデータをアーカイブして保存
 	for hid, data := range tarByStop {
+		// TarGzWriterを作成し、指定したファイル名で開く
 		tgz, err := NewTarGzWriter(dstDir + "/byStops/" + hid + ".tar.gz")
 		if err != nil {
 			panic(err)
 		}
-		defer tgz.Close()
+		defer tgz.Close() // TarGzWriterを閉じることを保証
 
+		// data内の各停留所IDとその停留所の時刻データをTarGzWriterに追加
 		for stopID, stopTimes := range data {
-			str, _ := csvtag.DumpToString(&stopTimes)
-			b := []byte(str)
+			str, _ := csvtag.DumpToString(&stopTimes) // StopTimesを文字列に変換
+			b := []byte(str) // 文字列をバイト配列に変換
 
+			// データを署名付きでTarGzWriterに追加
 			err := tgz.AddDataWithSign(stopID, b, privateKeyBytes)
 			if err != nil {
 				log.Fatalln(err)
@@ -155,17 +159,21 @@ func split(file string, version string) error {
 		}
 	}
 
+	// tarByTripのデータをアーカイブして保存
 	for hid, data := range tarByTrip {
+		// TarGzWriterを作成し、指定したファイル名で開く
 		tgz, err := NewTarGzWriter(dstDir + "/byTrips/" + hid + ".tar.gz")
 		if err != nil {
 			panic(err)
 		}
-		defer tgz.Close()
+		defer tgz.Close() // TarGzWriterを閉じることを保証
 
+		// data内の各TripIDとそのトリップの時刻データをTarGzWriterに追加
 		for tripID, stopTimes := range data {
-			str, _ := csvtag.DumpToString(&stopTimes)
-			b := []byte(str)
+			str, _ := csvtag.DumpToString(&stopTimes) // StopTimesを文字列に変換
+			b := []byte(str) // 文字列をバイト配列に変換
 
+			// データを署名付きでTarGzWriterに追加
 			err := tgz.AddDataWithSign(tripID, b, privateKeyBytes)
 			if err != nil {
 				log.Fatalln(err)
