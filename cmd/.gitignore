@@ -8,3 +8,4 @@ s3-conf.json
 *.exe
 *.txt
 *.csv
+!requirements.txt
