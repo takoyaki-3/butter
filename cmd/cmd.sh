@@ -1,0 +1,9 @@
+docker-compose up 1_scraping
+docker-compose up 2_line2obj
+docker-compose up 3_downloader
+docker-compose up 4_unziper
+docker-compose up subdirectory_fix
+docker-compose up 5_split
+docker-compose up 6_add_gtfs_id_info
+docker-compose up 7_add_datalist
+docker-compose up 8_add_stopdata

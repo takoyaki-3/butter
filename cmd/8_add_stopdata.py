@@ -38,7 +38,7 @@ for file in csv_files:
 merged_df = pd.concat(df_list)
 
 # # 結合したDataFrameをCSVファイルに書き出す
-# merged_df.to_csv('merged_csv_file.csv', index=False)
+merged_df.to_csv('merged_csv_file.csv', index=False)
 
 import pandas as pd
 import h3
@@ -80,7 +80,7 @@ import pandas as pd
 from nltk.util import ngrams
 
 # N-gram length
-for N in range (1,3):
+for N in range (1,2):
 
   # Load stops.txt file into a pandas DataFrame
   df_stops = pd.read_csv("merged_csv_file.csv")
@@ -108,7 +108,10 @@ for N in range (1,3):
           ngram_to_stops_dict[ngram_str].append(row)
 
   # Save each n-gram's stops to a separate file
+
+  if not os.path.isdir('dist/n-gram'):
+    os.mkdir('dist/n-gram')
   for ngram in unique_ngrams:
-      df_ngram_stops = pd.DataFrame(ngram_to_stops_dict[ngram])
-      filename = f"dist/n-gram/{ngram}.csv"
-      df_ngram_stops.to_csv(filename, index=False)
+    df_ngram_stops = pd.DataFrame(ngram_to_stops_dict[ngram])
+    filename = f"dist/n-gram/{ngram}.csv"
+    df_ngram_stops.to_csv(filename, index=False)
