@@ -1,24 +1,71 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8">
   <title>Test</title>
 
   <script src="./fetch.js"></script>
 </head>
+
 <body>
   <h1>Test</h1>
 
   <script>
-    const main = async ()=>{
-        const datalist = (await Butter.GetDataList())
-        console.log(datalist)
-        const info = await Butter.GetInfo(datalist[0].gtfs_id)
-        console.log(info)
-        Butter.GetData(datalist[0].gtfs_id,info[0].version_id)
-        Butter.ext("https://pub-ad1f4a48b8ef46779b720e734b0c2e1d.r2.dev/v0.0.0/higashinecity.zip/2023-04-08T20_51_47+09_00/byStops/0.tar.gz")
+    const main = async () => {
+      const hostData = (await Butter.getHostDataList())
+      console.log({ "getHostDataList": hostData })
+      const agencyInfo = await Butter.getAgencyInfo(hostData[0].gtfs_id)
+      console.log({ "GetInfo": agencyInfo })
+      const versionInfo = await Butter.getVersionInfo(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      console.log({ "getVersionInfo": versionInfo })
+      const stops = await Butter.getBusStops(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      console.log({ "getBusStops": stops })
+
+      const agency = await Butter.getAgency(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      console.log({ "getAgency": agency })
+
+      const calendar = await Butter.getCalendar(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      console.log({ "getCalendar": calendar })
+
+      const calendarDates = await Butter.getCalendarDates(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      console.log({ "getCalendarDates": calendarDates })
+
+      const fareAttributes = await Butter.getFareAttributes(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      console.log({ "getFareAttributes": fareAttributes })
+
+      const fareRules = await Butter.getFareRules(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      console.log({ "getFareRules": fareRules })
+
+      const feedInfo = await Butter.getFeedInfo(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      console.log({ "getFeedInfo": feedInfo })
+
+      // const officeJp = await Butter.getOfficeJp(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      // console.log({ "getOfficeJp": officeJp })
+
+      const routes = await Butter.getRoutes(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      console.log({ "getRoutes": routes })
+
+      // const shapes = await Butter.getShapes(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      // console.log({ "getShapes": shapes })
+
+      const stopTimes = await Butter.getStopTimes(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      console.log({ "getStopTimes": stopTimes })
+
+      const transfers = await Butter.getTransfers(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      console.log({ "getTransfers": transfers })
+
+      const translations = await Butter.getTranslations(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      console.log({ "getTranslations": translations })
+
+      const trips = await Butter.getTrips(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      console.log({ "getTrips": trips })
+
+      // Butter.ext("https://pub-ad1f4a48b8ef46779b720e734b0c2e1d.r2.dev/v0.0.0/higashinecity.zip/2023-04-08T20_51_47+09_00/byStops/1.tar.gz")
+
     }
     main()
   </script>
 </body>
+
 </html>
