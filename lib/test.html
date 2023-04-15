@@ -15,10 +15,13 @@
     const main = async () => {
       const hostData = (await Butter.getHostDataList())
       console.log({ "getHostDataList": hostData })
+
       const agencyInfo = await Butter.getAgencyInfo(hostData[0].gtfs_id)
       console.log({ "GetInfo": agencyInfo })
+
       const versionInfo = await Butter.getVersionInfo(hostData[0].gtfs_id, agencyInfo[0].version_id)
       console.log({ "getVersionInfo": versionInfo })
+
       const stops = await Butter.getBusStops(hostData[0].gtfs_id, agencyInfo[0].version_id)
       console.log({ "getBusStops": stops })
 
@@ -61,8 +64,46 @@
       const trips = await Butter.getTrips(hostData[0].gtfs_id, agencyInfo[0].version_id)
       console.log({ "getTrips": trips })
 
-      // Butter.ext("https://pub-ad1f4a48b8ef46779b720e734b0c2e1d.r2.dev/v0.0.0/higashinecity.zip/2023-04-08T20_51_47+09_00/byStops/1.tar.gz")
+      let tt = await Butter.getTimeTableByStopHash(hostData[0].gtfs_id, agencyInfo[0].version_id, "0")
+      console.log({ "ttStopHash": tt })
 
+      tt = await Butter.getTimeTableByTripHash(hostData[0].gtfs_id, agencyInfo[0].version_id, "5")
+      console.log({ "ttTripHash": tt })
+
+      tt = await Butter.utils.getTimeTableByStopID(hostData[0].gtfs_id, agencyInfo[0].version_id, stops[0].stop_id)
+      console.log({ "ttByStopID": tt })
+
+      tt = await Butter.utils.getTimeTableByTripID(hostData[0].gtfs_id, agencyInfo[0].version_id, trips[0].trip_id)
+      console.log({ "ttByTrip": tt })
+
+      let serviceIDs = await Butter.utils.getServiceIDs(hostData[0].gtfs_id, agencyInfo[0].version_id, "20240320")
+      console.log({ "serviceIDs": serviceIDs })
+
+      serviceIDs = await Butter.utils.getServiceIDs(hostData[0].gtfs_id, agencyInfo[0].version_id, "20240321")
+      console.log({ "serviceIDs": serviceIDs })
+
+      tt = await Butter.utils.findTimeTableByStopID(hostData[0].gtfs_id, agencyInfo[0].version_id, stops[0].stop_id, "20240320")
+      console.log({ "found_tt": tt })
+
+      tt = await Butter.utils.findTimeTableByTripIDs(hostData[0].gtfs_id, agencyInfo[0].version_id, [trips[0].trip_id, trips[1].trip_id])
+      console.log({ "found_tt": tt })
+
+      const foundTrips = await Butter.utils.findTrips(hostData[0].gtfs_id, agencyInfo[0].version_id, [stops[0].stop_id, stops[1].stop_id])
+      console.log({ "found_trips": foundTrips })
+
+      tt = await Butter.utils.fetchTimeTable(hostData[0].gtfs_id, agencyInfo[0].version_id, {
+        date: "20240320",
+        stop_ids: [stops[0].stop_id]
+      })
+      console.log({ "ttFetched1": tt })
+
+      tt = await Butter.utils.fetchTimeTable(hostData[0].gtfs_id, agencyInfo[0].version_id, {
+        date: "20240320",
+        trip_ids: [trips[0].trip_id, trips[1].trip_id]
+      })
+      console.log({ "ttFetched2": tt })
+
+      console.log("COMSUMED OPERATIONS ARE", Butter.getComsumedOp())
     }
     main()
   </script>
