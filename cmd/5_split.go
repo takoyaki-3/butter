@@ -6,6 +6,7 @@ import (
 	"math"
 	"os"
 	"time"
+	"net/url"
 
 	"io/ioutil"
 
@@ -107,8 +108,8 @@ func split(file string, version string) error {
 	byTrip := map[string][]StopTime{}
 	
 	for _, stopTime := range stopTimes {
-		byStop[stopTime.StopID] = append(byStop[stopTime.StopID], stopTime)
-		byTrip[stopTime.StopID] = append(byTrip[stopTime.StopID], stopTime)
+		byStop[url.QueryEscape(stopTime.StopID)] = append(byStop[url.QueryEscape(stopTime.StopID)], stopTime)
+		byTrip[url.QueryEscape(stopTime.TripID)] = append(byTrip[url.QueryEscape(stopTime.TripID)], stopTime)
 	}
 	
 	// グループ化されたデータをさらにハッシュ値によってサブグループ化
