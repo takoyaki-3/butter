@@ -182,16 +182,6 @@ func split(file string, version string) error {
 		}
 	}
 
-	// データコピー
-	err = Copy(srcDir+"/stops.txt", dstDir+"/stops.txt")
-	if err != nil {
-		return err
-	}
-	err = AddSing(dstDir+"/stops.txt", privateKeyBytes)
-	if err != nil {
-		return err
-	}
-
 	// GTFSのコピー
 	err = CopyDir(srcDir, dstDir+"/GTFS")
 	if err != nil {
