@@ -8,4 +8,5 @@ s3-conf.json
 *.exe
 *.txt
 *.csv
+archive.tar
 !requirements.txt
