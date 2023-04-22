@@ -20,7 +20,7 @@ import (
 func main() {
 	sourceDir := "./dist/"
 	targetFile := "archive.tar"
-	serverAddr := "takoyaki3.com:8001"
+	serverAddr := "butter.takoyaki3.com:8001"
 
 	// 1. 指定したディレクトリ内のファイルを.tar形式にまとめる
 	err := createTarArchive(sourceDir, targetFile)
