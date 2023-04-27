@@ -1,0 +1,4 @@
+name = "my-worker"
+main = "dist/worker.js"
+compatibility_date = "2023-04-20"
+type = "webpack"

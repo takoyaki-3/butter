@@ -1,0 +1,25 @@
+{
+  "name": "my-worker",
+  "version": "0.0.0",
+  "devDependencies": {
+    "@babel/core": "^7.21.4",
+    "@babel/preset-env": "^7.21.4",
+    "babel-loader": "^9.1.2",
+    "jest": "^29.5.0",
+    "webpack": "^5.80.0",
+    "wrangler": "2.16.0"
+  },
+  "private": true,
+  "scripts": {
+    "start": "wrangler dev",
+    "deploy": "wrangler publish",
+    "test": "jest",
+    "build": "webpack"
+  },
+  "dependencies": {
+    "pako": "^2.1.0",
+    "webpack-cli": "^5.0.1"
+  },
+  "devtool": "cheap-module-source-map",
+  "main": "dist/index.js"
+}
