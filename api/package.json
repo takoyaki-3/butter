@@ -11,7 +11,7 @@
   },
   "private": true,
   "scripts": {
-    "start": "wrangler dev",
+    "start": "webpack && wrangler dev",
     "deploy": "wrangler publish",
     "test": "jest",
     "build": "webpack"
