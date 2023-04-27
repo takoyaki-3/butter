@@ -1,5 +1,5 @@
 {
-  "name": "my-worker",
+  "name": "butter",
   "version": "0.0.0",
   "devDependencies": {
     "@babel/core": "^7.21.4",

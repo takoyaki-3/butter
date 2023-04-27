@@ -1,5 +1,6 @@
 import { ungzip } from 'pako';
-const tool = require('./helper/tool.js');
+// const tool = require('./helper/tool.js');
+const butter = require('./helper/butter.js');
 
 addEventListener('fetch', (event) => {
   event.respondWith(handleRequest(event.request));
@@ -7,27 +8,26 @@ addEventListener('fetch', (event) => {
 
 async function handleRequest(request) {
   const urlParams = new URL(request.url).searchParams;
-  const targetFileName = urlParams.get('file'); // リクエストパラメータからファイル名を取得
+  
+  // リクエストパラメータから取得
+  const method = urlParams.get('method');
 
-  const url = 'http://pub-ad1f4a48b8ef46779b720e734b0c2e1d.r2.dev/v0.0.0/ToeiBus/2023-04-16T09_12_29Z_00/byStops/00.tar.gz';
-  const files = await tool.getFilesFromTarGzURL(url)
+  // 
+  const gtfsID = urlParams.get('gtfsID');
+  const options = urlParams.get('json');
 
-  let text = 'Tar files extracted. but [' + targetFileName + '] not found.';
+  await butter.init()
 
-  // ファイル名とデータを出力
-  files.forEach(file => {
-    if (file.name === targetFileName) { // リクエストパラメータで指定されたファイル名と一致する場合
-      // console.log(`File: ${file.name}`)
-      // console.log(`Data: ${file.data}`)
+  console.log(options)
 
-      text = (new TextDecoder).decode(new Uint8Array(file.data))
-    }
-  })
+  if (method == 'fetchTimeTableV1') {
+    const tt = await butter.fetchTimeTableV1(gtfsID, JSON.parse(options))
+    return new Response(JSON.stringify(tt), {
+      headers: { 'content-type': 'text/plain' },
+    })  
+  }
 
-  const data = await tool.getBinaryFromURL('https://pub-ad1f4a48b8ef46779b720e734b0c2e1d.r2.dev/v0.0.0/ToeiBus/info.json')
-  console.log("json:",(data))
-
-  return new Response(data, {
+  return new Response("hello, butter !", {
     headers: { 'content-type': 'text/plain' },
   })
 }
