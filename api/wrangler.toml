@@ -1,0 +1,4 @@
+name = "butter"
+main = "dist/worker.js"
+compatibility_date = "2023-04-27"
+type = "webpack"

@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <title>Test</title>
 
-  <script src="./fetch.js"></script>
+  <script src="./dist/fetch.js"></script>
 </head>
 
 <body>
@@ -91,13 +91,22 @@
       // const foundTrips = await Butter.utils.findTrips(hostData[0].gtfs_id, agencyInfo[0].version_id, [stops[0].stop_id, stops[1].stop_id])
       // console.log({ "found_trips": foundTrips })
 
-      tt = await Butter.utils.fetchTimeTable(hostData[0].gtfs_id, {
+      // 使用例
+      const lat = 35.693906;
+      const lon = 139.701504;
+      const radius = 500; // メートル単位
+
+      const aroundStops = await Butter.utils.getStopsWithinRadius(lat, lon, radius);
+      console.log("stops",aroundStops);
+
+
+      tt = await Butter.utils.fetchTimeTableV1(hostData[0].gtfs_id, {
         date: "20240320",
         stop_ids: [stops[0].stop_id]
       })
       console.log({ "ttFetched1": tt })
 
-      tt = await Butter.utils.fetchTimeTable(hostData[0].gtfs_id, {
+      tt = await Butter.utils.fetchTimeTableV1(hostData[0].gtfs_id, {
         date: "20240320",
         trip_ids: [trips[0].trip_id, trips[1].trip_id]
       })
