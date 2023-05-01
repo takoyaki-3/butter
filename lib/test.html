@@ -92,6 +92,13 @@
       // console.log({ "found_trips": foundTrips })
 
       // 使用例
+      const substring = "かみ";
+      await Butter.utils.getStopsBySubstring(substring).then((stops) => {
+        console.log(`Stops containing '${substring}':`);
+        console.log(stops);
+      });
+
+      // 使用例
       const lat = 35.693906;
       const lon = 139.701504;
       const radius = 500; // メートル単位
