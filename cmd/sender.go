@@ -2,7 +2,6 @@ package main
 
 import (
 	"crypto"
-	"archive/tar"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
@@ -10,20 +9,18 @@ import (
 	"encoding/pem"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"os"
-	"strings"
-	"path/filepath"
+	. "github.com/takoyaki-3/butter/cmd/helper"
 )
 
 func main() {
-	sourceDir := "./dist/"
+	sourceDir := "./v0.0.0/"
 	targetFile := "archive.tar"
 	serverAddr := "butter.takoyaki3.com:8001"
 
 	// 1. 指定したディレクトリ内のファイルを.tar形式にまとめる
-	err := createTarArchive(sourceDir, targetFile)
+	err := CreateTarArchive(sourceDir, targetFile)
 	if err != nil {
 		fmt.Printf("Error creating tar archive: %v\n", err)
 		return
@@ -128,48 +125,6 @@ func main() {
 	}
 
 	fmt.Println("File and signature sent successfully.")
-}
-
-// 指定したディレクトリ内のファイルを.tar形式にまとめる
-func createTarArchive(sourceDir, targetFile string) error {
-	file, err := os.Create(targetFile)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	tarWriter := tar.NewWriter(file)
-	defer tarWriter.Close()
-
-	return filepath.Walk(sourceDir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		path = strings.ReplaceAll(path,"\\","/")
-
-		header, err := tar.FileInfoHeader(info, info.Name())
-		if err != nil {
-			return err
-		}
-
-		header.Name = path
-
-		if err := tarWriter.WriteHeader(header); err != nil {
-			return err
-		}
-
-		if info.IsDir() {
-			return nil
-		}
-
-		data, err := ioutil.ReadFile(path)
-		if err != nil {
-			return err
-		}
-
-		_, err = tarWriter.Write(data)
-		return err
-	})
 }
 
 // 電子署名を生成する

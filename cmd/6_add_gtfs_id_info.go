@@ -24,7 +24,7 @@ func main() {
 	}
 
 	// Set the root directory path
-	root := "dist"
+	root := "v0.0.0"
 
 	// Get the list of directories in the root directory
 	dirs, err := ioutil.ReadDir(root)
@@ -65,8 +65,8 @@ func main() {
 				}
 			}
 
-			json.DumpToFile(versionInfo, "./dist/"+dir.Name()+"/info.json")
-			AddSing("./dist/"+dir.Name()+"/info.json", privateKeyBytes)
+			json.DumpToFile(versionInfo, "./v0.0.0/"+dir.Name()+"/info.json")
+			AddSing("./v0.0.0/"+dir.Name()+"/info.json", privateKeyBytes)
 		}
 	}
 }
