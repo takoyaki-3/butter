@@ -21,7 +21,7 @@ func main() {
 	}
 
 	// データ本体のアップロード
-	err, files := filetool.DirWalk("./dist", filetool.DirWalkOption{})
+	err, files := filetool.DirWalk("./v0.0.0", filetool.DirWalkOption{})
 	if err != nil {
 		return
 	}
@@ -45,7 +45,7 @@ func main() {
 			return
 		}
 
-		if v.Name == "dist" {
+		if v.Name == "v0.0.0" {
 			fmt.Println(err)
 			return
 		}
@@ -55,7 +55,7 @@ func main() {
 			fmt.Println(err)
 			return
 		}
-		key := "v0.0.0/" + strings.ReplaceAll(v.Path[len("dist\\"):], "\\", "/")
+		key := "v0.0.0/" + strings.ReplaceAll(v.Path[len("v0.0.0\\"):], "\\", "/")
 		fmt.Println(i, len(files), float32(i)/float32(len(files)), key)
 
 		err = s3.UploadFromPath(v.Path, key)
