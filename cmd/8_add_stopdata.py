@@ -67,12 +67,12 @@ for index, row in df_stops.iterrows():
             h3index_to_stops_dict[index_to_add].append(row)
 
 # Save each H3 index's stops to a separate file
-if not os.path.isdir('dist/byH3index'):
-    os.mkdir('dist/byH3index')
+if not os.path.isdir('v0.0.0/byH3index'):
+    os.mkdir('v0.0.0/byH3index')
 
 for h3index in unique_h3indexes:
     df_h3index_stops = pd.DataFrame(h3index_to_stops_dict[h3index])
-    filename = f"dist/byH3index/{h3index}_stops.csv"
+    filename = f"v0.0.0/byH3index/{h3index}_stops.csv"
     df_h3index_stops.to_csv(filename, index=False)
 
 # n-gram
@@ -109,9 +109,9 @@ for N in range (1,2):
 
   # Save each n-gram's stops to a separate file
 
-  if not os.path.isdir('dist/n-gram'):
-    os.mkdir('dist/n-gram')
+  if not os.path.isdir('v0.0.0/n-gram'):
+    os.mkdir('v0.0.0/n-gram')
   for ngram in unique_ngrams:
     df_ngram_stops = pd.DataFrame(ngram_to_stops_dict[ngram])
-    filename = f"dist/n-gram/{ngram}.csv"
+    filename = f"v0.0.0/n-gram/{ngram}.csv"
     df_ngram_stops.to_csv(filename, index=False)

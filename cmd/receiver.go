@@ -19,7 +19,7 @@ import (
 
 func main() {
 	listenAddr := "0.0.0.0:8001"
-	destDir := "dist"
+	destDir := "v0.0.0"
 
 	// サーバーを起動して待機
 	listener, err := net.Listen("tcp", listenAddr)
