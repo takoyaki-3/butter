@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  app:
+    image: golang:1.19
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: go run ftps.go
+    # environment:
+    #   FTP_HOST: ftp.example.com
+    #   FTP_USER: username
+    #   FTP_PASS: password
+    #   FTP_PORT: 21
+    #   TAR_FILE_PATH: /path/to/your/file.tar
+
