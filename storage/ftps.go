@@ -43,14 +43,12 @@ type OriginalDataItem struct {
 }
 
 func main() {
-
 	var config Config
-	err := json.LoadFromPath("./config.json",&config)
+	err := json.LoadFromPath("./config.json", &config)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	// Download root file from the URL
 	var root Root
 	rootData, err := downloadFile("https://butter.takoyaki3.com/v0.0.0/root.json")
 	if err != nil {
@@ -61,9 +59,8 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// Download info file from the URL
 	var info Info
-	infoData, err := downloadFile(root.OriginalData.Host+"info.json")
+	infoData, err := downloadFile(root.OriginalData.Host + "info.json")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -72,8 +69,20 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// Download .tar file from the URL
-	tarData, err := downloadFile(root.OriginalData.Host+info.DataList[len(info.DataList)-1].Key)
+	infoPath := "info.json"
+	var oldInfo Info
+	err = json.LoadFromPath(infoPath, &oldInfo)
+	if err == nil && info.DataList[len(info.DataList)-1].Key == oldInfo.DataList[len(oldInfo.DataList)-1].Key {
+		log.Println("No updates found. Exiting.")
+		return
+	}
+
+	err = ioutil.WriteFile(infoPath, infoData, 0644)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	tarData, err := downloadFile(root.OriginalData.Host + info.DataList[len(info.DataList)-1].Key)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -83,7 +92,6 @@ func main() {
 		log.Fatal(err)
 	}
 }
-
 func uploadTarFilesToFTP(host, port, user, pass string, tarData []byte) error {
 	// Connect to FTP server
 	conn, err := ftp.Dial(fmt.Sprintf("%s:%s", host, port))
