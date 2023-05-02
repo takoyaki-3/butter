@@ -73,7 +73,7 @@ func split(file string, version string) error {
 	srcDir := "dir_out/" + file
 
 	// 出力ファイルのディレクトリを設定
-	dstDir := "dist/" + file[:len(file)-len(".zip")] + "/" + version
+	dstDir := "v0.0.0/" + file[:len(file)-len(".zip")] + "/" + version
 	
 	// stop_times.txtからStopTimeのスライスをロード
 	stopTimes := []StopTime{}

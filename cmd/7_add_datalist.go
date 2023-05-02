@@ -79,7 +79,7 @@ func main() {
 		})
 	}
 
-	json.DumpToFile(datalist, "dist/datalist.json")
-	err = AddSing("dist/datalist.json", privateKeyBytes)
+	json.DumpToFile(datalist, "v0.0.0/datalist.json")
+	err = AddSing("v0.0.0/datalist.json", privateKeyBytes)
 	fmt.Println(err)
 }
