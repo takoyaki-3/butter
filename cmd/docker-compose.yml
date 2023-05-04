@@ -59,19 +59,3 @@ services:
     volumes:
       - ./:/app
     command: python 8_add_stopdata.py
-  file_server:
-    image: golang:1.19
-    volumes: 
-      - ./:/app
-    working_dir: /app
-    ports: 
-      - 8000:8000
-    command: 
-      go run file_server.go
-    restart: always
-    tty: true
-    logging:
-      driver: json-file
-      options:
-        max-file: '1'
-        max-size: 3m

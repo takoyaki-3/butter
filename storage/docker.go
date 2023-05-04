@@ -2,17 +2,15 @@ package main
 
 import (
 	"archive/tar"
-	"bytes"
+	"os"
 	"fmt"
 	"io"
 	"log"
 	"path/filepath"
-	"strings"
 	"net/http"
 	"io/ioutil"
 
 	json "github.com/takoyaki-3/go-json"
-	"github.com/jlaffaye/ftp"
 )
 
 type Config struct {
@@ -20,7 +18,6 @@ type Config struct {
 	FTPUser     string `json:"ftp_user"`
 	FTPPass     string `json:"ftp_pass"`
 	FTPPort     string `json:"ftp_port"`
-	Prefix			string `json:"prefix"`
 }
 
 type PublicKey struct {
@@ -83,102 +80,65 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	tarData, err := downloadFile(root.OriginalData.Host + info.DataList[len(info.DataList)-1].Key)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = uploadTarFilesToFTP(config.FTPHost, config.FTPPort, config.FTPUser, config.FTPPass, config.Prefix, tarData)
+	err = DownloadAndExtractTar(root.OriginalData.Host + info.DataList[len(info.DataList)-1].Key, ".")
 	if err != nil {
 		log.Fatal(err)
 	}
 }
-func uploadTarFilesToFTP(host, port, user, pass, prefix string, tarData []byte) error {
-	// Connect to FTP server
-	conn, err := ftp.Dial(fmt.Sprintf("%s:%s", host, port))
+func DownloadAndExtractTar(url, dest string) error {
+	// Check if output directory exists, create it if not
+	if _, err := os.Stat(dest); os.IsNotExist(err) {
+		err = os.MkdirAll(dest, 0755)
+		if err != nil {
+			return fmt.Errorf("failed to create destination directory: %v", err)
+		}
+	}
+
+	resp, err := http.Get(url)
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 
-	defer conn.Quit()
-
-	// Login to FTP server
-	err = conn.Login(user, pass)
-	if err != nil {
-		return err
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("failed to download %s: %d %s", url, resp.StatusCode, resp.Status)
 	}
 
-	counter := 0
-
-	// Create a buffer with the .tar data and read it
-	tarReader := tar.NewReader(bytes.NewReader(tarData))
+	tr := tar.NewReader(resp.Body)
 
 	for {
-		header, err := tarReader.Next()
-
+		header, err := tr.Next()
 		if err == io.EOF {
 			break
-		} else if err != nil {
+		}
+		if err != nil {
 			return err
 		}
 
-		if header.Typeflag == tar.TypeReg {
-			// Check and create the directory if it doesn't exist
-			dir := filepath.Dir(prefix + header.Name)
-			err := createDirIfNotExists(conn, dir)
-			if err != nil {
-				return err
-			}
+		target := filepath.Join(dest, header.Name)
 
-			var buf bytes.Buffer
-			_, err = io.Copy(&buf, tarReader)
-			if err != nil {
-				return err
-			}
-
-			// Upload file to FTP server
-			err = conn.Stor(prefix + header.Name, &buf)
-			if err != nil {
-				return err
-			}
-
-			fmt.Println(counter,"Uploaded:", header.Name)
-			counter++
-		}
-	}
-
-	return nil
-}
-
-var cash map[string]bool
-
-func createDirIfNotExists(conn *ftp.ServerConn, dir string) error {
-	if cash == nil {
-		cash = map[string]bool{}
-	}
-	if _, ok := cash[dir]; ok {
-		return nil
-	}
-
-	parts := strings.Split(dir, "/")
-	currentPath := ""
-	for _, part := range parts {
-		currentPath = filepath.Join(currentPath, part)
-		_, err := conn.List(currentPath)
-		if err != nil {
-			err := conn.MakeDir(currentPath)
-			if err != nil {
-				// Check if the error message contains "550" and "File exists" or "Directory exists"
-				if strings.Contains(err.Error(), "550") && (strings.Contains(err.Error(), "File exists") || strings.Contains(err.Error(), "Directory exists")) {
-					// If the error is related to the file or directory already existing, skip this iteration
-					continue
-				} else {
+		switch header.Typeflag {
+		case tar.TypeDir:
+			if _, err := os.Stat(target); err != nil {
+				if err := os.MkdirAll(target, 0755); err != nil {
 					return err
 				}
 			}
+		case tar.TypeReg:
+			file, err := os.OpenFile(target, os.O_CREATE|os.O_RDWR, os.FileMode(header.Mode))
+			if err != nil {
+				return err
+			}
+			defer file.Close()
+
+			if _, err := io.Copy(file, tr); err != nil {
+				return err
+			}
+		default:
+			return fmt.Errorf("unknown type: %c in %s", header.Typeflag, header.Name)
 		}
 	}
-	cash[dir] = true
+
 	return nil
 }
 
