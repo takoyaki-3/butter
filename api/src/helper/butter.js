@@ -485,6 +485,8 @@ export async function fetchTimeTableV1(gtfsID, options, version = "optional") {
                 stop_id: e.stop_id,
                 arrival_time: e.arrival_time,
                 departure_time: e.departure_time,
+                stop_headsign: e.stop_headsign,
+                trip_headsign: e.trip_headsign,
                 predict_time: "NOT IMPLEMENTED"
             })
         }
@@ -516,9 +518,8 @@ export async function fetchTimeTableV1(gtfsID, options, version = "optional") {
     }
   }
 
-export async function getStopsWithinRadius(lat, lon, radius) {
+async function getStopsWithinRadius(lat, lon, radius) {
     const h3Index = h3.geoToH3(lat, lon, 7);
-    // const neighboringH3Indexes = h3.kRing(h3Index, 1);
   
     const url = `${RUNTIME.host}/byH3index/${h3Index}_stops.csv`;
     console.log(url)
@@ -580,7 +581,7 @@ export async function getStopsWithinRadius(lat, lon, radius) {
     
       return stopsWithinRadius;
   }
-export async function getStopsBySubstring(substring) {
+async function getStopsBySubstring(substring) {
     try {
       const url = `${RUNTIME.host}/n-gram/${encodeURIComponent(substring[0])}.csv`;
       const response = await fetch(url);
@@ -617,3 +618,39 @@ export async function getStopsBySubstring(substring) {
       return [];
     }
   }           
+export async function fetchStopsV1(lat, lon, radius, substring) {
+    try {
+      let stopsWithinRadius = [];
+      let stopsBySubstring = [];
+  
+      // 緯度経度が与えられた場合、半径内の停留所を取得
+      if (lat != null && lon != null && radius != null) {
+        stopsWithinRadius = await getStopsWithinRadius(lat, lon, radius);
+      }
+  
+      // 停留所名が与えられた場合、名前で停留所を取得
+      if (substring != null) {
+        stopsBySubstring = await getStopsBySubstring(substring);
+      }
+  
+      // 結果のフィルタリング
+      let filteredStops = [];
+  
+      if (stopsWithinRadius.length > 0 && stopsBySubstring.length > 0) {
+        filteredStops = stopsWithinRadius.filter(stop =>
+          stopsBySubstring.some(s => s.stop_id === stop.stop_id)
+        );
+      } else if (stopsWithinRadius.length > 0) {
+        filteredStops = stopsWithinRadius;
+      } else if (stopsBySubstring.length > 0) {
+        filteredStops = stopsBySubstring;
+      }
+  
+      return {
+        stops: filteredStops
+      };
+    } catch (error) {
+      console.error(`Error fetching stops data: ${error.message}`);
+      return [];
+    }
+  }
