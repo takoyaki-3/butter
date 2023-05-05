@@ -22,26 +22,24 @@ async function handleRequest(request) {
 
   await butter.init()
 
-  console.log(method,options)
-
   if (method == 'fetchTimeTableV1') {
     const tt = await butter.fetchTimeTableV1(gtfsID, JSON.parse(options))
     return new Response(JSON.stringify(tt), {
-      headers: { 'content-type': 'text/plain' },
+      headers: { 'content-type': 'application/json' },
     })  
   } else if (method == 'getStopsWithinRadiusV1') {
     const tt = await butter.getStopsWithinRadius(lat,lon,radius)
     return new Response(JSON.stringify(tt), {
-      headers: { 'content-type': 'text/plain' },
+      headers: { 'content-type': 'application/json' },
     })
   } else if (method == 'getStopsBySubstringV1') {
     const tt = await butter.getStopsBySubstring(name)
     return new Response(JSON.stringify(tt), {
-      headers: { 'content-type': 'text/plain' },
+      headers: { 'content-type': 'application/json' },
     })
   }
 
   return new Response("hello, butter !", {
-    headers: { 'content-type': 'text/plain' },
+  headers: { 'content-type': 'application/json' },
   })
 }
