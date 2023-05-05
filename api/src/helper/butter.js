@@ -520,20 +520,16 @@ export async function getStopsWithinRadius(lat, lon, radius) {
     const h3Index = h3.geoToH3(lat, lon, 7);
     // const neighboringH3Indexes = h3.kRing(h3Index, 1);
   
-    const h3IndexesToSearch = [h3Index];
-    // const h3IndexesToSearch = [h3Index, ...neighboringH3Indexes];
-    const stopDataPromises = h3IndexesToSearch.map(index => {
-      const url = `${RUNTIME.host}/byH3index/${index}_stops.csv`;
-      return fetch(url)
-    });
+    const url = `${RUNTIME.host}/byH3index/${h3Index}_stops.csv`;
+    console.log(url)
+    const response = await fetch(url)
+    if (response.status !== 200) {
+        throw new Error("Failed to fetch data from URL.");
+      }
   
-    const stopDataResponses = await Promise.allSettled(stopDataPromises);
-    const stopData = stopDataResponses
-      .filter(response => response.status === 'fulfilled')
-      .map(response => response.value.data);
+    const stopData = new TextDecoder('utf-8').decode(await response.arrayBuffer());
   
-    const stops = stopData
-      .flatMap(data => data.split('\n'))
+    const stops = stopData.split('\n')
       .slice(1)
       .map(line => {
         const [
