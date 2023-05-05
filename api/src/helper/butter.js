@@ -184,13 +184,6 @@ const helper = {
         const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
         return weekdays[date.getDay()];
     },
-    isHoliday(dateStr) {
-        const dayOfWeek = helper.getDayOfWeek(dateStr)
-        flags = [
-            ["土", "日"].includes(dayOfWeek)
-        ]
-        return flags.some(f => f)
-    },
     setIntersection(setA, setB) {
         let ret = new Set()
         for (const e of setB) {
@@ -378,7 +371,7 @@ export async function getTimeTableByTripID(gtfsID, versionID, tripID) {
       const timeTables = await getTimeTableByTripHash(gtfsID, versionID, tripHash)
       return timeTables[tripID]
   }
-export async function getServiceIDs(gtfsID, versionID, dateStr) {
+  export async function getServiceIDs(gtfsID, versionID, dateStr) {
     const data = await Promise.all([
         getCalendar(gtfsID, versionID),
         getCalendarDates(gtfsID, versionID),
@@ -389,16 +382,25 @@ export async function getServiceIDs(gtfsID, versionID, dateStr) {
     const special = calendar.filter(e => {
         return e.date == dateStr
     })
+
+    const addedServiceIds = special
+        .filter(e => e.exception_type === "1")
+        .map(e => e.service_id);
+
+    const removedServiceIds = special
+        .filter(e => e.exception_type === "2")
+        .map(e => e.service_id);
+
     if (special.length > 0) {
-        return special.map(e => e.service_id)
+        return addedServiceIds;
     }
 
-    const date = helper.parseDate(dateStr)
-    const weekOfDay = helper.getDayOfWeek(dateStr)
+    const date = helper.parseDate(dateStr);
+    const weekOfDay = helper.getDayOfWeek(dateStr);
 
     const enabled = service.filter(e => {
-        const endDate = helper.parseDate(e.end_date)
-        return date.getTime() <= endDate.getTime()
+        const endDate = helper.parseDate(e.end_date);
+        return date.getTime() <= endDate.getTime();
     })
 
     return enabled.filter(e => {
@@ -411,7 +413,7 @@ export async function getServiceIDs(gtfsID, versionID, dateStr) {
             e.saturday == "1" && weekOfDay === "土",
             e.sunday == "1" && weekOfDay === "日",
         ]
-        return flags.some(f => f)
+        return flags.some(f => f) && !removedServiceIds.includes(e.service_id);
     }).map(e => e.service_id)
 }
 export async function findTrips(gtfsID, versionID, stopIDs) {
@@ -487,6 +489,7 @@ export async function fetchTimeTableV1(gtfsID, options, version = "optional") {
                 departure_time: e.departure_time,
                 stop_headsign: e.stop_headsign,
                 trip_headsign: e.trip_headsign,
+                service_id: e.service_id,
                 predict_time: "NOT IMPLEMENTED"
             })
         }
