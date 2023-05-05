@@ -4,6 +4,9 @@
 // グローバル関数を汚さないためにIIFE形式で定義
 // ES6のmoduleだと動かないブラウザが一応あるので，埋め込み用ライブラリであることを考えて普通の機能で実現する
 import { inflate } from 'pako';
+import h3 from 'h3-js/legacy';
+import axios from 'axios';
+import haversine from 'haversine';
 
 let CONFIG = {
     debug: true,
@@ -514,3 +517,111 @@ export async function fetchTimeTableV1(gtfsID, options, version = "optional") {
         properties: "NOT IMPLEMENTED"
     }
   }
+
+export async function getStopsWithinRadius(lat, lon, radius) {
+    const h3Index = h3.geoToH3(lat, lon, 7);
+    // const neighboringH3Indexes = h3.kRing(h3Index, 1);
+  
+    const h3IndexesToSearch = [h3Index];
+    // const h3IndexesToSearch = [h3Index, ...neighboringH3Indexes];
+    const stopDataPromises = h3IndexesToSearch.map(index => {
+      const url = `${RUNTIME.host}/byH3index/${index}_stops.csv`;
+      return fetch(url)
+    });
+  
+    const stopDataResponses = await Promise.allSettled(stopDataPromises);
+    const stopData = stopDataResponses
+      .filter(response => response.status === 'fulfilled')
+      .map(response => response.value.data);
+  
+    const stops = stopData
+      .flatMap(data => data.split('\n'))
+      .slice(1)
+      .map(line => {
+        const [
+          stop_id,
+          stop_name,
+          platform_code,
+          stop_lat,
+          stop_lon,
+          zone_id,
+          location_type,
+          gtfs_id,
+          stop_code,
+          stop_desc,
+          stop_url,
+          parent_station,
+          stop_timezone,
+          wheelchair_boarding,
+          level_id,
+          h3index
+        ] = line.split(',');
+  
+        return {
+          stop_id,
+          stop_name,
+          platform_code,
+          stop_lat: parseFloat(stop_lat),
+          stop_lon: parseFloat(stop_lon),
+          zone_id,
+          location_type,
+          gtfs_id,
+          stop_code,
+          stop_desc,
+          stop_url,
+          parent_station,
+          stop_timezone,
+          wheelchair_boarding,
+          level_id,
+          h3index
+        };
+      });
+  
+      const stopsWithinRadius = stops.filter(stop => {
+        const start = { latitude: lat, longitude: lon };
+        const end = { latitude: stop.stop_lat, longitude: stop.stop_lon };
+        const distance = haversine(start, end, { unit: 'meter' });
+        return distance <= radius;
+      });
+    
+      return stopsWithinRadius;
+  }
+export async function getStopsBySubstring(substring) {
+    try {
+      const url = `${RUNTIME.host}/n-gram/${encodeURIComponent(substring[0])}.csv`;
+      console.log(url)
+      const response = await fetch(url);
+  
+      if (response.status !== 200) {
+        throw new Error("Failed to fetch data from URL.");
+      }
+  
+      const data = new TextDecoder('utf-8').decode(await response.arrayBuffer());
+      console.log(data)
+      const lines = data.split("\n");
+      const headers = lines[0].split(",");
+  
+      const stops = [];
+  
+      for (let i = 1; i < lines.length; i++) {
+        if (lines[i].trim() === "") continue;
+  
+        const values = lines[i].split(",");
+        const stop = {};
+  
+        for (let j = 0; j < headers.length; j++) {
+          stop[headers[j]] = values[j];
+        }
+  
+        // stop_name に substring が含まれる場合のみ、結果に追加
+        if (stop.stop_name.includes(substring)) {
+          stops.push(stop);
+        }
+      }
+  
+      return stops;
+    } catch (error) {
+      console.error(`Error fetching stops data: ${error.message}`);
+      return [];
+    }
+  }           
