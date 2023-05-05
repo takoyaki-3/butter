@@ -5,7 +5,6 @@
 // ES6のmoduleだと動かないブラウザが一応あるので，埋め込み用ライブラリであることを考えて普通の機能で実現する
 import { inflate } from 'pako';
 import h3 from 'h3-js/legacy';
-import axios from 'axios';
 import haversine from 'haversine';
 
 let CONFIG = {
@@ -240,7 +239,6 @@ const internal = {
         let req;
         try {
             req = await (await fetch(CONFIG.rootCA)).json()
-            console.log(req)
             RUNTIME.CA = req
 
             RUNTIME.host = RUNTIME.CA.hosts[0] //TODO
@@ -589,7 +587,6 @@ export async function getStopsWithinRadius(lat, lon, radius) {
 export async function getStopsBySubstring(substring) {
     try {
       const url = `${RUNTIME.host}/n-gram/${encodeURIComponent(substring[0])}.csv`;
-      console.log(url)
       const response = await fetch(url);
   
       if (response.status !== 200) {
@@ -597,7 +594,6 @@ export async function getStopsBySubstring(substring) {
       }
   
       const data = new TextDecoder('utf-8').decode(await response.arrayBuffer());
-      console.log(data)
       const lines = data.split("\n");
       const headers = lines[0].split(",");
   
