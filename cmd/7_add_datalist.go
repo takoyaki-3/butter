@@ -21,6 +21,9 @@ type DataItem struct {
 	ProviderAgencyName string `json:"providerAgencyName"`
 	Memo               string `json:"memo"`
 	UpdatedAt          string `json:"updatedAt"`
+	AlertURL           string `json:"Alert_url,omitempty"`
+	TripUpdateURL      string `json:"TripUpdate_url,omitempty"`
+	VehiclePositionURL string `json:"VehiclePosition_url,omitempty"`
 }
 
 type DataList struct {
@@ -76,6 +79,9 @@ func main() {
 			ProviderName:       "",
 			ProviderAgencyName: "",
 			UpdatedAt:          t.Format("2006-01-02T15_04_05+09_00"),
+			AlertURL: 					v.AlertURL,
+			TripUpdateURL: 			v.TripUpdateURL,
+			VehiclePositionURL: v.VehiclePositionURL,
 		})
 	}
 
