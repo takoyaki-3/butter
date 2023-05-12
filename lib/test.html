@@ -19,29 +19,29 @@
       const agencyInfo = await Butter.getAgencyInfo(hostData[0].gtfs_id)
       console.log({ "GetInfo": agencyInfo })
 
-      const versionInfo = await Butter.getVersionInfo(hostData[0].gtfs_id, agencyInfo[0].version_id)
-      console.log({ "getVersionInfo": versionInfo })
+      // const versionInfo = await Butter.getVersionInfo(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      // console.log({ "getVersionInfo": versionInfo })
 
       const stops = await Butter.getBusStops(hostData[0].gtfs_id, agencyInfo[0].version_id)
       console.log({ "getBusStops": stops })
 
-      const agency = await Butter.getAgency(hostData[0].gtfs_id, agencyInfo[0].version_id)
-      console.log({ "getAgency": agency })
+      // const agency = await Butter.getAgency(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      // console.log({ "getAgency": agency })
 
-      const calendar = await Butter.getCalendar(hostData[0].gtfs_id, agencyInfo[0].version_id)
-      console.log({ "getCalendar": calendar })
+      // const calendar = await Butter.getCalendar(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      // console.log({ "getCalendar": calendar })
 
-      const calendarDates = await Butter.getCalendarDates(hostData[0].gtfs_id, agencyInfo[0].version_id)
-      console.log({ "getCalendarDates": calendarDates })
+      // const calendarDates = await Butter.getCalendarDates(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      // console.log({ "getCalendarDates": calendarDates })
 
-      const fareAttributes = await Butter.getFareAttributes(hostData[0].gtfs_id, agencyInfo[0].version_id)
-      console.log({ "getFareAttributes": fareAttributes })
+      // const fareAttributes = await Butter.getFareAttributes(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      // console.log({ "getFareAttributes": fareAttributes })
 
-      const fareRules = await Butter.getFareRules(hostData[0].gtfs_id, agencyInfo[0].version_id)
-      console.log({ "getFareRules": fareRules })
+      // const fareRules = await Butter.getFareRules(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      // console.log({ "getFareRules": fareRules })
 
-      const feedInfo = await Butter.getFeedInfo(hostData[0].gtfs_id, agencyInfo[0].version_id)
-      console.log({ "getFeedInfo": feedInfo })
+      // const feedInfo = await Butter.getFeedInfo(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      // console.log({ "getFeedInfo": feedInfo })
 
       // const officeJp = await Butter.getOfficeJp(hostData[0].gtfs_id, agencyInfo[0].version_id)
       // console.log({ "getOfficeJp": officeJp })
@@ -107,16 +107,17 @@
       console.log("stops",aroundStops);
 
       const busInfo = await Butter.utils.getBusInfo(lat,lon)
-      console.log(busInfo)
+      console.log("bus positions",busInfo)
 
+      console.log(stops[0].stop_id)
       tt = await Butter.utils.fetchTimeTableV1(hostData[0].gtfs_id, {
-        date: "20240320",
+        date: "20230513",
         stop_ids: [stops[0].stop_id]
       })
       console.log({ "ttFetched1": tt })
 
       tt = await Butter.utils.fetchTimeTableV1(hostData[0].gtfs_id, {
-        date: "20240320",
+        date: "20230513",
         trip_ids: [trips[0].trip_id, trips[1].trip_id]
       })
       console.log({ "ttFetched2": tt })
