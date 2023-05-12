@@ -13,11 +13,6 @@
 
   <script>
     const main = async () => {
-      // GTFS-RTデータのURL
-      const GTFS_RT_DATA_URL = 'https://api-public.odpt.org/api/v4/gtfs/realtime/ToeiBus';
-      const entity = (await Butter.utils.getVehiclePositionFromURL(GTFS_RT_DATA_URL))
-      console.log("entity",entity)
-
       const hostData = (await Butter.getHostDataList())
       console.log({ "getHostDataList": hostData })
 
@@ -111,6 +106,8 @@
       const aroundStops = await Butter.utils.getStopsWithinRadius(lat, lon, radius);
       console.log("stops",aroundStops);
 
+      const busInfo = await Butter.utils.getBusInfo(lat,lon)
+      console.log(busInfo)
 
       tt = await Butter.utils.fetchTimeTableV1(hostData[0].gtfs_id, {
         date: "20240320",
