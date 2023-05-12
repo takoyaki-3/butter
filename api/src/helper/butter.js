@@ -4,6 +4,8 @@
 // グローバル関数を汚さないためにIIFE形式で定義
 // ES6のmoduleだと動かないブラウザが一応あるので，埋め込み用ライブラリであることを考えて普通の機能で実現する
 import { inflate } from 'pako';
+import h3 from 'h3-js/legacy';
+import haversine from 'haversine';
 
 let CONFIG = {
     debug: true,
@@ -182,13 +184,6 @@ const helper = {
         const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
         return weekdays[date.getDay()];
     },
-    isHoliday(dateStr) {
-        const dayOfWeek = helper.getDayOfWeek(dateStr)
-        flags = [
-            ["土", "日"].includes(dayOfWeek)
-        ]
-        return flags.some(f => f)
-    },
     setIntersection(setA, setB) {
         let ret = new Set()
         for (const e of setB) {
@@ -237,7 +232,6 @@ const internal = {
         let req;
         try {
             req = await (await fetch(CONFIG.rootCA)).json()
-            console.log(req)
             RUNTIME.CA = req
 
             RUNTIME.host = RUNTIME.CA.hosts[0] //TODO
@@ -377,7 +371,7 @@ export async function getTimeTableByTripID(gtfsID, versionID, tripID) {
       const timeTables = await getTimeTableByTripHash(gtfsID, versionID, tripHash)
       return timeTables[tripID]
   }
-export async function getServiceIDs(gtfsID, versionID, dateStr) {
+  export async function getServiceIDs(gtfsID, versionID, dateStr) {
     const data = await Promise.all([
         getCalendar(gtfsID, versionID),
         getCalendarDates(gtfsID, versionID),
@@ -388,16 +382,25 @@ export async function getServiceIDs(gtfsID, versionID, dateStr) {
     const special = calendar.filter(e => {
         return e.date == dateStr
     })
+
+    const addedServiceIds = special
+        .filter(e => e.exception_type === "1")
+        .map(e => e.service_id);
+
+    const removedServiceIds = special
+        .filter(e => e.exception_type === "2")
+        .map(e => e.service_id);
+
     if (special.length > 0) {
-        return special.map(e => e.service_id)
+        return addedServiceIds;
     }
 
-    const date = helper.parseDate(dateStr)
-    const weekOfDay = helper.getDayOfWeek(dateStr)
+    const date = helper.parseDate(dateStr);
+    const weekOfDay = helper.getDayOfWeek(dateStr);
 
     const enabled = service.filter(e => {
-        const endDate = helper.parseDate(e.end_date)
-        return date.getTime() <= endDate.getTime()
+        const endDate = helper.parseDate(e.end_date);
+        return date.getTime() <= endDate.getTime();
     })
 
     return enabled.filter(e => {
@@ -410,7 +413,7 @@ export async function getServiceIDs(gtfsID, versionID, dateStr) {
             e.saturday == "1" && weekOfDay === "土",
             e.sunday == "1" && weekOfDay === "日",
         ]
-        return flags.some(f => f)
+        return flags.some(f => f) && !removedServiceIds.includes(e.service_id);
     }).map(e => e.service_id)
 }
 export async function findTrips(gtfsID, versionID, stopIDs) {
@@ -484,6 +487,9 @@ export async function fetchTimeTableV1(gtfsID, options, version = "optional") {
                 stop_id: e.stop_id,
                 arrival_time: e.arrival_time,
                 departure_time: e.departure_time,
+                stop_headsign: e.stop_headsign,
+                trip_headsign: e.trip_headsign,
+                service_id: e.service_id,
                 predict_time: "NOT IMPLEMENTED"
             })
         }
@@ -502,15 +508,157 @@ export async function fetchTimeTableV1(gtfsID, options, version = "optional") {
         throw new Error("stop_ids or trip_ids are required")
     }
     if (options.start_time) {
-        stop_times = stop_times.filter(e => e.date >= options.start_time)
+        stop_times = stop_times.filter(e => e.arrival_time >= options.start_time)
     }
     if (options.end_time) {
-        stop_times = stop_times.filter(e => e.date <= options.end_time)
+        stop_times = stop_times.filter(e => e.arrival_time <= options.end_time)
     }
-    stop_times = stop_times.sort((a, b) => (a.date < b.date) ? -1 : 1)
-        .sort((a, b) => (a.trip_id < b.trip_id) ? -1 : 1)
+    stop_times = stop_times.sort((a, b) => {
+        if (a.arrival_time < b.arrival_time) return -1;
+        if (a.arrival_time > b.arrival_time) return 1;
+        if (a.trip_id < b.trip_id) return -1;
+        if (a.trip_id > b.trip_id) return 1;
+        return 0;
+    });
     return {
         stop_times: Object.values(stop_times),
         properties: "NOT IMPLEMENTED"
+    }
+  }
+
+async function getStopsWithinRadius(lat, lon, radius) {
+    const h3Index = h3.geoToH3(lat, lon, 7);
+  
+    const url = `${RUNTIME.host}/byH3index/${h3Index}_stops.csv`;
+    console.log(url)
+    const response = await fetch(url)
+    if (response.status !== 200) {
+        throw new Error("Failed to fetch data from URL.");
+      }
+  
+    const stopData = new TextDecoder('utf-8').decode(await response.arrayBuffer());
+  
+    const stops = stopData.split('\n')
+      .slice(1)
+      .map(line => {
+        const [
+          stop_id,
+          stop_name,
+          platform_code,
+          stop_lat,
+          stop_lon,
+          zone_id,
+          location_type,
+          gtfs_id,
+          stop_code,
+          stop_desc,
+          stop_url,
+          parent_station,
+          stop_timezone,
+          wheelchair_boarding,
+          level_id,
+          h3index
+        ] = line.split(',');
+  
+        return {
+          stop_id,
+          stop_name,
+          platform_code,
+          stop_lat: parseFloat(stop_lat),
+          stop_lon: parseFloat(stop_lon),
+          zone_id,
+          location_type,
+          gtfs_id,
+          stop_code,
+          stop_desc,
+          stop_url,
+          parent_station,
+          stop_timezone,
+          wheelchair_boarding,
+          level_id,
+          h3index
+        };
+      });
+  
+      const stopsWithinRadius = stops.filter(stop => {
+        const start = { latitude: lat, longitude: lon };
+        const end = { latitude: stop.stop_lat, longitude: stop.stop_lon };
+        const distance = haversine(start, end, { unit: 'meter' });
+        return distance <= radius;
+      });
+    
+      return stopsWithinRadius;
+  }
+async function getStopsBySubstring(substring) {
+    try {
+      const url = `${RUNTIME.host}/n-gram/${encodeURIComponent(substring[0])}.csv`;
+      const response = await fetch(url);
+  
+      if (response.status !== 200) {
+        throw new Error("Failed to fetch data from URL.");
+      }
+  
+      const data = new TextDecoder('utf-8').decode(await response.arrayBuffer());
+      const lines = data.split("\n");
+      const headers = lines[0].split(",");
+  
+      const stops = [];
+  
+      for (let i = 1; i < lines.length; i++) {
+        if (lines[i].trim() === "") continue;
+  
+        const values = lines[i].split(",");
+        const stop = {};
+  
+        for (let j = 0; j < headers.length; j++) {
+          stop[headers[j]] = values[j];
+        }
+  
+        // stop_name に substring が含まれる場合のみ、結果に追加
+        if (stop.stop_name.includes(substring)) {
+          stops.push(stop);
+        }
+      }
+  
+      return stops;
+    } catch (error) {
+      console.error(`Error fetching stops data: ${error.message}`);
+      return [];
+    }
+  }           
+export async function fetchStopsV1(lat, lon, radius, substring) {
+    try {
+      let stopsWithinRadius = [];
+      let stopsBySubstring = [];
+  
+      // 緯度経度が与えられた場合、半径内の停留所を取得
+      if (lat != null && lon != null && radius != null) {
+        stopsWithinRadius = await getStopsWithinRadius(lat, lon, radius);
+      }
+  
+      // 停留所名が与えられた場合、名前で停留所を取得
+      if (substring != null) {
+        stopsBySubstring = await getStopsBySubstring(substring);
+      }
+  
+      // 結果のフィルタリング
+      let filteredStops = [];
+  
+      if (stopsWithinRadius.length > 0 && stopsBySubstring.length > 0) {
+        filteredStops = stopsWithinRadius.filter(stop =>
+          stopsBySubstring.some(s => s.stop_id === stop.stop_id)
+        );
+      } else if (stopsWithinRadius.length > 0) {
+        filteredStops = stopsWithinRadius;
+      } else if (stopsBySubstring.length > 0) {
+        filteredStops = stopsBySubstring;
+      }
+  
+      return {
+        stops: filteredStops
+      };
+    } catch (error) {
+      console.error(`Error fetching stops data: ${error.message}`);
+      return [];
     }
   }

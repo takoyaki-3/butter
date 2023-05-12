@@ -18,6 +18,8 @@
     "build": "webpack"
   },
   "dependencies": {
+    "h3-js": "^4.1.0",
+    "haversine": "^1.1.1",
     "pako": "^2.1.0"
   },
   "devtool": "cheap-module-source-map",
