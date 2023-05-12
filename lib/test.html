@@ -13,6 +13,11 @@
 
   <script>
     const main = async () => {
+      // GTFS-RTデータのURL
+      const GTFS_RT_DATA_URL = 'https://api-public.odpt.org/api/v4/gtfs/realtime/ToeiBus';
+      const entity = (await Butter.utils.getVehiclePositionFromURL(GTFS_RT_DATA_URL))
+      console.log("entity",entity)
+
       const hostData = (await Butter.getHostDataList())
       console.log({ "getHostDataList": hostData })
 
