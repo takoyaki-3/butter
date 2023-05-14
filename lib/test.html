@@ -19,86 +19,20 @@
       const agencyInfo = await Butter.getAgencyInfo(hostData[0].gtfs_id)
       console.log({ "GetInfo": agencyInfo })
 
-      // const versionInfo = await Butter.getVersionInfo(hostData[0].gtfs_id, agencyInfo[0].version_id)
-      // console.log({ "getVersionInfo": versionInfo })
-
       const stops = await Butter.getBusStops(hostData[0].gtfs_id, agencyInfo[0].version_id)
       console.log({ "getBusStops": stops })
-
-      // const agency = await Butter.getAgency(hostData[0].gtfs_id, agencyInfo[0].version_id)
-      // console.log({ "getAgency": agency })
-
-      // const calendar = await Butter.getCalendar(hostData[0].gtfs_id, agencyInfo[0].version_id)
-      // console.log({ "getCalendar": calendar })
-
-      // const calendarDates = await Butter.getCalendarDates(hostData[0].gtfs_id, agencyInfo[0].version_id)
-      // console.log({ "getCalendarDates": calendarDates })
-
-      // const fareAttributes = await Butter.getFareAttributes(hostData[0].gtfs_id, agencyInfo[0].version_id)
-      // console.log({ "getFareAttributes": fareAttributes })
-
-      // const fareRules = await Butter.getFareRules(hostData[0].gtfs_id, agencyInfo[0].version_id)
-      // console.log({ "getFareRules": fareRules })
-
-      // const feedInfo = await Butter.getFeedInfo(hostData[0].gtfs_id, agencyInfo[0].version_id)
-      // console.log({ "getFeedInfo": feedInfo })
-
-      // const officeJp = await Butter.getOfficeJp(hostData[0].gtfs_id, agencyInfo[0].version_id)
-      // console.log({ "getOfficeJp": officeJp })
-
-      // const routes = await Butter.getRoutes(hostData[0].gtfs_id, agencyInfo[0].version_id)
-      // console.log({ "getRoutes": routes })
-
-      // const shapes = await Butter.getShapes(hostData[0].gtfs_id, agencyInfo[0].version_id)
-      // console.log({ "getShapes": shapes })
-
-      // const stopTimes = await Butter.getStopTimes(hostData[0].gtfs_id, agencyInfo[0].version_id)
-      // console.log({ "getStopTimes": stopTimes })
-
-      // const transfers = await Butter.getTransfers(hostData[0].gtfs_id, agencyInfo[0].version_id)
-      // console.log({ "getTransfers": transfers })
-
-      // const translations = await Butter.getTranslations(hostData[0].gtfs_id, agencyInfo[0].version_id)
-      // console.log({ "getTranslations": translations })
 
       const trips = await Butter.getTrips(hostData[0].gtfs_id, agencyInfo[0].version_id)
       console.log({ "getTrips": trips })
 
-      // let tt = await Butter.getTimeTableByStopHash(hostData[0].gtfs_id, agencyInfo[0].version_id, "0")
-      // console.log({ "ttStopHash": tt })
-
-      // tt = await Butter.getTimeTableByTripHash(hostData[0].gtfs_id, agencyInfo[0].version_id, "5")
-      // console.log({ "ttTripHash": tt })
-
-      // tt = await Butter.utils.getTimeTableByStopID(hostData[0].gtfs_id, agencyInfo[0].version_id, stops[0].stop_id)
-      // console.log({ "ttByStopID": tt })
-
-      // tt = await Butter.utils.getTimeTableByTripID(hostData[0].gtfs_id, agencyInfo[0].version_id, trips[0].trip_id)
-      // console.log({ "ttByTrip": tt })
-
-      // let serviceIDs = await Butter.utils.getServiceIDs(hostData[0].gtfs_id, agencyInfo[0].version_id, "20240320")
-      // console.log({ "serviceIDs": serviceIDs })
-
-      // serviceIDs = await Butter.utils.getServiceIDs(hostData[0].gtfs_id, agencyInfo[0].version_id, "20240321")
-      // console.log({ "serviceIDs": serviceIDs })
-
-      // tt = await Butter.utils.findTimeTableByStopID(hostData[0].gtfs_id, agencyInfo[0].version_id, stops[0].stop_id, "20240320")
-      // console.log({ "found_tt": tt })
-
-      // tt = await Butter.utils.findTimeTableByTripIDs(hostData[0].gtfs_id, agencyInfo[0].version_id, [trips[0].trip_id, trips[1].trip_id])
-      // console.log({ "found_tt": tt })
-
-      // const foundTrips = await Butter.utils.findTrips(hostData[0].gtfs_id, agencyInfo[0].version_id, [stops[0].stop_id, stops[1].stop_id])
-      // console.log({ "found_trips": foundTrips })
-
-      // 使用例
+      // 名前からの停留所検索使用例
       const substring = "かみ";
       await Butter.utils.getStopsBySubstring(substring).then((stops) => {
         console.log(`Stops containing '${substring}':`);
         console.log(stops);
       });
 
-      // 使用例
+      // 緯度経度からの停留所検索使用例
       const lat = 35.693906;
       const lon = 139.701504;
       const radius = 500; // メートル単位
@@ -106,10 +40,11 @@
       const aroundStops = await Butter.utils.getStopsWithinRadius(lat, lon, radius);
       console.log("stops",aroundStops);
 
+      // バスのリアルタイム情報取得例
       const busInfo = await Butter.utils.getBusInfo(lat,lon)
       console.log("bus positions",busInfo)
 
-      console.log(stops[0].stop_id)
+      // 時刻表情報の取得
       tt = await Butter.utils.fetchTimeTableV1(hostData[0].gtfs_id, {
         date: "20230513",
         stop_ids: [stops[0].stop_id]
