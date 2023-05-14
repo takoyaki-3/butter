@@ -1,0 +1,14 @@
+version: '3.9'
+services:
+  vue-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    tty: true
+    environment:
+      - NODE_ENV=development
+      - UID=yusumi
+    volumes:
+    - ./webapp/vueapp/:/usr/src/app
+    ports:
+    - "8080:8080"
