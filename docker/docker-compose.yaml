@@ -7,8 +7,7 @@ services:
     tty: true
     environment:
       - NODE_ENV=development
-      - UID=yusumi
     volumes:
-    - ./webapp/vueapp/:/usr/src/app
+    - ../:/usr/src/app
     ports:
     - "8080:8080"
