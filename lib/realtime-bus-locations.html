@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>バスの位置情報</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <script src="./dist/fetch.js"></script>
+  <style>
+    #map {
+      height: 1800px;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script>
+    const main = async () => {
+      const hostData = (await Butter.getHostDataList())
+      console.log({ "getHostDataList": hostData })
+      
+      const lat = 35.693906;
+      const lon = 139.701504;
+      
+
+      var map = L.map('map').setView([lat, lon], 13);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      }).addTo(map);
+
+      var busIcon = L.icon({
+        iconUrl: 'bus-icon.png',
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
+      });
+
+      // 全てのバスマーカーを格納する配列
+      let busMarkers = [];
+
+      async function updateBusLocations() {
+        // 全ての前回のマーカーを削除
+        busMarkers.forEach(marker => map.removeLayer(marker));
+        busMarkers = [];
+
+        const busInfo = await Butter.utils.getBusInfo(lat,lon)
+
+        busInfo[0].forEach(function(bus) {
+
+          console.log(bus)
+
+          var marker = L.marker([bus.vehicle.position.latitude, bus.vehicle.position.longitude], { icon: busIcon })
+            .bindPopup(bus.name);
+
+          busMarkers.push(marker);
+          marker.addTo(map);
+        });
+      }
+
+      setInterval(updateBusLocations, 30000);
+
+      updateBusLocations();
+    }
+    main()
+  </script>
+</body>
+</html>
