@@ -30,9 +30,16 @@
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       }).addTo(map);
-
+      
+      // バスアイコン
       var busIcon = L.icon({
         iconUrl: 'bus-icon.png',
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
+      });
+      // バス停アイコン
+      var busStopIcon = L.icon({
+        iconUrl: 'bus_stop_icon.png',
         iconSize: [32, 32],
         iconAnchor: [16, 16]
       });
@@ -58,6 +65,19 @@
           marker.addTo(map);
         });
       }
+
+      // 停留所可視化
+      let busStopMarkers = [];
+      // 緯度経度からの停留所検索使用例
+      const radius = 500; // メートル単位
+      const aroundStops = await Butter.utils.getStopsWithinRadius(lat, lon, radius);
+      aroundStops.forEach(function(bus_stop) {
+        console.log("stops", bus_stop.stop_lat, bus_stop.stop_lon)
+        var marker = L.marker([bus_stop.stop_lat, bus_stop.stop_lon], {icon: busStopIcon})
+          .bindPopup(bus_stop.stop_name);
+        busStopMarkers.push(marker);
+        marker.addTo(map);
+      });
 
       setInterval(updateBusLocations, 30000);
 
