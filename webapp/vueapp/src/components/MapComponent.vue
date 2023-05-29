@@ -1,7 +1,8 @@
 <template>
   <div id="map" style="height: 100vh; width: 100%;">
-    <l-map :zoom="zoom" :center="center">
-      <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+    <l-map :zoom="zoom" :center="center" ref="mapRef" @load="handleMapLoad">
+      <l-tile-layer :url="url" :attribution="attribution">
+      </l-tile-layer>
     </l-map>
   </div>
 </template>
@@ -17,13 +18,20 @@ export default {
   },
   data() {
     return {
-      zoom: 10,
-      center: [35.6895, 139.6917],
+      zoom: 13,
+      center: [35.6809591, 139.7673068],
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      map: null,
     };
   },
+  methods: {
+    handleMapLoad() {
+      this.map = this.$refs.mapRef.mapObject;
+      this.$emit('mapReady');
+    }
+  }
 };
 </script>
 
