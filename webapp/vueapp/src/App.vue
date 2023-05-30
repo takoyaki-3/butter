@@ -1,91 +1,101 @@
 <template>
   <div id="app">
-    <div id="form-container">
-    <SearchForm @formSubmitted="handleFormSubmit" />
+    <div class="coordinate-form">
+      <label>Latitude: <input v-model="lat" type="number" step="0.0001" /></label>
+      <label>Longitude: <input v-model="lng" type="number" step="0.0001" /></label>
+      <button @click="updateMarker">Set Marker</button>
     </div>
-    <div id="map-container">
-    <MapComponent ref="mapComponent" @mapReady="console.log('Map is ready!')" />
-    </div>
+    <MapComponent :markers="markers" />
   </div>
 </template>
 
 <script>
 import MapComponent from './components/MapComponent.vue'
-import SearchForm from './components/SearchForm.vue'
 import Butter from "butter"
-//import L from "leaflet"
-
-// バス停アイコン
-// var busStopIcon = L.icon({
-//   iconUrl: 'bus_stop_icon.png',
-//   iconSize: [32, 32],
-//   iconAnchor: [16, 16]
-// });
-
-// let busStopMarkers = [];
 
 export default {
   name: 'App',
   components: {
     MapComponent,
-    SearchForm,
   },
-  data() {
+  data: function () {
     return {
-      formData: null,
+      lat: '',
+      lng: '',
+      marker: [],  // 単一のマーカーを表す
+      markers: [],  // 複数のマーカーを表す
     };
   },
-  watch: {
-    async formData(newValue) {
-      if (newValue && this.$refs.mapComponent.map) {
-        await this.handleFormSubmit(newValue);
-      }
+  methods: {
+    updateMarker() {
+      this.marker = [parseFloat(this.lat), parseFloat(this.lng)];
+      this.updateMarkers();
+    },
+    async updateMarkers() {
+      const hostData = (await window.Butter.getHostDataList())
+      console.log({ "getHostDataList": hostData })
+      const lat = parseFloat(this.lat);
+      const lng = parseFloat(this.lng);
+      const radius = 500; // メートル単位
+      const aroundStops = await window.Butter.utils.getStopsWithinRadius(lat, lng, radius);
+      this.markers = aroundStops.map(busStop => [parseFloat(busStop.stop_lat), parseFloat(busStop.stop_lon)]);
+      console.log(this.markers)
     },
   },
-  methods: {
-    async handleFormSubmit(formData) {
-      this.formData = formData;
-      console.log(this.$refs.mapComponent.map);
-      // Do something with the form data
-      // 停留所可視化
-      // this.$nextTick(async () => {
-      //   busStopMarkers.forEach(marker => this.$refs.mapComponent.map.removeLayer(marker));
-      //   busStopMarkers = [];
-      //   const radius = 500; // メートル単位
-      //   const aroundStops = await window.Butter.utils.getStopsWithinRadius(formData.latitude, formData.longitude, radius);
-      //   aroundStops.forEach((bus_stop) => {
-      //     var marker = L.marker([bus_stop.stop_lat, bus_stop.stop_lon], { icon: busStopIcon })
-      //       .bindPopup(bus_stop.stop_name);
-      //     busStopMarkers.push(marker);
-      //     marker.addTo(this.$refs.mapComponent.map);
-      //   });
-      // });
-    }
-  },
+  // mounted function is same as before
   mounted: async function () {
-    // existing code...
     console.log(Butter)
+    const hostData = (await window.Butter.getHostDataList())
+    console.log({ "getHostDataList": hostData })
+
+    // const agencyInfo = await window.Butter.getAgencyInfo(hostData[0].gtfs_id)
+    // console.log({ "GetInfo": agencyInfo })
+
+    // const stops = await window.Butter.getBusStops(hostData[0].gtfs_id, agencyInfo[0].version_id)
+    // console.log({ "getBusStops": stops })
+
+    // const trips = await window.Butter.getTrips(hostData[0].gtfs_id, agencyInfo[0].version_id)
+    // console.log({ "getTrips": trips })
+
+    // // 名前からの停留所検索使用例
+    // const substring = "かみ";
+    // await window.Butter.utils.getStopsBySubstring(substring).then((stops) => {
+    //   console.log(`Stops containing '${substring}':`);
+    //   console.log(stops);
+    // });
+
+    // 緯度経度からの停留所検索使用例
+    const lat = 35.693906;
+    const lon = 139.701504;
+    const radius = 500; // メートル単位
+
+    const aroundStops = await window.Butter.utils.getStopsWithinRadius(lat, lon, radius);
+    console.log("stops", aroundStops);
+
+    // // バスのリアルタイム情報取得例
+    // const busInfo = await window.Butter.utils.getBusInfo(lat, lon)
+    // console.log("bus positions", busInfo)
+
+    // // 時刻表情報の取得
+    // let tt = await window.Butter.utils.fetchTimeTableV1(hostData[0].gtfs_id, {
+    //   date: "20230513",
+    //   stop_ids: [stops[0].stop_id]
+    // })
+    // console.log({ "ttFetched1": tt })
+
+    // tt = await window.Butter.utils.fetchTimeTableV1(hostData[0].gtfs_id, {
+    //   date: "20230513",
+    //   trip_ids: [trips[0].trip_id, trips[1].trip_id]
+    // })
+    // console.log({ "ttFetched2": tt })
+
+    // console.log("COMSUMED OPERATIONS ARE", window.Butter.getComsumedOp())
   }
 }
 </script>
 
-<style scoped>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  display: flex;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-}
-
-#form-container {
-  flex: 0 0 auto; /* これにより、フォームコンテナのサイズはその内容によって自動的に決まります */
-}
-
-#map-container {
-  flex: 1 1 auto; /* これにより、地図コンテナは残りのスペース全体を占めます */
+<style>
+.coordinate-form {
+  margin-bottom: 10px;
 }
 </style>
