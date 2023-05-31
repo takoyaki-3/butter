@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	dir := "./v0.0.0" // ホストするディレクトリを指定する
+	dir := "./public/v0.0.0" // ホストするディレクトリを指定する
 	port := "8000" // 使用するポート番号を指定する
 
 	fs := http.FileServer(http.Dir(dir))
