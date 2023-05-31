@@ -1,12 +1,12 @@
 version: '3.8'
 
 services:
-  ftp:
+  docker:
     image: golang:1.19
     working_dir: /app
     volumes:
       - ./:/app
-    command: go run ftps.go
+    command: go run docker.go
     # environment:
     #   FTP_HOST: ftp.example.com
     #   FTP_USER: username
