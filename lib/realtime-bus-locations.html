@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-  <script src="https://butter.takoyaki3.com/v0.0.0/fetch.js"></script>
+  <script src="./dist/fetch.js"></script>
   <style>
     #map {
       height: 100vh;
@@ -60,7 +60,7 @@
         busMarkers = [];
 
         const center = map.getCenter();
-        const busInfo = await Butter.utils.getBusInfo(center.lat, center.lng)
+        const busInfo = await Butter.getBusInfo(center.lat, center.lng)
 
         busInfo[0].forEach(function(bus) {
 
@@ -76,7 +76,7 @@
         busStopMarkers = [];
         // 緯度経度からの停留所検索使用例
         const radius = 500; // メートル単位
-        const aroundStops = await Butter.utils.getStopsWithinRadius(center.lat, center.lng, radius);
+        const aroundStops = await Butter.getStopsWithinRadius(center.lat, center.lng, radius);
         aroundStops.forEach(function(bus_stop) {
           var marker = L.marker([bus_stop.stop_lat, bus_stop.stop_lon], {icon: busStopIcon})
             .bindPopup(bus_stop.stop_name);
