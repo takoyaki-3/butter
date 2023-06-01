@@ -2,13 +2,14 @@ package main
 
 import (
 	"archive/tar"
-	"os"
 	"fmt"
 	"io"
-	"log"
-	"path/filepath"
-	"net/http"
 	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
+	"path/filepath"
+	"time"
 
 	json "github.com/takoyaki-3/go-json"
 )
@@ -41,48 +42,61 @@ type OriginalDataItem struct {
 }
 
 func main() {
-	var config Config
-	err := json.LoadFromPath("./config.json", &config)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	for {
+		var config Config
+		err := json.LoadFromPath("./config.json", &config)
+		if err != nil {
+			log.Fatalln(err)
+		}
 
-	var root Root
-	rootData, err := downloadFile("https://butter.takoyaki3.com/v0.0.0/root.json")
-	if err != nil {
-		log.Fatalln(err)
-	}
-	err = json.LoadFromString(string(rootData), &root)
-	if err != nil {
-		log.Fatalln(err)
-	}
+		var root Root
+		rootData, err := downloadFile("https://butter.takoyaki3.com/v0.0.0/root.json")
+		if err != nil {
+			log.Fatalln(err)
+		}
+		err = json.LoadFromString(string(rootData), &root)
+		if err != nil {
+			log.Fatalln(err)
+		}
 
-	var info Info
-	infoData, err := downloadFile(root.OriginalData.Host + "info.json")
-	if err != nil {
-		log.Fatalln(err)
-	}
-	err = json.LoadFromString(string(infoData), &info)
-	if err != nil {
-		log.Fatalln(err)
-	}
+		var info Info
+		infoData, err := downloadFile(root.OriginalData.Host + "info.json")
+		if err != nil {
+			log.Fatalln(err)
+		}
+		err = json.LoadFromString(string(infoData), &info)
+		if err != nil {
+			log.Fatalln(err)
+		}
 
-	infoPath := "info.json"
-	var oldInfo Info
-	err = json.LoadFromPath(infoPath, &oldInfo)
-	if err == nil && info.DataList[len(info.DataList)-1].Key == oldInfo.DataList[len(oldInfo.DataList)-1].Key {
-		log.Println("No updates found. Exiting.")
-		return
-	}
+		infoPath := "info.json"
+		var oldInfo Info
+		err = json.LoadFromPath(infoPath, &oldInfo)
+		if err == nil && info.DataList[len(info.DataList)-1].Key == oldInfo.DataList[len(oldInfo.DataList)-1].Key {
+			log.Println("No updates found. Exiting.")
+			time.Sleep(time.Minute*5)
+			continue
+		}
 
-	err = ioutil.WriteFile(infoPath, infoData, 0644)
-	if err != nil {
-		log.Fatalln(err)
-	}
+		err = ioutil.WriteFile(infoPath, infoData, 0644)
+		if err != nil {
+			log.Fatalln(err)
+		}
 
-	err = DownloadAndExtractTar(root.OriginalData.Host + info.DataList[len(info.DataList)-1].Key, ".")
-	if err != nil {
-		log.Fatal(err)
+		err = DownloadAndExtractTar(root.OriginalData.Host + info.DataList[len(info.DataList)-1].Key, "./" + info.DataList[len(info.DataList)-1].Key)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		err = os.Rename("./public","./old")
+		fmt.Println(err)
+		err = os.Rename("./" + info.DataList[len(info.DataList)-1].Key, "public")
+		fmt.Println(err)
+		if err != nil {
+			continue
+		}
+		err = os.RemoveAll("old")
+		fmt.Println(err)
 	}
 }
 func DownloadAndExtractTar(url, dest string) error {
