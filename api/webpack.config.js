@@ -22,5 +22,8 @@ module.exports = {
       },
     ],
   },
-  target: 'webworker'
+  target: 'webworker',
+  optimization: {
+    minimize: false, // Cloudflare Workersでは、minificationはサポートされていません。
+  },
 };
