@@ -18,10 +18,11 @@
     "build": "webpack"
   },
   "dependencies": {
-    "bus-time-table-by-edge-runtime": "^1.0.0",
+    "bus-time-table-by-edge-runtime": "^1.0.1",
     "h3-js": "^4.1.0",
     "haversine": "^1.1.1",
-    "pako": "^2.1.0"
+    "pako": "^2.1.0",
+    "path-browserify": "^1.0.1"
   },
   "devtool": "cheap-module-source-map",
   "main": "dist/index.js"
