@@ -11,8 +11,11 @@
 <body>
   <h1>Test</h1>
 
-  <script>
+  <script type="module">
+    import Butter from './dist.js';
     const main = async () => {
+      Butter.init()
+
       const hostData = (await Butter.getHostDataList())
       console.log({ "getHostDataList": hostData })
 
@@ -27,7 +30,7 @@
 
       // 名前からの停留所検索使用例
       const substring = "かみ";
-      await Butter.utils.getStopsBySubstring(substring).then((stops) => {
+      await Butter.getStopsBySubstring(substring).then((stops) => {
         console.log(`Stops containing '${substring}':`);
         console.log(stops);
       });
@@ -37,21 +40,21 @@
       const lon = 139.701504;
       const radius = 500; // メートル単位
 
-      const aroundStops = await Butter.utils.getStopsWithinRadius(lat, lon, radius);
+      const aroundStops = await Butter.getStopsWithinRadius(lat, lon, radius);
       console.log("stops",aroundStops);
 
       // バスのリアルタイム情報取得例
-      const busInfo = await Butter.utils.getBusInfo(lat,lon)
+      const busInfo = await Butter.getBusInfo(lat,lon)
       console.log("bus positions",busInfo)
 
       // 時刻表情報の取得
-      tt = await Butter.utils.fetchTimeTableV1(hostData[0].gtfs_id, {
+      let tt = await Butter.fetchTimeTableV1(hostData[0].gtfs_id, {
         date: "20230513",
         stop_ids: [stops[0].stop_id]
       })
       console.log({ "ttFetched1": tt })
 
-      tt = await Butter.utils.fetchTimeTableV1(hostData[0].gtfs_id, {
+      tt = await Butter.fetchTimeTableV1(hostData[0].gtfs_id, {
         date: "20230513",
         trip_ids: [trips[0].trip_id, trips[1].trip_id]
       })
