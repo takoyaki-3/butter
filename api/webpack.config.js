@@ -26,4 +26,9 @@ module.exports = {
   optimization: {
     minimize: false, // Cloudflare Workersでは、minificationはサポートされていません。
   },
+  resolve: {
+    fallback: {
+      "path": require.resolve("path-browserify")
+    }
+  }
 };

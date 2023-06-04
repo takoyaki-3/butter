@@ -1,7 +1,7 @@
 import { ungzip } from 'pako';
 // const tool = require('./helper/tool.js');
 // const butter = require('./helper/butter.js');
-import Butter from './butter/butter.js'
+import Butter from 'bus-time-table-by-edge-runtime/dist.js'
 
 addEventListener('fetch', (event) => {
   event.respondWith(handleRequest(event.request));
