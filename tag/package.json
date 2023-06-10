@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bus-time-table-by-edge-runtime": "^1.0.1",
     "webpack-cli": "^5.1.4"
   }
 }
