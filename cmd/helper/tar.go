@@ -5,6 +5,9 @@ import (
 	"compress/gzip"
 	"os"
 	"time"
+	"io/ioutil"
+	"strings"
+	"path/filepath"
 )
 
 type TarGzWriter struct {
@@ -56,4 +59,46 @@ func (tgz *TarGzWriter) AddDataWithSign(path string, data []byte, privateKeyByte
 		return err
 	}
 	return tgz.AddData(path + ".sig", signBytes)
+}
+
+// 指定したディレクトリ内のファイルを.tar形式にまとめる
+func CreateTarArchive(sourceDir, targetFile string) error {
+	file, err := os.Create(targetFile)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	tarWriter := tar.NewWriter(file)
+	defer tarWriter.Close()
+
+	return filepath.Walk(sourceDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		path = strings.ReplaceAll(path,"\\","/")
+
+		header, err := tar.FileInfoHeader(info, info.Name())
+		if err != nil {
+			return err
+		}
+
+		header.Name = path
+
+		if err := tarWriter.WriteHeader(header); err != nil {
+			return err
+		}
+
+		if info.IsDir() {
+			return nil
+		}
+
+		data, err := ioutil.ReadFile(path)
+		if err != nil {
+			return err
+		}
+
+		_, err = tarWriter.Write(data)
+		return err
+	})
 }

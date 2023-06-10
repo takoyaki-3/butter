@@ -1,0 +1,4 @@
+*.exe
+*.json
+v0.0.0/*
+public/*

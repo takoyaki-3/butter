@@ -2,10 +2,13 @@ output.txt
 data.json
 gtfs/*
 dir_out/*
-dist/*
+v0.0.0/*
 *.pem
 s3-conf.json
 *.exe
 *.txt
 *.csv
+archive.tar
 !requirements.txt
+*.tar
+dist
