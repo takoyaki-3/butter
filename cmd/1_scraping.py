@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from datetime import datetime
 from bs4 import BeautifulSoup
 import time
 
@@ -34,7 +35,11 @@ with open('output.txt', 'w',encoding='utf-8') as f:
 
     f.write("-------------")
 
-    dateStr = "2023-06-22"
+    # 現在の日付を取得
+    now = datetime.now()
+    # 日付を指定された形式にフォーマット
+    dateStr = now.strftime("%Y-%m-%d")
+
     tobus = '''
 事業者名:東京都交通局
 事業者名_url:https://www.kotsu.metro.tokyo.jp
