@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "bus-time-table-by-edge-runtime": "^1.0.1",
+    "butter-lib": "^1.0.3",
     "webpack-cli": "^5.1.4"
   }
 }
