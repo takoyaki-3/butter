@@ -6,6 +6,7 @@ import (
 	"math"
 	"os"
 	"time"
+	"net/url"
 
 	"io/ioutil"
 
@@ -72,7 +73,7 @@ func split(file string, version string) error {
 	srcDir := "dir_out/" + file
 
 	// 出力ファイルのディレクトリを設定
-	dstDir := "dist/" + file[:len(file)-len(".zip")] + "/" + version
+	dstDir := "v0.0.0/" + file[:len(file)-len(".zip")] + "/" + version
 	
 	// stop_times.txtからStopTimeのスライスをロード
 	stopTimes := []StopTime{}
@@ -107,8 +108,8 @@ func split(file string, version string) error {
 	byTrip := map[string][]StopTime{}
 	
 	for _, stopTime := range stopTimes {
-		byStop[stopTime.StopID] = append(byStop[stopTime.StopID], stopTime)
-		byTrip[stopTime.StopID] = append(byTrip[stopTime.StopID], stopTime)
+		byStop[url.QueryEscape(stopTime.StopID)] = append(byStop[url.QueryEscape(stopTime.StopID)], stopTime)
+		byTrip[url.QueryEscape(stopTime.TripID)] = append(byTrip[url.QueryEscape(stopTime.TripID)], stopTime)
 	}
 	
 	// グループ化されたデータをさらにハッシュ値によってサブグループ化
@@ -179,16 +180,6 @@ func split(file string, version string) error {
 				log.Fatalln(err)
 			}
 		}
-	}
-
-	// データコピー
-	err = Copy(srcDir+"/stops.txt", dstDir+"/stops.txt")
-	if err != nil {
-		return err
-	}
-	err = AddSing(dstDir+"/stops.txt", privateKeyBytes)
-	if err != nil {
-		return err
 	}
 
 	// GTFSのコピー

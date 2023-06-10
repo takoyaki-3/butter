@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>バスの位置情報</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+  <script type="module">
+      import Butter from './dist.js';
+      const main = async () => {
+        Butter.init()
+      const hostData = (await Butter.getHostDataList())
+      console.log({ "getHostDataList": hostData })
+
+      var map = L.map('map');
+
+      var lat = 35.6809591;
+      var lon = 139.7673068;
+
+      navigator.geolocation.getCurrentPosition(position => {
+        lat = position.coords.latitude;
+        lon = position.coords.longitude;
+
+        map.setView([lat, lon], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+      });
+        
+      // バスアイコン
+      var busIcon = L.icon({
+        iconUrl: 'bus-icon.png',
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
+      });
+      // バス停アイコン
+      var busStopIcon = L.icon({
+        iconUrl: 'bus_stop_icon.png',
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
+      });
+
+      // 全てのバスマーカーを格納する配列
+      let busMarkers = [];
+      let busStopMarkers = [];
+
+      async function updateBusLocations() {
+        // 全ての前回のマーカーを削除
+        busMarkers.forEach(marker => map.removeLayer(marker));
+        busMarkers = [];
+
+        const center = map.getCenter();
+        const busInfo = await Butter.getBusInfo(center.lat, center.lng)
+
+        busInfo[0].forEach(function(bus) {
+
+          var marker = L.marker([bus.vehicle.position.latitude, bus.vehicle.position.longitude], { icon: busIcon })
+            .bindPopup(bus.name);
+
+          busMarkers.push(marker);
+          marker.addTo(map);
+        });
+
+        // 停留所可視化
+        busStopMarkers.forEach(marker => map.removeLayer(marker));
+        busStopMarkers = [];
+        // 緯度経度からの停留所検索使用例
+        const radius = 500; // メートル単位
+        const aroundStops = await Butter.getStopsWithinRadius(center.lat, center.lng, radius);
+        aroundStops.forEach(function(bus_stop) {
+          var marker = L.marker([bus_stop.stop_lat, bus_stop.stop_lon], {icon: busStopIcon})
+            .bindPopup(bus_stop.stop_name);
+          busStopMarkers.push(marker);
+          marker.addTo(map);
+        });
+      }
+
+      map.on('moveend', function(e) {
+        updateBusLocations();
+      });
+
+      setInterval(updateBusLocations, 30000);
+      updateBusLocations();
+    }
+    main()
+  </script>
+</body>
+</html>

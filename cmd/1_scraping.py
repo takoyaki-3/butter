@@ -34,6 +34,7 @@ with open('output.txt', 'w',encoding='utf-8') as f:
 
     f.write("-------------")
 
+    dateStr = "2023-06-22"
     tobus = '''
 事業者名:東京都交通局
 事業者名_url:https://www.kotsu.metro.tokyo.jp
@@ -45,6 +46,9 @@ URLs:GTFS, VehiclePosition
 GTFS_url:https://api-public.odpt.org/api/v4/files/Toei/data/ToeiBus-GTFS.zip
 VehiclePosition_url:https://api-public.odpt.org/api/v4/gtfs/realtime/ToeiBus
 詳細:詳細
+最新GTFS開始日:'''+dateStr+'''
+最新GTFS終了日:'''+dateStr+'''
+最終更新日:'''+dateStr+'''
 '''
 
     f.write(tobus)
