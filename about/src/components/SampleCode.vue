@@ -1,13 +1,13 @@
 <template>
   <v-container>
     <v-row class="text-left">
+      <h2>
+        BuTTER Module Sample Code
+      </h2>
       <v-col
         class="mb-5"
         cols="12"
       >
-        <h2>
-          BuTTER Module Sample Code
-        </h2>
         <p>BuTTER Moduleを用いたサンプルコード及び実行例を紹介します。</p>
 
         <h3>インポートと初期化：Butter.init()</h3>
