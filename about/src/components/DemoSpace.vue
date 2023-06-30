@@ -29,7 +29,24 @@
       >
         <h3>Butter.getStopsWithinRadius(lat, lon, radius)</h3>
         <p>特定の緯度、経度、半径の範囲内にあるバス停を取得します。</p>
-        <div id="map"></div>
+        <v-container fluid>
+          <l-map :center="center"
+            :zoom="zoom"
+            @click.right="mapRclicked"
+            ref="map"
+            style="height: 50vh; width: 50vh"
+            >
+            <l-tile-layer :url="url"></l-tile-layer>
+            <l-marker v-for="(marker,index) in busStopMarkers"
+              :key="index+marker.name"
+              :lat-lng="marker.latlon"
+              :name="marker.name"
+              :icon="BusStopIcon"
+              >
+            
+            </l-marker>
+          </l-map>
+        </v-container>
       </v-col>
       <v-col
         class="mb-5"
@@ -61,12 +78,19 @@
 </style>
 
 <script>
-import L from 'leaflet';
+import {latLng} from 'leaflet';
+import { LMap,LTileLayer,LMarker } from "vue2-leaflet";
 import Butter from 'butter-lib/dist.js';
-await Butter.init()
+Butter.init()
+import 'leaflet/dist/leaflet.css'
 
 export default {
   name: 'DemoSpace',
+  components:{
+    LMap,
+    LTileLayer,
+    LMarker,
+  },
   data: () => ({
     dataList: [],
     updateTime: '',
@@ -75,7 +99,17 @@ export default {
     stop_id:'0965-01',
     date:'2023-06-30',
     stops:[],
-    stop_times:[]
+    stop_times:[],
+    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attribution:
+      '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+    zoom: 13,
+    center: [35.6809591, 139.7673068],
+    bounds: null,
+    busMarkers:[],
+    busStopMarkers:[],
+    BusStopIcon:null,
+    updateBusLocations:null,
   }),
   async mounted (){
 
@@ -95,76 +129,47 @@ export default {
 
     // Get data list
     this.dataList = await Butter.getHostDataList()
+    
+    this.updateBusLocations = async () => {
 
-    var map = L.map('map');
-
-    var lat = 35.6809591;
-    var lon = 139.7673068;
-
-    map.setView([lat, lon], 13);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
-      
-    // バスアイコン
-    var busIcon = L.icon({
-      iconUrl: 'bus-icon.png',
-      iconSize: [32, 32],
-      iconAnchor: [16, 16]
-    });
-    // バス停アイコン
-    var busStopIcon = L.icon({
-      iconUrl: 'bus_stop_icon.png',
-      iconSize: [32, 32],
-      iconAnchor: [16, 16]
-    });
-
-    // 全てのバスマーカーを格納する配列
-    let busMarkers = [];
-    let busStopMarkers = [];
-
-    async function updateBusLocations() {
       // 全ての前回のマーカーを削除
-      if(busMarkers.length > 0) busMarkers.forEach(marker => map.removeLayer(marker));
-      busMarkers = [];
+      this.busMarkers = [];
+      this.busStopMarkers = [];
 
-      const center = map.getCenter();
-
-      // 停留所可視化
-      busStopMarkers.forEach(marker => map.removeLayer(marker));
-      busStopMarkers = [];
       // 緯度経度からの停留所検索使用例
       const radius = 5000; // メートル単位
-      const aroundStops = await Butter.getStopsWithinRadius(center.lat, center.lng, radius);
-      if(aroundStops.length > 0) aroundStops.forEach(function(bus_stop) {
-        const marker = L.marker([bus_stop.stop_lat, bus_stop.stop_lon], {icon: busStopIcon})
-          .bindPopup(bus_stop.stop_name);
-        busStopMarkers.push(marker);
-        marker.addTo(map);
+      const aroundStops = await Butter.getStopsWithinRadius(this.center[0], this.center[1], radius);
+      if(aroundStops.length > 0) aroundStops.forEach((bus_stop)=>{
+        this.busStopMarkers.push({
+          latlon:latLng(bus_stop.stop_lat, bus_stop.stop_lon),
+          name:bus_stop.stop_name,
+          bindPopup:bus_stop.stop_name,
+        });
       });
 
-      const busInfo = await Butter.getBusInfo(center.lat, center.lng)
+      const busInfo = await Butter.getBusInfo(this.center[0], this.center[1])
 
       if(busInfo.length > 0){
-        busInfo.forEach(function(item){
-          item.forEach(function(bus) {
-            const marker = L.marker([bus.vehicle.position.latitude, bus.vehicle.position.longitude], { icon: busIcon })
-              .bindPopup(bus.name);
-
-            busMarkers.push(marker);
-            marker.addTo(map);
+        busInfo.forEach((item)=>{
+          item.forEach((bus)=>{
+            this.busMarkers.push({
+              latlon:latLng(bus.vehicle.position.latitude, bus.vehicle.position.longitude),
+              name:'',
+              bindPopup:bus.name,
+            });
           });
         })
       }
     }
 
-    map.on('moveend', function() {
-      updateBusLocations();
-    });
+    setInterval(this.updateBusLocations, 30000);
+    this.updateBusLocations();
 
-    setInterval(updateBusLocations, 30000);
-    updateBusLocations();
+    // 地図の移動が終わったときのイベントハンドラを設定
+    this.$refs.map.mapObject.on('moveend', () => {
+      const newCenter = this.$refs.map.mapObject.getCenter();
+      this.center = [newCenter.lat, newCenter.lng];
+    });
 
     // 停留所名
     this.stops = await Butter.getStopsBySubstring(this.substring);
@@ -190,6 +195,9 @@ export default {
         date: this.date,
         stop_ids: [this.stop_id]
       });
+    },
+    center(){
+      this.updateBusLocations();
     }
   }
 }
