@@ -39,7 +39,9 @@
       </v-col>
     </v-row>
 
+    <DemoSpace/>
     <SampleCode/>
+
     <v-row>
       <v-col
         class="mb-5"
@@ -86,10 +88,12 @@
 
 <script>
   import SampleCode from './SampleCode'
+  import DemoSpace from './DemoSpace.vue'
   export default {
     name: 'HelloWorld',
     components: {
       SampleCode,
+      DemoSpace,
     },
     data: () => ({
       ecosystem: [
