@@ -155,6 +155,21 @@ export default {
         date: this.date,
         stop_ids: [this.stop_id]
       });</code></pre>
+      </v-col>
+      <v-col
+        class="mb-5"
+        cols="12"
+      >
+        <h3>対応事業者一覧の取得</h3>
+        <p><b>Butter.getHostDataList()</b>関数により対応事業者一覧を取得できます。</p>
+        <v-data-table
+          :headers="gtfs_list_headers"
+          :items="gtfs_list"
+        ></v-data-table>
+      
+        <p><br/>コードサンプル</p>
+        <pre><code class="language-javascript">const hostData = await Butter.getHostDataList()
+console.log(hostData)</code></pre>
 
       </v-col>
     </v-row>
@@ -191,6 +206,7 @@ export default {
     date:'2023-06-30',
     stops:[],
     stop_times:[],
+    gtfs_list:[],
     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     attribution:
       '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
@@ -218,6 +234,12 @@ export default {
     stop_times_headers:[
       {text:"stop_headsign",value:"stop_headsign"},
       {text:"departure_time",value:"departure_time"},
+    ],
+    gtfs_list_headers:[
+      {text:"GTFS ID",value:"gtfs_id"},
+      {text:"Name",value:"name"},
+      {text:"license",value:"license"},
+      {text:"updatedAt",value:"updatedAt"},
     ],
   }),
   async mounted (){
@@ -276,6 +298,9 @@ export default {
 
     // 停留所名
     this.stops = await Butter.getStopsBySubstring(this.substring);
+
+    // 対応事業者取得
+    this.gtfs_list = await Butter.getHostDataList();
   },
   watch:{
     async substring(){
