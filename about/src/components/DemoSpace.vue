@@ -123,7 +123,7 @@ export default {
     <v-row class="text-left">
       <v-col
         class="mb-5"
-        cols="6"
+        cols="12" md="6"
       >
         <h3>文字列から停留所を検索</h3>
         <v-text-field v-model="substring" label="Stop Name" outlined></v-text-field>
@@ -137,7 +137,7 @@ export default {
       </v-col>
       <v-col
         class="mb-5"
-        cols="6"
+        cols="12" md="6"
       >
         <h3>バス停の時刻表を取得</h3>
         <p><b>Butter.fetchTimeTableV1</b>関数により停留所及びバスの時刻表を取得できます。</p>
