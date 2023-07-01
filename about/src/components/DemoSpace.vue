@@ -78,7 +78,7 @@
 </style>
 
 <script>
-import {latLng} from 'leaflet';
+import {latLng,Icon} from 'leaflet';
 import { LMap,LTileLayer,LMarker } from "vue2-leaflet";
 import Butter from 'butter-lib/dist.js';
 Butter.init()
@@ -108,8 +108,12 @@ export default {
     bounds: null,
     busMarkers:[],
     busStopMarkers:[],
-    BusStopIcon:null,
     updateBusLocations:null,
+    BusStopIcon: new Icon({  // アイコンオブジェクトの作成
+      iconUrl: '/bus_stop_icon.png',  // マーカー画像の URL を指定
+      iconSize: [32, 32],  // マーカー画像のサイズを指定
+      iconAnchor: [32, 32]  // マーカー画像のアンカーポイントを指定
+    }),
   }),
   async mounted (){
 
