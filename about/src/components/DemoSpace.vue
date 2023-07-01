@@ -127,18 +127,11 @@ export default {
       >
         <h3>文字列から停留所を検索</h3>
         <v-text-field v-model="substring" label="Stop Name" outlined></v-text-field>
-        <table>
-          <tr>
-            <th>名称</th>
-            <th>stop_id</th>
-            <th>GTFS ID</th>
-          </tr>
-          <tr v-for="stop in stops" :key="stop.stop_id">
-            <td>{{stop.stop_name}}</td>
-            <td>{{stop.stop_id}}</td>
-            <td>{{stop.gtfs_id}}</td>
-          </tr>
-        </table>
+        <v-data-table
+          :headers="stops_headers"
+          :items="stops"
+        ></v-data-table>
+
         <p><br/>コードサンプル</p>
         <pre><code class="language-javascript">this.stops = await Butter.getStopsBySubstring(this.substring);</code></pre>
       </v-col>
@@ -152,16 +145,11 @@ export default {
         <v-text-field v-model="gtfs_id" label="GTFS ID" outlined></v-text-field>
         <v-text-field v-model="stop_id" label="Stop ID" outlined></v-text-field>
         <v-text-field v-model="date" label="Date" outlined></v-text-field>
-        <table>
-          <tr>
-            <th>行先表示</th>
-            <th>発車時刻</th>
-          </tr>
-          <tr v-for="st,i in stop_times.stop_times" :key="i">
-            <td>{{st.stop_headsign}}</td>
-            <td>{{st.departure_time}}</td>
-          </tr>
-        </table>
+        <v-data-table
+          :headers="stop_times_headers"
+          :items="stop_times.stop_times"
+        ></v-data-table>
+
         <p><br/>コードサンプル</p>
         <pre><code class="language-javascript">this.stop_times = await Butter.fetchTimeTableV1(this.gtfs_id, {
         date: this.date,
@@ -222,6 +210,15 @@ export default {
       iconSize: [32, 32],  // マーカー画像のサイズを指定
       iconAnchor: [32, 32]  // マーカー画像のアンカーポイントを指定
     }),
+    stops_headers:[
+      {text:"stop_name",value:"stop_name"},
+      {text:"stop_id",value:"stop_id"},
+      {text:"GTFS ID",value:"gtfs_id"},
+    ],
+    stop_times_headers:[
+      {text:"stop_headsign",value:"stop_headsign"},
+      {text:"departure_time",value:"departure_time"},
+    ],
   }),
   async mounted (){
 
