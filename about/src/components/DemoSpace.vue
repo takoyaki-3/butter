@@ -6,6 +6,18 @@
         cols="12"
       >
         <h2>Demo</h2>
+        <h3>インストール方法</h3>
+        <p>はじめに、次のコマンドによりBuTTERモジュールをインストールします。</p>
+        <p>CDNを使ったコードサンプル</p>
+        <pre><code class="language-javascript">&lt;html&gt;
+&lt;script type="module"&gt;
+import Butter from 'https://www.unpkg.com/butter-lib@1.0.4/dist.js';
+Butter.init()
+
+// ここに処理を書いていく
+
+&lt;/script&gt;
+&lt;/html&gt;</code></pre>
         <h3>バス停・リアルタイムバスロケーションの表示</h3>
         <p><b>Butter.getStopsWithinRadius(lat, lon, radius)</b>関数及び<b>Butter.getBusInfo(lat, lon)</b>関数により、特定の緯度、経度、半径の範囲内にあるバス停及びリアルタイムのバス位置情報を取得します。</p>
         <v-container fluid>
