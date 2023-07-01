@@ -225,13 +225,6 @@ export default {
   }),
   async mounted (){
 
-    // 時刻表
-    this.stop_times = await Butter.fetchTimeTableV1(this.gtfs_id, {
-      date: this.date,
-      stop_ids: [this.stop_id]
-    });
-    console.log(this.stop_times)
-
     // 日付取得
     const today = new Date();
     const year = today.getFullYear();
@@ -291,12 +284,6 @@ export default {
     async substring(){
       this.stops = await Butter.getStopsBySubstring(this.substring);
     },
-    async head_sign(){
-      this.stop_times = await Butter.fetchTimeTableV1(this.gtfs_id, {
-        date: this.date,
-        stop_ids: [this.stop_id]
-      });
-    },
     async gtfs_id(){
       this.stop_times = await Butter.fetchTimeTableV1(this.gtfs_id, {
         date: this.date,
@@ -304,7 +291,6 @@ export default {
       });
     },
     async stop_id(){
-      console.log(this.stop_id)
       this.stop_times = await Butter.fetchTimeTableV1(this.gtfs_id, {
         date: this.date,
         stop_ids: [this.stop_id]
