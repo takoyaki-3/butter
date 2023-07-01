@@ -43,7 +43,13 @@
               :name="marker.name"
               :icon="BusStopIcon"
               >
-            
+            </l-marker>
+            <l-marker v-for="(marker,index) in busMarkers"
+              :key="index+'_'+marker.name"
+              :lat-lng="marker.latlon"
+              :name="marker.name"
+              :icon="BusIcon"
+              >
             </l-marker>
           </l-map>
         </v-container>
@@ -111,6 +117,11 @@ export default {
     updateBusLocations:null,
     BusStopIcon: new Icon({  // アイコンオブジェクトの作成
       iconUrl: '/bus_stop_icon.png',  // マーカー画像の URL を指定
+      iconSize: [32, 32],  // マーカー画像のサイズを指定
+      iconAnchor: [32, 32]  // マーカー画像のアンカーポイントを指定
+    }),
+    BusIcon: new Icon({  // アイコンオブジェクトの作成
+      iconUrl: '/bus-icon.png',  // マーカー画像の URL を指定
       iconSize: [32, 32],  // マーカー画像のサイズを指定
       iconAnchor: [32, 32]  // マーカー画像のアンカーポイントを指定
     }),
