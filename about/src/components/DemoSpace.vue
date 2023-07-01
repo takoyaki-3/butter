@@ -158,7 +158,7 @@ export default {
             <th>発車時刻</th>
           </tr>
           <tr v-for="st,i in stop_times.stop_times" :key="i">
-            <td>{{st.head_sign}}</td>
+            <td>{{st.stop_headsign}}</td>
             <td>{{st.departure_time}}</td>
           </tr>
         </table>
