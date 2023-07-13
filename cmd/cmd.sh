@@ -1,3 +1,4 @@
+docker-compose up 0_rm
 docker-compose up 1_scraping
 docker-compose up 2_line2obj
 docker-compose up 3_downloader
