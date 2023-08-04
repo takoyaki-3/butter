@@ -42,6 +42,7 @@ type OriginalDataItem struct {
 }
 
 func main() {
+	isFirst := true
 	for {
 		var config Config
 		err := json.LoadFromPath("./config.json", &config)
@@ -72,11 +73,18 @@ func main() {
 		infoPath := "info.json"
 		var oldInfo Info
 		err = json.LoadFromPath(infoPath, &oldInfo)
-		if err == nil && info.DataList[len(info.DataList)-1].Key == oldInfo.DataList[len(oldInfo.DataList)-1].Key {
-			log.Println("No updates found. Exiting.")
-			time.Sleep(time.Minute*5)
-			continue
+		fmt.Println("info.json:",oldInfo)
+		if !isFirst {
+			if err == nil {
+				if info.DataList[len(info.DataList)-1].Key == oldInfo.DataList[len(oldInfo.DataList)-1].Key {
+					log.Println("No updates found. Exiting.")
+					time.Sleep(time.Minute*5)
+					continue
+				}
+			}	
 		}
+		isFirst = false
+		fmt.Println("start download. ["+root.OriginalData.Host + info.DataList[len(info.DataList)-1].Key+"]")
 
 		err = ioutil.WriteFile(infoPath, infoData, 0644)
 		if err != nil {
@@ -87,6 +95,8 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		fmt.Println("dev")
 
 		err = os.Rename("./public","./old")
 		fmt.Println(err)

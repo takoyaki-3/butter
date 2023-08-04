@@ -27,6 +27,7 @@ type DataItem struct {
 }
 
 type DataList struct {
+	Updated string  `json:"updated"`
 	Data []DataItem `json:"data_list"`
 }
 
@@ -60,13 +61,15 @@ func main() {
 	data := Data{}
 	json.LoadFromPath("data.json", &data)
 
-	datalist := DataList{}
+	t := time.Now()
+	datalist := DataList{
+		Updated:t.Format("2006-01-02T15_04_05+09_00"),
+	}
 
 	for _, v := range data {
 		t, err := time.Parse("2006-01-02", v.UpdateDate)
 		if err != nil {
 			continue
-			log.Fatalln(err)
 		}
 
 		datalist.Data = append(datalist.Data, DataItem{
