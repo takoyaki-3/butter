@@ -10,6 +10,11 @@ func main() {
 	port := "8000" // 使用するポート番号を指定する
 
 	fs := http.FileServer(http.Dir(dir))
+	http.HandleFunc("/server",func(w http.ResponseWriter, r *http.Request){
+		// server
+		filePath := "./server.json"
+		http.ServeFile(w, r, filePath)
+	})
 	http.Handle("/", fs)
 
 	// CORS設定
