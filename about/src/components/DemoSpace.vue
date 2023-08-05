@@ -5,6 +5,13 @@
         class="mb-5"
         cols="12"
       >
+        <h3>各ストレージにおけるデータ最終更新日時</h3>
+        <p>過去30日以内にデータが更新されたストレージホストの一覧です。</p>
+        <v-data-table
+          :headers="host_updated_headers"
+          :items="host_updated"
+        ></v-data-table>
+
         <h2>Demo</h2>
         <h3>インストール方法</h3>
         <p>はじめに、次のコマンドによりBuTTERモジュールをインストールします。</p>
@@ -253,6 +260,11 @@ export default {
       {text:"license",value:"license"},
       {text:"updatedAt",value:"updatedAt"},
     ],
+    host_updated_headers:[
+      {text:"Host",value:"host"},
+      {text:"Last updated",value:"updated"},
+    ],
+    host_updated:[],
   }),
   async mounted (){
 
@@ -313,6 +325,9 @@ export default {
 
     // 対応事業者取得
     this.gtfs_list = await Butter.getHostDataList();
+
+    // データ最終更新日時取得
+    this.host_updated = await Butter.getHostUpdated();
   },
   watch:{
     async substring(){
