@@ -1,0 +1,21 @@
+{
+  "pub_keys":[
+    {
+      "pubkey":"https://pub-ad1f4a48b8ef46779b720e734b0c2e1d.r2.dev/public_key.pem"
+    }
+  ],
+  "hosts":[
+    "https://storage.app.takoyaki3.com/",
+    "https://butter.oozora283.com/"
+  ],
+  "original_data":{
+    "host":"https://pub-ad1f4a48b8ef46779b720e734b0c2e1d.r2.dev/v0.0.0/originalData/"
+  },
+  "api_endpoints":[
+    "https://butter.hatano-yuuta7921.workers.dev/"
+  ],
+  "api_data_hosts":[
+    "https://storage.app.takoyaki3.com/"
+  ],
+  "last_update":"2023-05-06T19_02_00+09_00"
+}
