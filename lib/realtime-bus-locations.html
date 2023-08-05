@@ -77,7 +77,7 @@
         busStopMarkers.forEach(marker => map.removeLayer(marker));
         busStopMarkers = [];
         // 緯度経度からの停留所検索使用例
-        const radius = 500; // メートル単位
+        const radius = 5000; // メートル単位
         const aroundStops = await Butter.getStopsWithinRadius(center.lat, center.lng, radius);
         aroundStops.forEach(function(bus_stop) {
           var marker = L.marker([bus_stop.stop_lat, bus_stop.stop_lon], {icon: busStopIcon})
