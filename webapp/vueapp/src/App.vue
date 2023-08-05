@@ -9,9 +9,9 @@
   </div>
 </template>
 
-<script>
+<script type="module">
 import MapComponent from './components/MapComponent.vue'
-import Butter from "butter"
+import Butter from 'butter-lib/dist.js';
 
 export default {
   name: 'App',
@@ -32,7 +32,7 @@ export default {
       this.updateMarkers();
     },
     async updateMarkers() {
-      const hostData = (await window.Butter.getHostDataList())
+      const hostData = (await Butter.getHostDataList())
       console.log({ "getHostDataList": hostData })
       const lat = parseFloat(this.lat);
       const lng = parseFloat(this.lng);
@@ -45,7 +45,7 @@ export default {
   // mounted function is same as before
   mounted: async function () {
     console.log(Butter)
-    const hostData = (await window.Butter.getHostDataList())
+    const hostData = (await Butter.getHostDataList())
     console.log({ "getHostDataList": hostData })
 
     // const agencyInfo = await window.Butter.getAgencyInfo(hostData[0].gtfs_id)
@@ -69,7 +69,7 @@ export default {
     const lon = 139.701504;
     const radius = 500; // メートル単位
 
-    const aroundStops = await window.Butter.utils.getStopsWithinRadius(lat, lon, radius);
+    const aroundStops = await Butter.utils.getStopsWithinRadius(lat, lon, radius);
     console.log("stops", aroundStops);
 
     // // バスのリアルタイム情報取得例
