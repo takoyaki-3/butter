@@ -1,15 +1,19 @@
 {
-  "name": "tag",
-  "version": "1.0.0",
+  "name": "butter-tag",
+  "version": "1.0.1",
   "description": "",
   "main": "webpack.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "GTFS",
+    "Bus",
+    "Timetable"
+  ],
+  "author": "yutotom(https://github.com/yutotom),takoyaki3(https://github.com/takoyaki-3/)",
+  "license": "MIT",
   "dependencies": {
     "bus-time-table-by-edge-runtime": "^1.0.1",
     "butter-lib": "^1.0.3",
