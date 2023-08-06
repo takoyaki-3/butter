@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
-import App from './App.vue'
+import TagItem from './TagItem.vue'
 
-createApp(App).mount('#app')
+const app = createApp(TagItem)
+app.mount('#tag')
