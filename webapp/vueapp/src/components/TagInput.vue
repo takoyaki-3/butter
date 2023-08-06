@@ -13,6 +13,27 @@
 </template>
 
 <script>
+
+function loadScript(url, callback) {
+  const script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src = url;
+
+  // scriptがロードされた後にcallback関数を実行する
+  script.onload = function() {
+    callback();
+  };
+
+  // scriptタグをbodyタグに追加する
+  document.body.appendChild(script);
+}
+
+// 使用例
+loadScript('https://www.unpkg.com/butter-tag@1.0.1/dist.js', function() {
+  // この部分は、スクリプトがロードされた後に実行されます
+  console.log('Script loaded!');
+});
+
 export default {
   data() {
     return {
