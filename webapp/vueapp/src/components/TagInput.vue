@@ -32,6 +32,7 @@ function loadScript(url, callback) {
 loadScript('https://www.unpkg.com/butter-tag@1.0.1/dist.js', function() {
   // この部分は、スクリプトがロードされた後に実行されます
   console.log('Script loaded!');
+  console.log(window.getStopsWithinRadius);
 });
 
 export default {
