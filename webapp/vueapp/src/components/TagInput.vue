@@ -7,7 +7,7 @@
     <label for="stop_ids">Stop IDs (comma separated): </label>
     <input type="text" v-model="stopIdsInput" id="stop_ids"><br><br>
 
-    <link rel="stylesheet" href="https://www.unpkg.com/butter-tag@1.0.6/style.css">
+    <link rel="stylesheet" href="https://www.unpkg.com/butter-tag/style.css">
     <div class="butter-tag" :gtfs_id="gtfsId" :stop_ids="formattedStopIds"></div>
   </div>
 </template>
@@ -29,7 +29,7 @@ function loadScript(url, callback) {
 }
 
 // 使用例
-loadScript('https://www.unpkg.com/butter-tag@1.0.6/dist.js', function() {
+loadScript('https://www.unpkg.com/butter-tag/dist.js', function() {
   // この部分は、スクリプトがロードされた後に実行されます
   console.log('Script loaded!');
 });
