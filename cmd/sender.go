@@ -8,10 +8,10 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
+	. "github.com/takoyaki-3/butter/cmd/helper"
 	"io"
 	"net"
 	"os"
-	. "github.com/takoyaki-3/butter/cmd/helper"
 )
 
 func main() {
@@ -109,7 +109,6 @@ func main() {
 		}
 	}
 
-	
 	// 電子署名を生成
 	signature, err := createSignature(targetFile, privKey)
 	if err != nil {
