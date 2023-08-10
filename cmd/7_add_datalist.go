@@ -6,8 +6,8 @@ import (
 	"log"
 	"time"
 
-	json "github.com/takoyaki-3/go-json"
 	. "github.com/takoyaki-3/butter/cmd/helper"
+	json "github.com/takoyaki-3/go-json"
 )
 
 type DataItem struct {
@@ -27,8 +27,8 @@ type DataItem struct {
 }
 
 type DataList struct {
-	Updated string  `json:"updated"`
-	Data []DataItem `json:"data_list"`
+	Updated string     `json:"updated"`
+	Data    []DataItem `json:"data_list"`
 }
 
 type Data []struct {
@@ -63,7 +63,7 @@ func main() {
 
 	t := time.Now()
 	datalist := DataList{
-		Updated:t.Format("2006-01-02T15_04_05+09_00"),
+		Updated: t.Format("2006-01-02T15_04_05+09_00"),
 	}
 
 	for _, v := range data {
@@ -82,8 +82,8 @@ func main() {
 			ProviderName:       "",
 			ProviderAgencyName: "",
 			UpdatedAt:          t.Format("2006-01-02T15_04_05+09_00"),
-			AlertURL: 					v.AlertURL,
-			TripUpdateURL: 			v.TripUpdateURL,
+			AlertURL:           v.AlertURL,
+			TripUpdateURL:      v.TripUpdateURL,
 			VehiclePositionURL: v.VehiclePositionURL,
 		})
 	}

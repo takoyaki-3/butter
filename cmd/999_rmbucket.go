@@ -13,7 +13,7 @@ func main() {
 	if err != nil {
 		return
 	}
-	objs,err := s3.GetObjectList("v0.0.0/")
+	objs, err := s3.GetObjectList("v0.0.0/")
 	if err != nil {
 		log.Fatalln(err)
 	}
