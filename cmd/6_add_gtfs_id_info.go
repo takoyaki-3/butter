@@ -6,8 +6,8 @@ import (
 	"log"
 	"path/filepath"
 
-	json "github.com/takoyaki-3/go-json"
 	. "github.com/takoyaki-3/butter/cmd/helper"
+	json "github.com/takoyaki-3/go-json"
 )
 
 type InfoType struct {
