@@ -4,17 +4,17 @@ import (
 	"archive/tar"
 	"bytes"
 	"crypto"
+	"crypto/rsa"
 	"crypto/sha256"
 	"crypto/x509"
-	"crypto/rsa"
 	"encoding/pem"
 	"fmt"
 	"io"
 	"net"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
-	"path/filepath"
 )
 
 func main() {

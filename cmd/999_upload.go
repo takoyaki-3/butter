@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
+	csv "github.com/takoyaki-3/go-csv-tag/v3"
 	filetool "github.com/takoyaki-3/go-file-tool"
 	gos3 "github.com/takoyaki-3/go-s3"
 	"github.com/takoyaki-3/goc"
-	csv "github.com/takoyaki-3/go-csv-tag/v3"
 )
 
 func main() {

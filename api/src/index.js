@@ -6,7 +6,7 @@ addEventListener('fetch', (event) => {
 
 async function handleRequest(request) {
   const urlParams = new URL(request.url).searchParams;
-  
+
   // リクエストパラメータから取得
   const method = urlParams.get('method');
 
@@ -29,9 +29,9 @@ async function handleRequest(request) {
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type',
       },
-    }) 
+    })
   } else if (method == 'fetchStopsV1') {
-    const tt = await Butter.fetchStopsV1(lat,lon,radius,name)
+    const tt = await Butter.fetchStopsV1(lat, lon, radius, name)
     return new Response(JSON.stringify(tt), {
       headers: {
         'content-type': 'application/json',
@@ -42,14 +42,14 @@ async function handleRequest(request) {
     })
   } else if (method == 'dataListV1') {
     const tt = await Butter.getHostDataList()
-    return new Response(JSON.stringify({data_list:tt}), {
+    return new Response(JSON.stringify({ data_list: tt }), {
       headers: {
         'content-type': 'application/json',
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type',
       },
-    }) 
+    })
   }
 
   return new Response("hello, butter !", {

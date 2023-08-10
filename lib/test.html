@@ -46,15 +46,15 @@
       console.log("bus positions",busInfo)
 
       // 時刻表情報の取得
-      let tt = await Butter.fetchTimeTableV1(hostData[0].gtfs_id, {
-        date: "20230513",
-        stop_ids: [stops[0].stop_id]
+      let tt = await Butter.fetchTimeTableV1('ToeiBus', {
+        date: "20230813",
+        stop_ids: ['0605-07']
       })
       console.log({ "ttFetched1": tt })
 
       tt = await Butter.fetchTimeTableV1(hostData[0].gtfs_id, {
-        date: "20230513",
-        trip_ids: [trips[0].trip_id, trips[1].trip_id]
+        date: "20230813",
+        trip_ids: [trips[0].trip_id]
       })
       console.log({ "ttFetched2": tt })
 

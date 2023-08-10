@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"net/url"
 	"os"
 	"time"
-	"net/url"
 
 	"io/ioutil"
 
@@ -74,7 +74,7 @@ func split(file string, version string) error {
 
 	// 出力ファイルのディレクトリを設定
 	dstDir := "v0.0.0/" + file[:len(file)-len(".zip")] + "/" + version
-	
+
 	// stop_times.txtからStopTimeのスライスをロード
 	stopTimes := []StopTime{}
 	err := csvtag.LoadFromPath(srcDir+"/stop_times.txt", &stopTimes)
@@ -102,21 +102,21 @@ func split(file string, version string) error {
 			}
 		}
 	}
-	
+
 	// StopTimeのデータを停留所IDとTripIDでグループ化
 	byStop := map[string][]StopTime{}
 	byTrip := map[string][]StopTime{}
-	
+
 	for _, stopTime := range stopTimes {
 		byStop[url.QueryEscape(stopTime.StopID)] = append(byStop[url.QueryEscape(stopTime.StopID)], stopTime)
 		byTrip[url.QueryEscape(stopTime.TripID)] = append(byTrip[url.QueryEscape(stopTime.TripID)], stopTime)
 	}
-	
+
 	// グループ化されたデータをさらにハッシュ値によってサブグループ化
 	tarByStop := map[string]map[string][]StopTime{}
 	tarByTrip := map[string]map[string][]StopTime{}
 	fileNum := int(math.Log2(float64(len(stopTimes))))/4/4 + 1
-	
+
 	// 停留所IDでグループ化されたデータをハッシュ値によってサブグループ化
 	for stopID, stopTimes := range byStop {
 		hid := GetBinaryBySHA256(stopID)[:fileNum]
@@ -150,7 +150,7 @@ func split(file string, version string) error {
 		// data内の各停留所IDとその停留所の時刻データをTarGzWriterに追加
 		for stopID, stopTimes := range data {
 			str, _ := csvtag.DumpToString(&stopTimes) // StopTimesを文字列に変換
-			b := []byte(str) // 文字列をバイト配列に変換
+			b := []byte(str)                          // 文字列をバイト配列に変換
 
 			// データを署名付きでTarGzWriterに追加
 			err := tgz.AddDataWithSign(stopID, b, privateKeyBytes)
@@ -172,7 +172,7 @@ func split(file string, version string) error {
 		// data内の各TripIDとそのトリップの時刻データをTarGzWriterに追加
 		for tripID, stopTimes := range data {
 			str, _ := csvtag.DumpToString(&stopTimes) // StopTimesを文字列に変換
-			b := []byte(str) // 文字列をバイト配列に変換
+			b := []byte(str)                          // 文字列をバイト配列に変換
 
 			// データを署名付きでTarGzWriterに追加
 			err := tgz.AddDataWithSign(tripID, b, privateKeyBytes)

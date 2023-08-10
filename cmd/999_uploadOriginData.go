@@ -1,14 +1,14 @@
 package main
 
 import (
-	"io"
 	"fmt"
+	"io"
 	"log"
 	"time"
 
 	. "github.com/takoyaki-3/butter/cmd/helper"
-	gos3 "github.com/takoyaki-3/go-s3"
 	json "github.com/takoyaki-3/go-json"
+	gos3 "github.com/takoyaki-3/go-s3"
 )
 
 type OriginalData struct {
@@ -48,7 +48,7 @@ func main() {
 	// 3. 新しいデータをアップロードする
 	key := "v0.0.0/originalData/" + targetFile
 	err = s3.UploadFromPath(targetFile, key)
-	if err!=nil{
+	if err != nil {
 		log.Fatalln(err)
 	}
 
@@ -57,7 +57,7 @@ func main() {
 	key = "v0.0.0/originalData/info.json"
 	str, _ := json.DumpToString(originalData)
 	err = s3.UploadFromRaw([]byte(str), key)
-	if err!=nil{
+	if err != nil {
 		log.Fatalln(err)
 	}
 }
