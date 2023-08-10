@@ -126,7 +126,7 @@ async function addTimeTable() {
             tt_card.className="card";
             const box = document.createElement("div")
             const h = document.createElement("h2")
-            h.textContent = st.stop_headsign;
+            h.textContent = st.headsign;
             box.appendChild(h);
             let new_element = document.createElement("p");
             new_element.textContent = st.departure_time.slice(0,5)+" (+X min)";
