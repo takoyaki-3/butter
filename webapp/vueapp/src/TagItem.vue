@@ -26,11 +26,12 @@ export default {
         },
         async stoplists() {
             this.stop = (await Butter.getStopsBySubstring("東京駅"));
-            console.log(this.stop);
+            console.log("this stop",this.stop);
         },
     },
     // mounted function is same as before
     mounted: async function () {
+        await Butter.init()
         console.log(Butter)
     }
 }
