@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@vue-leaflet/vue-leaflet": "^0.9.0",
-    "butter-lib": "^1.0.4",
+    "butter-lib": "^1.0.6",
     "core-js": "^3.8.3",
     "leaflet": "^1.9.3",
     "path": "^0.12.7",

@@ -1,17 +1,37 @@
 
 <template>
     <div id="tag">
+        <button @click="stoplist">Get stoplist</button>
         <TagInput />
     </div>
 </template>
 
 <script>
 import TagInput from './components/TagInput.vue'
+import Butter from 'butter-lib/dist.js';
 
 export default {
     name: 'TagItem',
     components: {
         TagInput
+    },
+    data: function () {
+        return {
+            stop_lists: [],
+        };
+    },
+    methods: {
+        stoplist() {
+            this.stoplists();
+        },
+        async stoplists() {
+            this.stop = (await Butter.getStopsBySubstring("東京駅"));
+            console.log(this.stop);
+        },
+    },
+    // mounted function is same as before
+    mounted: async function () {
+        console.log(Butter)
     }
 }
 </script>
