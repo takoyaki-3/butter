@@ -7,7 +7,6 @@
 
 <script>
 import TagInput from './components/TagInput.vue'
-import Butter from 'butter-lib/dist.js';
 
 export default {
     name: 'TagItem',
@@ -23,8 +22,6 @@ export default {
     },
     // mounted function is same as before
     mounted: async function () {
-        await Butter.init()
-        console.log(Butter)
     }
 }
 </script>
