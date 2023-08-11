@@ -296,19 +296,19 @@ export default {
         });
       });
 
-      const busInfo = await Butter.getBusInfo(this.center[0], this.center[1])
+      // const busInfo = await Butter.getBusInfo(this.center[0], this.center[1])
 
-      if(busInfo.length > 0){
-        busInfo.forEach((item)=>{
-          item.forEach((bus)=>{
-            this.busMarkers.push({
-              latlon:latLng(bus.vehicle.position.latitude, bus.vehicle.position.longitude),
-              name:'',
-              bindPopup:bus.name,
-            });
-          });
-        })
-      }
+      // if(busInfo.length > 0){
+      //   busInfo.forEach((item)=>{
+      //     item.forEach((bus)=>{
+      //       this.busMarkers.push({
+      //         latlon:latLng(bus.vehicle.position.latitude, bus.vehicle.position.longitude),
+      //         name:'',
+      //         bindPopup:bus.name,
+      //       });
+      //     });
+      //   })
+      // }
     }
 
     setInterval(this.updateBusLocations, 30000);
