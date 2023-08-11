@@ -301,11 +301,13 @@ export default {
       if(busInfo.length > 0){
         busInfo.forEach((item)=>{
           item.forEach((bus)=>{
-            this.busMarkers.push({
-              latlon:latLng(bus.vehicle.position.latitude, bus.vehicle.position.longitude),
-              name:'',
-              bindPopup:bus.name,
-            });
+            if (bus['vehicle']){
+              this.busMarkers.push({
+                latlon:latLng(bus.vehicle.position.latitude, bus.vehicle.position.longitude),
+                name:'',
+                bindPopup:bus.name,
+              });
+            }
           });
         })
       }
