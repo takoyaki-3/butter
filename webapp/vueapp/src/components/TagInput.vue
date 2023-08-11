@@ -38,8 +38,8 @@ export default {
     return {
       gtfsId: 'ToeiBus',
       GTFSName: '東京都交通局',
-      stopIdsInput: '0965-01',
-      stationName: '新宿駅',
+      stopIdsInput: '0227-01',
+      stationName: '東新宿駅前',
       componentKey: 0,
     };
   },
@@ -72,7 +72,7 @@ export default {
       console.log("this stops", this.stops);
       this.stopIdsInput = '';
       for (let i = 0; i < this.stops.length; i++) {
-        if (this.stops[i].gtfs_id == this.gtfsId && this.stops[i].stop_name.indexOf(this.stationName) != -1) {
+        if (this.stops[i].gtfs_id == this.gtfsId && this.stops[i].stop_name == this.stationName) {
           this.stopIdsInput = this.stopIdsInput + this.stops[i].stop_id + ',';
         }
       }
