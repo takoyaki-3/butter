@@ -19,7 +19,7 @@
   <script type="module">
       import Butter from './dist.js';
       const main = async () => {
-        Butter.init()
+      await Butter.init()
       const hostData = (await Butter.getHostDataList())
       console.log({ "getHostDataList": hostData })
 

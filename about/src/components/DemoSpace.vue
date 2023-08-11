@@ -32,7 +32,7 @@ Butter.init()
             :zoom="zoom"
             @click.right="mapRclicked"
             ref="map"
-            style="height: 50vh; width: 50vh"
+            style="height: 80vh; width: 100%"
             >
             <l-tile-layer :url="url"></l-tile-layer>
             <l-marker v-for="(marker,index) in busStopMarkers"
@@ -206,7 +206,7 @@ console.log(hostData)</code></pre>
 import {latLng,Icon} from 'leaflet';
 import { LMap,LTileLayer,LMarker } from "vue2-leaflet";
 import Butter from 'butter-lib/dist.js';
-Butter.init()
+await Butter.init()
 import 'leaflet/dist/leaflet.css'
 
 export default {
@@ -296,19 +296,19 @@ export default {
         });
       });
 
-      // const busInfo = await Butter.getBusInfo(this.center[0], this.center[1])
+      const busInfo = await Butter.getBusInfo(this.center[0], this.center[1])
 
-      // if(busInfo.length > 0){
-      //   busInfo.forEach((item)=>{
-      //     item.forEach((bus)=>{
-      //       this.busMarkers.push({
-      //         latlon:latLng(bus.vehicle.position.latitude, bus.vehicle.position.longitude),
-      //         name:'',
-      //         bindPopup:bus.name,
-      //       });
-      //     });
-      //   })
-      // }
+      if(busInfo.length > 0){
+        busInfo.forEach((item)=>{
+          item.forEach((bus)=>{
+            this.busMarkers.push({
+              latlon:latLng(bus.vehicle.position.latitude, bus.vehicle.position.longitude),
+              name:'',
+              bindPopup:bus.name,
+            });
+          });
+        })
+      }
     }
 
     setInterval(this.updateBusLocations, 30000);
