@@ -6,12 +6,13 @@ services:
       - ./:/app
     working_dir: /app
     command: go run 0_rm.go
-  1_scraping:
+  1_get_data_list:
     build:
       context: .
       dockerfile: Dockerfile.python
     volumes:
       - ./:/app
+    command: python 1_getDataList.py
   2_line2obj:
     build:
       context: .

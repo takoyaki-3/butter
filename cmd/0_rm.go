@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	dirPaths := []string{"./dir_out", "./gtfs", "./v0.0.0", "./data.json", "./merged_csv_file.csv", "./output.txt"}
+	dirPaths := []string{"./dir_out", "./gtfs", "./v0.0.0", "./data.json", "./merged_csv_file.csv", "./dataList.txt"}
 
 	for _, dirPath := range dirPaths {
 		err := os.RemoveAll(dirPath)
