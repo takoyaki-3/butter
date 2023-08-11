@@ -1,7 +1,6 @@
 
 <template>
     <div id="tag">
-        <button @click="stoplist">Get stoplist</button>
         <TagInput />
     </div>
 </template>
@@ -21,13 +20,6 @@ export default {
         };
     },
     methods: {
-        stoplist() {
-            this.stoplists();
-        },
-        async stoplists() {
-            this.stop = (await Butter.getStopsBySubstring("東京駅"));
-            console.log("this stop",this.stop);
-        },
     },
     // mounted function is same as before
     mounted: async function () {

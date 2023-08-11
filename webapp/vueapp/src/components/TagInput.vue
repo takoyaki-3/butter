@@ -1,54 +1,81 @@
-
 <template>
   <div>
-    <label for="gtfs_id">GTFS ID: </label>
-    <input type="text" v-model="gtfsId" id="gtfs_id"><br><br>
+    <!-- GTFS 名 -->
+    <label for="gtfs_name">GTFS Name: </label>
+    <input type="text" v-model="GTFSName" id="gtfs_name"><br><br>
+    <input type="text" v-model="gtfsId" id="gtfs_id" style="display:none;">
 
-    <label for="stop_ids">Stop IDs (comma separated): </label>
-    <input type="text" v-model="stopIdsInput" id="stop_ids"><br><br>
+    <!-- 駅名 -->
+    <label for="station_name">Station Name: </label>
+    <input type="text" v-model="stationName" id="station_name"><br><br>
+    <input type="text" v-model="stopIdsInput" id="stop_ids" style="display:none;">
+
+    <button @click="updateData">検索</button>
 
     <link rel="stylesheet" href="https://www.unpkg.com/butter-tag/style.css">
-    <div class="butter-tag" :gtfs_id="gtfsId" :stop_ids="formattedStopIds"></div>
+    <div class="butter-tag" :gtfs_id="gtfsId" :stop_ids="formattedStopIds" :key="componentKey"></div>
   </div>
 </template>
 
 <script>
 
-function loadScript(url, callback) {
+import Butter from 'butter-lib/dist.js';
+
+function loadScript(url) {
   const script = document.createElement('script');
   script.type = 'text/javascript';
   script.src = url;
-
-  // scriptがロードされた後にcallback関数を実行する
-  script.onload = function() {
-    callback();
-  };
-
   // scriptタグをbodyタグに追加する
   document.body.appendChild(script);
 }
 
 // 使用例
-loadScript('https://www.unpkg.com/butter-tag/dist.js', function() {
-  // この部分は、スクリプトがロードされた後に実行されます
-  console.log('Script loaded!');
-});
+loadScript('https://www.unpkg.com/butter-tag/dist.js');
+
 
 export default {
   data() {
     return {
       gtfsId: 'ToeiBus',
-      stopIdsInput: '0605-07',
+      GTFSName: '東京都交通局',
+      stopIdsInput: '0965-01',
+      stationName: '東京駅',
+      componentKey: 0,
     };
   },
   computed: {
-    formattedStopIds: function() {
+    formattedStopIds: function () {
       return JSON.stringify(this.stopIdsInput.split(',').map(id => id.trim()));
     }
+  },
+  methods: {
+    updateData() {
+      this.componentKey += 1;
+      loadScript('https://www.unpkg.com/butter-tag/dist.js');
+      this.stoplists();
+    },
+    async stoplists() {
+      // get gtfs_id
+      const hostData = (await Butter.getHostDataList())
+      for (let i = 0; i < hostData.length; i++) {
+        if (hostData[i].name == this.GTFSName) {
+          this.gtfsId = hostData[i].gtfs_id;
+          break;
+        }
+      }
+      // get stop_ids
+      this.stops = (await Butter.getStopsBySubstring(this.stationName));
+      console.log("this stops", this.stops);
+      for (let i = 0; i < this.stops.length; i++) {
+        if (this.stops[i].gtfs_id == this.gtfsId && this.stops[i].stop_name == this.stationName) {
+          this.stopIdsInput = this.stops[i].stop_id;
+          break;
+        }
+      }
+      console.log("this stopIdsInput", this.stopIdsInput);
+    },
   }
 }
 </script>
 
-<style scoped>
-</style>
-    
+<style scoped></style>
