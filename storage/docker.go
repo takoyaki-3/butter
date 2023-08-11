@@ -14,13 +14,6 @@ import (
 	json "github.com/takoyaki-3/go-json"
 )
 
-type Config struct {
-	FTPHost     string `json:"ftp_host"`
-	FTPUser     string `json:"ftp_user"`
-	FTPPass     string `json:"ftp_pass"`
-	FTPPort     string `json:"ftp_port"`
-}
-
 type PublicKey struct {
 	Pubkey string `json:"pubkey"`
 }
@@ -44,12 +37,6 @@ type OriginalDataItem struct {
 func main() {
 	isFirst := true
 	for {
-		var config Config
-		err := json.LoadFromPath("./config.json", &config)
-		if err != nil {
-			log.Fatalln(err)
-		}
-
 		var root Root
 		rootData, err := downloadFile("https://butter.takoyaki3.com/v0.0.0/root.json")
 		if err != nil {
