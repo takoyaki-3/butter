@@ -37,6 +37,10 @@ with open('dataList.txt', 'r', encoding='utf-8') as f:
                     gtfs_id = d['GTFS_url'].split('https://api.odpt.org/api/v4/files/odpt/')[1]
                     gtfs_id = gtfs_id.split('/')[0]
                     d['gtfs_id'] = gtfs_id
+                elif 'https://api.odpt.org/api/v4/files/' in d['GTFS_url']:
+                    gtfs_id = d['GTFS_url'].split('https://api.odpt.org/api/v4/files/')[1]
+                    gtfs_id = gtfs_id.split('/')[0]
+                    d['gtfs_id'] = gtfs_id
             data.append(d)  # リストに追加する
 
 # オブジェクトをJSON形式に変換してファイルに書き込む

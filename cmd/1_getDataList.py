@@ -98,7 +98,7 @@ now = datetime.now()
 # 日付を指定された形式にフォーマット
 dateStr = now.strftime("%Y-%m-%d")
 
-# 東京都交通局のみ後から追加
+# 東京都交通局を後から追加
 output_text += '''事業者名:東京都交通局
 事業者名_url:https://www.kotsu.metro.tokyo.jp
 都道府県:東京都
@@ -108,6 +108,44 @@ GTFSフィード名:東京都交通局
 URLs:GTFS, VehiclePosition
 GTFS_url:https://api-public.odpt.org/api/v4/files/Toei/data/ToeiBus-GTFS.zip
 VehiclePosition_url:https://api-public.odpt.org/api/v4/gtfs/realtime/ToeiBus
+詳細:詳細
+最新GTFS開始日:'''+dateStr+'''
+最新GTFS終了日:'''+dateStr+'''
+最終更新日:'''+dateStr+'''
+-------------
+'''
+
+conf = None
+if os.path.isfile('conf.json'):
+    with open('conf.json', 'r', encoding='utf-8') as file:
+        conf = json.load(file)
+
+    # 横浜市営バスを後から追加
+    output_text += '''事業者名:横浜市交通局
+事業者名_url:https://www.city.yokohama.lg.jp/kotsu/bus
+都道府県:神奈川県
+GTFSフィード名:横浜市営バス
+ライセンス:ODPT基本
+ライセンス_url:https://developer.odpt.org/terms
+URLs:GTFS, VehiclePosition
+GTFS_url:https://api.odpt.org/api/v4/files/YokohamaMunicipal/data/YokohamaMunicipal-Bus-GTFS.zip?acl:consumerKey='''+conf['odptAPIKey']+'''
+VehiclePosition_url:https://api.odpt.org/api/v4/gtfs/realtime/YokohamaMunicipalBus_vehicle?acl:consumerKey='''+conf['odptAPIKey']+'''
+詳細:詳細
+最新GTFS開始日:'''+dateStr+'''
+最新GTFS終了日:'''+dateStr+'''
+最終更新日:'''+dateStr+'''
+-------------
+'''
+# 西武バスを後から追加
+output_text += '''事業者名:西武バス
+事業者名_url:https://www.seibubus.co.jp/sp
+都道府県:東京都
+GTFSフィード名:西武バス
+ライセンス:ODPT基本
+ライセンス_url:https://developer.odpt.org/terms
+URLs:GTFS, VehiclePosition
+GTFS_url:https://api.odpt.org/api/v4/files/SeibuBus/data/SeibuBus-GTFS.zip?acl:consumerKey='''+conf['odptAPIKey']+'''
+VehiclePosition_url:https://api.odpt.org/api/v4/gtfs/realtime/SeibuBus_vehicle?acl:consumerKey='''+conf['odptAPIKey']+'''
 詳細:詳細
 最新GTFS開始日:'''+dateStr+'''
 最新GTFS終了日:'''+dateStr+'''
