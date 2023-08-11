@@ -1,5 +1,5 @@
 docker-compose up 0_rm
-docker-compose up 1_scraping
+docker-compose up 1_get_data_list
 docker-compose up 2_line2obj
 docker-compose up 3_downloader
 docker-compose up 4_unziper

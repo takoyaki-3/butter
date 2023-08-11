@@ -12,3 +12,4 @@ archive.tar
 !requirements.txt
 *.tar
 dist
+conf.json

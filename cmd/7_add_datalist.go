@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"time"
+	"strings"
 
 	. "github.com/takoyaki-3/butter/cmd/helper"
 	json "github.com/takoyaki-3/go-json"
@@ -71,6 +72,12 @@ func main() {
 		if err != nil {
 			continue
 		}
+
+		// ODPT API Keyを削除
+		v.GTFSURL = strings.Split(v.GTFSURL,"acl:consumerKey=")[0]
+		v.AlertURL = strings.Split(v.AlertURL,"acl:consumerKey=")[0]
+		v.TripUpdateURL = strings.Split(v.TripUpdateURL,"acl:consumerKey=")[0]
+		v.VehiclePositionURL = strings.Split(v.VehiclePositionURL,"acl:consumerKey=")[0]
 
 		datalist.Data = append(datalist.Data, DataItem{
 			GtfsID: v.GtfsID,
