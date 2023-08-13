@@ -104,7 +104,6 @@ export default {
     stop_id:'0965-01',
     date:'2023-06-30',
     stops:[],
-    stop_times:[],
     gtfs_list:[],
     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     attribution:
@@ -129,10 +128,6 @@ export default {
       {text:"stop_name",value:"stop_name"},
       {text:"stop_id",value:"stop_id"},
       {text:"GTFS ID",value:"gtfs_id"},
-    ],
-    stop_times_headers:[
-      {text:"stop_headsign",value:"stop_headsign"},
-      {text:"departure_time",value:"departure_time"},
     ],
     gtfs_list_headers:[
       {text:"GTFS ID",value:"gtfs_id"},
@@ -200,24 +195,6 @@ export default {
   watch:{
     async substring(){
       this.stops = await Butter.getStopsBySubstring(this.substring);
-    },
-    async gtfs_id(){
-      this.stop_times = await Butter.fetchTimeTableV1(this.gtfs_id, {
-        date: this.date,
-        stop_ids: [this.stop_id]
-      });
-    },
-    async stop_id(){
-      this.stop_times = await Butter.fetchTimeTableV1(this.gtfs_id, {
-        date: this.date,
-        stop_ids: [this.stop_id]
-      });
-    },
-    async date(){
-      this.stop_times = await Butter.fetchTimeTableV1(this.gtfs_id, {
-        date: this.date,
-        stop_ids: [this.stop_id]
-      });
     },
     center(){
       this.updateBusLocations();
