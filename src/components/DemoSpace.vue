@@ -42,6 +42,7 @@
               <v-data-table
                 :headers="stops_headers"
                 :items="stops"
+                @click:row="busStopClickedFromTable"
               ></v-data-table>
           </v-col>
         </v-row>
@@ -212,7 +213,11 @@ export default {
       // ここで必要な処理を行う
       console.log(`GTFS ID: ${gtfs_id}`);
       console.log(`Stop ID: ${stop_id}`);
-    }
+    },
+    busStopClickedFromTable(row) { // この新しいメソッドを追加
+      console.log(`GTFS ID: ${row.gtfs_id}`);
+      console.log(`Stop ID: ${row.stop_id}`);
+    },
   }
 }
 </script>
