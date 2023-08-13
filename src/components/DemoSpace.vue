@@ -5,7 +5,7 @@
       <v-tab-item>
         <v-row class="text-left">
           <v-col cols="12">
-            <v-container fluid>
+            <v-container fluid class="map-container">
               <l-map :center="center"
                 :zoom="zoom"
                 @click.right="mapRclicked"
@@ -76,6 +76,10 @@
     height: 100vh;
     width: 100vw;
   }
+.map-container {
+  z-index: 0;
+  position: relative; /* z-indexを有効にするためにpositionを設定 */
+}
 </style>
 
 <script>
