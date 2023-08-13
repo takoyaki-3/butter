@@ -189,9 +189,6 @@ export default {
       });
     }
 
-    setInterval(this.updateBusLocations, 30000);
-    this.updateBusLocations();
-
     // 地図の移動が終わったときのイベントハンドラを設定
     this.$refs.map.mapObject.on('moveend', () => {
       const newCenter = this.$refs.map.mapObject.getCenter();
