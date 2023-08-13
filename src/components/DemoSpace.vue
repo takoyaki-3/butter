@@ -12,11 +12,7 @@
           :items="host_updated"
         ></v-data-table>
 
-        <h2>Demo</h2>
-        <h3>インストール方法</h3>
-        <p>はじめに、次のコマンドによりBuTTERモジュールをインストールします。</p>
-        <p>CDNを使ったコードサンプル</p>
-        <h3>バス停・リアルタイムバスロケーションの表示</h3>
+        <h3>バス停の表示</h3>
         <p><b>Butter.getStopsWithinRadius(lat, lon, radius)</b>関数及び<b>Butter.getBusInfo(lat, lon)</b>関数により、特定の緯度、経度、半径の範囲内にあるバス停及びリアルタイムのバス位置情報を取得します。</p>
         <v-container fluid>
           <l-map :center="center"
@@ -55,31 +51,12 @@
           :headers="stops_headers"
           :items="stops"
         ></v-data-table>
-
-        <p><br/>コードサンプル</p>
-        <pre><code class="language-javascript">this.stops = await Butter.getStopsBySubstring(this.substring);</code></pre>
-      </v-col>
-      <v-col
-        class="mb-5"
-        cols="12" md="6"
-      >
-        <h3>バス停の時刻表を取得</h3>
-        <p><b>Butter.fetchTimeTableV1</b>関数により停留所及びバスの時刻表を取得できます。</p>
-
-        <v-text-field v-model="gtfs_id" label="GTFS ID" outlined></v-text-field>
-        <v-text-field v-model="stop_id" label="Stop ID" outlined></v-text-field>
-        <v-text-field v-model="date" label="Date" outlined></v-text-field>
-        <v-data-table
-          :headers="stop_times_headers"
-          :items="stop_times.stop_times"
-        ></v-data-table>
       </v-col>
       <v-col
         class="mb-5"
         cols="12"
       >
-        <h3>対応事業者一覧の取得</h3>
-        <p><b>Butter.getHostDataList()</b>関数により対応事業者一覧を取得できます。</p>
+        <h3>対応事業者一覧</h3>
         <v-data-table
           :headers="gtfs_list_headers"
           :items="gtfs_list"
