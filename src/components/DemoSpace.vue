@@ -45,6 +45,7 @@
       <v-col class="mb-5" cols="12">
         <h3>プレビュー表示</h3>
         <!--プレビュー表示-->
+        <div id="previewTagCode"></div>
       </v-col>
     </v-row>
     <v-row class="text-left">
@@ -215,6 +216,29 @@ export default {
     }
   },
   methods: {
+    async loadPreviewTag(gtfs_id, stop_ids) {
+
+      const divPreview = document.getElementById('previewTagCode')
+      divPreview.innerHTML = ''
+
+      // スタイルシートの追加
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://www.unpkg.com/butter-tag@1.0.1/style.css';
+      divPreview.appendChild(link);
+
+      // divタグの追加
+      const div = document.createElement('div');
+      div.className = 'butter-tag';
+      div.setAttribute('gtfs_id', gtfs_id);
+      div.setAttribute('stop_ids', JSON.stringify(stop_ids));
+      divPreview.appendChild(div); // 適切なクラス名またはIDに置き換えてください
+
+      // スクリプトの追加
+      const script = document.createElement('script');
+      script.src = 'https://www.unpkg.com/butter-tag/dist.js';
+      divPreview.appendChild(script);
+    },
     busStopClicked(gtfs_id, stop_id) {
       // クリックされたバス停のgtfs_idとstop_idを取得
       // ここで必要な処理を行う
@@ -224,7 +248,8 @@ export default {
 <div class="butter-tag" gtfs_id="${gtfs_id}" stop_ids='["${stop_id}"]'>
 </div><script src="https://www.unpkg.com/butter-tag/dist.js"></scri`+`pt>`; // 生成されたタグ欄に表示
       this.dialog = true; // ダイアログを表示
-console.log(this.tagCode)
+      this.loadPreviewTag(gtfs_id, [stop_id]);
+      console.log(this.tagCode)
     },
     busStopClickedFromTable(row) { // この新しいメソッドを追加
       console.log(`GTFS ID: ${row.gtfs_id}`);
@@ -233,7 +258,8 @@ console.log(this.tagCode)
 <div class="butter-tag" gtfs_id="${row.gtfs_id}" stop_ids='["${row.stop_id}"]'>
 </div><script src="https://www.unpkg.com/butter-tag/dist.js"></scri`+`pt>`; // 生成されたタグ欄に表示
       this.dialog = true; // ダイアログを表示
-console.log(this.tagCode)
+      this.loadPreviewTag(row.gtfs_id, [row.stop_id]);
+      console.log(this.tagCode)
     },
     copyTag() {
       navigator.clipboard.writeText(this.tagCode).then(() => {
