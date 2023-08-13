@@ -43,17 +43,6 @@
     </v-tabs>
     <v-row class="text-left">
       <v-col class="mb-5" cols="12">
-        <h3>生成されたタグ</h3>
-        <!--ここに生成されたタグをおく-->
-        <pre>
-          <code>
-            {{ tagCode }}
-          </code>
-        </pre>
-      </v-col>
-    </v-row>
-    <v-row class="text-left">
-      <v-col class="mb-5" cols="12">
         <h3>プレビュー表示</h3>
         <!--プレビュー表示-->
       </v-col>
@@ -71,6 +60,24 @@
         <v-data-table :headers="host_updated_headers" :items="host_updated"></v-data-table>
       </v-col>
     </v-row>
+    <v-dialog v-model="dialog" max-width="600px">
+      <v-card>
+        <v-card-title>生成されたタグ</v-card-title>
+        <v-card-text>
+          <pre>
+            <code>
+              {{ tagCode }}
+            </code>
+          </pre>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="primary" @click="copyTag">コピー</v-btn>
+          <span v-if="copySuccess">コピーしました！</span>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="dialog = false">閉じる</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -102,6 +109,8 @@ export default {
     LMarker,
   },
   data: () => ({
+    dialog: false,
+    copySuccess: false,
     dataList: [],
     updateTime: '',
     substring:'東京駅',
@@ -215,6 +224,7 @@ export default {
       this.tagCode = `<link rel="stylesheet" href="https://www.unpkg.com/butter-tag@1.0.1/style.css"></link>
 <div class="butter-tag" gtfs_id="${gtfs_id}" stop_ids='["${stop_id}"]'>
 </div><script src="https://www.unpkg.com/butter-tag/dist.js"></scri`+`pt>`; // 生成されたタグ欄に表示
+      this.dialog = true; // ダイアログを表示
 console.log(this.tagCode)
     },
     busStopClickedFromTable(row) { // この新しいメソッドを追加
@@ -223,7 +233,16 @@ console.log(this.tagCode)
       this.tagCode = `<link rel="stylesheet" href="https://www.unpkg.com/butter-tag@1.0.1/style.css"></link>
 <div class="butter-tag" gtfs_id="${row.gtfs_id}" stop_ids='["${row.stop_id}"]'>
 </div><script src="https://www.unpkg.com/butter-tag/dist.js"></scri`+`pt>`; // 生成されたタグ欄に表示
+      this.dialog = true; // ダイアログを表示
 console.log(this.tagCode)
+    },
+    copyTag() {
+      navigator.clipboard.writeText(this.tagCode).then(() => {
+        this.copySuccess = true;
+        setTimeout(() => {
+          this.copySuccess = false;
+        }, 2000); // 2秒後にメッセージを隠す
+      });
     },
   }
 }
