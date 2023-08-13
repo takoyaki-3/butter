@@ -2,6 +2,7 @@
   <v-app style="background:lightgoldenrodyellow">
     <v-app-bar app color="brown" dark>
       <div class="d-flex align-center">
+        BuTTER Tag Maker
       </div>
 
       <v-spacer></v-spacer>

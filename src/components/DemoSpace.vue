@@ -1,12 +1,5 @@
 <template>
   <v-container>
-    <v-row class="text-left">
-      <v-col class="mb-5" cols="12">
-        <h3>各ストレージにおけるデータ最終更新日時</h3>
-        <p>過去30日以内にデータが更新されたストレージホストの一覧です。</p>
-        <v-data-table :headers="host_updated_headers" :items="host_updated"></v-data-table>
-      </v-col>
-    </v-row>
     <v-tabs class="mb-5"> <!-- vertical 属性を削除 -->
       <v-tab>マップから選択</v-tab>
       <v-tab-item>
@@ -50,8 +43,27 @@
     </v-tabs>
     <v-row class="text-left">
       <v-col class="mb-5" cols="12">
+        <h3>生成されたタグ</h3>
+        <!--ここに生成されたタグをおく-->
+      </v-col>
+    </v-row>
+    <v-row class="text-left">
+      <v-col class="mb-5" cols="12">
+        <h3>プレビュー表示</h3>
+        <!--プレビュー表示-->
+      </v-col>
+    </v-row>
+    <v-row class="text-left">
+      <v-col class="mb-5" cols="12">
         <h3>対応事業者一覧</h3>
         <v-data-table :headers="gtfs_list_headers" :items="gtfs_list"></v-data-table>
+      </v-col>
+    </v-row>
+    <v-row class="text-left">
+      <v-col class="mb-5" cols="12">
+        <h3>各ストレージにおけるデータ最終更新日時</h3>
+        <p>過去30日以内にデータが更新されたストレージホストの一覧です。</p>
+        <v-data-table :headers="host_updated_headers" :items="host_updated"></v-data-table>
       </v-col>
     </v-row>
   </v-container>
