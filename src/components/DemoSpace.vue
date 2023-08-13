@@ -25,13 +25,7 @@
                   :lat-lng="marker.latlon"
                   :name="marker.name"
                   :icon="BusStopIcon"
-                  >
-                </l-marker>
-                <l-marker v-for="(marker,index) in busMarkers"
-                  :key="index+'_'+marker.name"
-                  :lat-lng="marker.latlon"
-                  :name="marker.name"
-                  :icon="BusIcon"
+                  @click="busStopClicked(marker.gtfs_id, marker.stop_id)"
                   >
                 </l-marker>
               </l-map>
@@ -162,6 +156,8 @@ export default {
           latlon:latLng(bus_stop.stop_lat, bus_stop.stop_lon),
           name:bus_stop.stop_name,
           bindPopup:bus_stop.stop_name,
+          stop_id: bus_stop.stop_id,
+          gtfs_id: bus_stop.gtfs_id
         });
       });
     }
@@ -208,6 +204,14 @@ export default {
     },
     center(){
       this.updateBusLocations();
+    }
+  },
+  methods: {
+    busStopClicked(gtfs_id, stop_id) {
+      // クリックされたバス停のgtfs_idとstop_idを取得
+      // ここで必要な処理を行う
+      console.log(`GTFS ID: ${gtfs_id}`);
+      console.log(`Stop ID: ${stop_id}`);
     }
   }
 }
