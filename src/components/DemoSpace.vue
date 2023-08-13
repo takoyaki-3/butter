@@ -45,6 +45,11 @@
       <v-col class="mb-5" cols="12">
         <h3>生成されたタグ</h3>
         <!--ここに生成されたタグをおく-->
+        <pre>
+          <code>
+            {{ tagCode }}
+          </code>
+        </pre>
       </v-col>
     </v-row>
     <v-row class="text-left">
@@ -140,6 +145,7 @@ export default {
       {text:"Last updated",value:"updated"},
     ],
     host_updated:[],
+    tagCode:"",
   }),
   async mounted (){
 
@@ -206,11 +212,24 @@ export default {
       // ここで必要な処理を行う
       console.log(`GTFS ID: ${gtfs_id}`);
       console.log(`Stop ID: ${stop_id}`);
+      this.tagCode = `<link rel="stylesheet" href="https://www.unpkg.com/butter-tag@1.0.1/style.css"></link>
+<div class="butter-tag" gtfs_id="${gtfs_id}" stop_ids='["${stop_id}"]'>
+</div><script src="https://www.unpkg.com/butter-tag/dist.js"></scri`+`pt>`; // 生成されたタグ欄に表示
+console.log(this.tagCode)
     },
     busStopClickedFromTable(row) { // この新しいメソッドを追加
       console.log(`GTFS ID: ${row.gtfs_id}`);
       console.log(`Stop ID: ${row.stop_id}`);
+      this.tagCode = `<link rel="stylesheet" href="https://www.unpkg.com/butter-tag@1.0.1/style.css"></link>
+<div class="butter-tag" gtfs_id="${row.gtfs_id}" stop_ids='["${row.stop_id}"]'>
+</div><script src="https://www.unpkg.com/butter-tag/dist.js"></scri`+`pt>`; // 生成されたタグ欄に表示
+console.log(this.tagCode)
     },
   }
 }
 </script>
+<!--
+<link rel="stylesheet" href="https://www.unpkg.com/butter-tag@1.0.1/style.css"></link>
+<div class="butter-tag" gtfs_id="ToeiBus" stop_ids='["0605-07"]'></div>
+<script src="https://www.unpkg.com/butter-tag@1.0.1/dist.js"></script>
+-->
