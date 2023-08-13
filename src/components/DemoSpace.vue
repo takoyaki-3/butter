@@ -64,7 +64,7 @@
       <v-card>
         <v-card-title>生成されたタグ</v-card-title>
         <v-card-text>
-          <pre>
+          <pre class="language-html">
             <code>
               {{ tagCode }}
             </code>
@@ -220,7 +220,7 @@ export default {
       // ここで必要な処理を行う
       console.log(`GTFS ID: ${gtfs_id}`);
       console.log(`Stop ID: ${stop_id}`);
-      this.tagCode = `<link rel="stylesheet" href="https://www.unpkg.com/butter-tag@1.0.1/style.css"></link>
+      this.tagCode = `\n<link rel="stylesheet" href="https://www.unpkg.com/butter-tag@1.0.1/style.css"></link>
 <div class="butter-tag" gtfs_id="${gtfs_id}" stop_ids='["${stop_id}"]'>
 </div><script src="https://www.unpkg.com/butter-tag/dist.js"></scri`+`pt>`; // 生成されたタグ欄に表示
       this.dialog = true; // ダイアログを表示
@@ -229,7 +229,7 @@ console.log(this.tagCode)
     busStopClickedFromTable(row) { // この新しいメソッドを追加
       console.log(`GTFS ID: ${row.gtfs_id}`);
       console.log(`Stop ID: ${row.stop_id}`);
-      this.tagCode = `<link rel="stylesheet" href="https://www.unpkg.com/butter-tag@1.0.1/style.css"></link>
+      this.tagCode = `\n<link rel="stylesheet" href="https://www.unpkg.com/butter-tag@1.0.1/style.css"></link>
 <div class="butter-tag" gtfs_id="${row.gtfs_id}" stop_ids='["${row.stop_id}"]'>
 </div><script src="https://www.unpkg.com/butter-tag/dist.js"></scri`+`pt>`; // 生成されたタグ欄に表示
       this.dialog = true; // ダイアログを表示
