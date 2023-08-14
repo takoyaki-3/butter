@@ -57,6 +57,14 @@
     <v-dialog v-model="dialog" max-width="600px">
       <v-card>
         <v-card-title>{{stop_name}} （{{gtfs_name}}）</v-card-title>
+        <v-card-text>
+          <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field v-model="date" label="日付選択" prepend-icon="mdi-calendar" readonly v-bind="attrs" v-on="on"></v-text-field>
+            </template>
+            <v-date-picker v-model="date" @input="menu = false; fetchTimeTable()"></v-date-picker>
+          </v-menu>
+        </v-card-text>
         <v-data-table
             :headers="stop_times_headers"
             :items="stop_times.stop_times"
@@ -152,6 +160,7 @@ export default {
     stop_name:'',
     gtfs_name:'',
     gtfs_id2name:{},
+    menu: false,
   }),
   async mounted (){
 
@@ -160,7 +169,7 @@ export default {
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
-    this.date = `${year}${month}${day}`;
+    this.date = `${year}-${month}-${day}`;
 
     // Get data list
     this.dataList = await Butter.getHostDataList()
@@ -213,6 +222,12 @@ export default {
     }
   },
   methods: {
+    async fetchTimeTable() {
+      this.stop_times = await Butter.fetchTimeTableV1(this.gtfs_id, {
+        date: this.date.replaceAll('-',''),
+        stop_ids: [this.stop_id]
+      });
+    },
     async busStopClicked(gtfs_id, stop_id, stop_name) {
       // クリックされたバス停のgtfs_idとstop_idを取得
       // ここで必要な処理を行う
@@ -220,7 +235,7 @@ export default {
       console.log(`Stop ID: ${stop_id}`);
       this.dialog = true; // ダイアログを表示
       this.stop_times = await Butter.fetchTimeTableV1(gtfs_id, {
-        date: this.date,
+        date: this.date.replaceAll('-',''),
         stop_ids: [stop_id]
       });
       this.stop_name = stop_name;
@@ -231,7 +246,7 @@ export default {
       console.log(`Stop ID: ${row.stop_id}`);
       this.dialog = true; // ダイアログを表示
       this.stop_times = await Butter.fetchTimeTableV1(row.gtfs_id, {
-        date: this.date,
+        date: this.date.replaceAll('-',''),
         stop_ids: [row.stop_id]
       });
       this.stop_name = row.stop_name;
