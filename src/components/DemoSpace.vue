@@ -23,6 +23,13 @@
                   @click="busStopClicked(marker.gtfs_id, marker.stop_id, marker.name)"
                   >
                 </l-marker>
+                <l-marker v-for="(marker,index) in busMarkers"
+                  :key="index+'_'+marker.name"
+                  :lat-lng="marker.latlon"
+                  :name="marker.name"
+                  :icon="BusIcon"
+                  >
+                </l-marker>
               </l-map>
             </v-container>
           </v-col>
@@ -197,8 +204,23 @@ export default {
           gtfs_id: bus_stop.gtfs_id
         });
       });
-    }
+      const busInfo = await Butter.getBusInfo(this.center[0], this.center[1])
 
+      if(busInfo.length > 0){
+        busInfo.forEach((item)=>{
+          item.forEach((bus)=>{
+            if (bus['vehicle']){
+              this.busMarkers.push({
+                latlon:latLng(bus.vehicle.position.latitude, bus.vehicle.position.longitude),
+                name:'',
+                bindPopup:bus.name,
+              });
+            }
+          });
+        })
+      }
+    }
+    setInterval(this.updateBusLocations, 30000);
     this.updateBusLocations();
 
     // 地図の移動が終わったときのイベントハンドラを設定
