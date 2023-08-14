@@ -3,9 +3,6 @@
     <v-row class="text-center">
 
       <v-col class="mb-4">
-        <p class="text-left">
-          BuTTER (Bus Time-Table by Edge-Rumtime) は、数行のBuTTER TagをWebページに貼り付けることで最新の時刻表をWebページに埋め込むことができるツールです。また、それに付随したライブラリ、データ変換ツール、WebAPIを提供しています。
-        </p>
       </v-col>
     </v-row>
 

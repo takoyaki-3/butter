@@ -18,7 +18,7 @@
                   :lat-lng="marker.latlon"
                   :name="marker.name"
                   :icon="BusStopIcon"
-                  @click="busStopClicked(marker.gtfs_id, marker.stop_id)"
+                  @click="busStopClicked(marker.gtfs_id, marker.stop_id, marker.name)"
                   >
                 </l-marker>
               </l-map>
@@ -43,12 +43,6 @@
     </v-tabs>
     <v-row class="text-left">
       <v-col class="mb-5" cols="12">
-        <h3>プレビュー表示</h3>
-        <!--プレビュー表示-->
-      </v-col>
-    </v-row>
-    <v-row class="text-left">
-      <v-col class="mb-5" cols="12">
         <h3>対応事業者一覧</h3>
         <v-data-table :headers="gtfs_list_headers" :items="gtfs_list"></v-data-table>
       </v-col>
@@ -62,17 +56,12 @@
     </v-row>
     <v-dialog v-model="dialog" max-width="600px">
       <v-card>
-        <v-card-title>生成されたタグ</v-card-title>
-        <v-card-text>
-          <pre class="language-html">
-            <code>
-              {{ tagCode }}
-            </code>
-          </pre>
-        </v-card-text>
+        <v-card-title>{{stop_name}} （{{gtfs_name}}）</v-card-title>
+        <v-data-table
+            :headers="stop_times_headers"
+            :items="stop_times.stop_times"
+          ></v-data-table>
         <v-card-actions>
-          <v-btn color="primary" @click="copyTag">コピー</v-btn>
-          <span v-if="copySuccess">コピーしました！</span>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" text @click="dialog = false">閉じる</v-btn>
         </v-card-actions>
@@ -153,8 +142,16 @@ export default {
       {text:"Host",value:"host"},
       {text:"Last updated",value:"updated"},
     ],
+    stop_times:[],
+    stop_times_headers:[
+      {text:"stop_headsign",value:"stop_headsign"},
+      {text:"departure_time",value:"departure_time"},
+    ],
     host_updated:[],
     tagCode:"",
+    stop_name:'',
+    gtfs_name:'',
+    gtfs_id2name:{},
   }),
   async mounted (){
 
@@ -167,6 +164,7 @@ export default {
 
     // Get data list
     this.dataList = await Butter.getHostDataList()
+    for(let i=0;i<this.dataList.length;i++) this.gtfs_id2name[this.dataList[i].gtfs_id] = this.dataList[i].name;
     
     // バス停・バスロケーションのマーカを設定
     this.updateBusLocations = async () => {
@@ -215,33 +213,29 @@ export default {
     }
   },
   methods: {
-    busStopClicked(gtfs_id, stop_id) {
+    async busStopClicked(gtfs_id, stop_id, stop_name) {
       // クリックされたバス停のgtfs_idとstop_idを取得
       // ここで必要な処理を行う
       console.log(`GTFS ID: ${gtfs_id}`);
       console.log(`Stop ID: ${stop_id}`);
-      this.tagCode = `\n<link rel="stylesheet" href="https://www.unpkg.com/butter-tag@1.0.1/style.css"></link>
-<div class="butter-tag" gtfs_id="${gtfs_id}" stop_ids='["${stop_id}"]'>
-</div><script src="https://www.unpkg.com/butter-tag/dist.js"></scri`+`pt>`; // 生成されたタグ欄に表示
       this.dialog = true; // ダイアログを表示
-console.log(this.tagCode)
+      this.stop_times = await Butter.fetchTimeTableV1(gtfs_id, {
+        date: this.date,
+        stop_ids: [stop_id]
+      });
+      this.stop_name = stop_name;
+      this.gtfs_name = this.gtfs_id2name[gtfs_id];
     },
-    busStopClickedFromTable(row) { // この新しいメソッドを追加
+    async busStopClickedFromTable(row) { // この新しいメソッドを追加
       console.log(`GTFS ID: ${row.gtfs_id}`);
       console.log(`Stop ID: ${row.stop_id}`);
-      this.tagCode = `\n<link rel="stylesheet" href="https://www.unpkg.com/butter-tag@1.0.1/style.css"></link>
-<div class="butter-tag" gtfs_id="${row.gtfs_id}" stop_ids='["${row.stop_id}"]'>
-</div><script src="https://www.unpkg.com/butter-tag/dist.js"></scri`+`pt>`; // 生成されたタグ欄に表示
       this.dialog = true; // ダイアログを表示
-console.log(this.tagCode)
-    },
-    copyTag() {
-      navigator.clipboard.writeText(this.tagCode).then(() => {
-        this.copySuccess = true;
-        setTimeout(() => {
-          this.copySuccess = false;
-        }, 2000); // 2秒後にメッセージを隠す
+      this.stop_times = await Butter.fetchTimeTableV1(row.gtfs_id, {
+        date: this.date,
+        stop_ids: [row.stop_id]
       });
+      this.stop_name = row.stop_name;
+      this.gtfs_name = this.gtfs_id2name[row.gtfs_id];
     },
   }
 }
