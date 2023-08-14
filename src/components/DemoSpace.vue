@@ -152,7 +152,7 @@ export default {
     ],
     stop_times:[],
     stop_times_headers:[
-      {text:"stop_headsign",value:"stop_headsign"},
+      {text:"headsign",value:"headsign"},
       {text:"departure_time",value:"departure_time"},
     ],
     host_updated:[],
