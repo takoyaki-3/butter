@@ -1,7 +1,9 @@
 <template>
   <v-container>
-    <v-tabs class="mb-5"> <!-- vertical 属性を削除 -->
+    <v-tabs class="mb-5" v-model="tabs"> <!-- vertical 属性を削除 -->
       <v-tab>マップから選択</v-tab>
+      <v-tab>名前から選択</v-tab>
+    <v-tabs-items v-model="tabs" :touchless="true">
       <v-tab-item>
         <v-row class="text-left">
           <v-col cols="12">
@@ -26,7 +28,6 @@
           </v-col>
         </v-row>
       </v-tab-item>
-      <v-tab>名前から選択</v-tab>
       <v-tab-item>
         <v-row class="text-left">
           <v-col class="mb-5" cols="12" md="6">
@@ -40,7 +41,8 @@
           </v-col>
         </v-row>
       </v-tab-item>
-    </v-tabs>
+    </v-tabs-items>
+  </v-tabs>
     <v-row class="text-left">
       <v-col class="mb-5" cols="12">
         <h3>対応事業者一覧</h3>
@@ -106,6 +108,7 @@ export default {
     LMarker,
   },
   data: () => ({
+    tabs:'',
     dialog: false,
     copySuccess: false,
     dataList: [],
