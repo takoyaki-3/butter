@@ -95,7 +95,7 @@
 import {latLng,Icon} from 'leaflet';
 import { LMap,LTileLayer,LMarker } from "vue2-leaflet";
 import Butter from 'butter-lib/dist.js';
-await Butter.init()
+await Butter.init("https://butter-private.app.takoyaki3.com/root.json")
 import 'leaflet/dist/leaflet.css'
 
 export default {
