@@ -136,8 +136,8 @@ VehiclePosition_url:https://api.odpt.org/api/v4/gtfs/realtime/YokohamaMunicipalB
 最終更新日:'''+dateStr+'''
 -------------
 '''
-# 西武バスを後から追加
-output_text += '''事業者名:西武バス
+    # 西武バスを後から追加
+    output_text += '''事業者名:西武バス
 事業者名_url:https://www.seibubus.co.jp/sp
 都道府県:東京都
 GTFSフィード名:西武バス
