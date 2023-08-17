@@ -8,11 +8,12 @@
         <v-row class="text-left">
           <v-col cols="12">
             <v-container fluid class="map-container">
+              <v-switch label="バスのロケーションを表示" v-model="showBusLocations" color="primary"></v-switch>
               <l-map :center="center"
                 :zoom="zoom"
                 @click.right="mapRclicked"
                 ref="map"
-                style="height: 80vh; width: 100%"
+                style="height: 60vh; width: 100%"
                 >
                 <l-tile-layer :url="url"></l-tile-layer>
                 <l-marker v-for="(marker,index) in busStopMarkers"
@@ -38,13 +39,15 @@
       <v-tab-item>
         <v-row class="text-left">
           <v-col class="mb-5" cols="12" md="6">
-            <h3>文字列から停留所を検索</h3>
-              <v-text-field v-model="substring" label="Stop Name" outlined></v-text-field>
-              <v-data-table
-                :headers="stops_headers"
-                :items="stops"
-                @click:row="busStopClickedFromTable"
-              ></v-data-table>
+              <v-container class="my-3">
+                <h3>文字列から停留所を検索</h3>
+                <v-text-field v-model="substring" label="Stop Name" outlined></v-text-field>
+                <v-data-table
+                  :headers="stops_headers"
+                  :items="stops"
+                  @click:row="busStopClickedFromTable"
+                ></v-data-table>
+              </v-container>
           </v-col>
         </v-row>
       </v-tab-item>
@@ -171,6 +174,7 @@ export default {
     gtfs_name:'',
     gtfs_id2name:{},
     menu: false,
+    showBusLocations: true, // バスロケーション情報の表示・非表示の制御
   }),
   async mounted (){
 
@@ -204,20 +208,23 @@ export default {
           gtfs_id: bus_stop.gtfs_id
         });
       });
-      const busInfo = await Butter.getBusInfo(this.center[0], this.center[1])
 
-      if(busInfo.length > 0){
-        busInfo.forEach((item)=>{
-          item.forEach((bus)=>{
-            if (bus['vehicle']){
-              this.busMarkers.push({
-                latlon:latLng(bus.vehicle.position.latitude, bus.vehicle.position.longitude),
-                name:'',
-                bindPopup:bus.name,
-              });
-            }
-          });
-        })
+      if(this.showBusLocations){
+        const busInfo = await Butter.getBusInfo(this.center[0], this.center[1])
+
+        if(busInfo.length > 0){
+          busInfo.forEach((item)=>{
+            item.forEach((bus)=>{
+              if (bus['vehicle']){
+                this.busMarkers.push({
+                  latlon:latLng(bus.vehicle.position.latitude, bus.vehicle.position.longitude),
+                  name:'',
+                  bindPopup:bus.name,
+                });
+              }
+            });
+          })
+        }
       }
     }
     setInterval(this.updateBusLocations, 30000);
@@ -243,6 +250,9 @@ export default {
       this.stops = await Butter.getStopsBySubstring(this.substring);
     },
     center(){
+      this.updateBusLocations();
+    },
+    showBusLocations(){
       this.updateBusLocations();
     }
   },
