@@ -6,7 +6,7 @@ python 4_unziper.py #
 python subdirectory_fix.py #
 go run 5_split.go #
 go run 6_add_gtfs_id_info.go #
-python 7_add_datalist.py #
+go run 7_add_datalist.go #
 python 8_add_stopdata.py #
 go run 999_uploadOriginData.go #
 #
