@@ -11,6 +11,15 @@ BuTTER (Bus Time-Table by Edge-Rumtime) は、数行のBuTTER TagをWebページ
 |lib|分割ファイル形式（butter形式）をダウンロードして必要な情報に加工するライブラリ|
 |webapp|タグを生成するためのWebアプリケーション|
 
+## 関連URL
+|項目|URL|
+|---|---|
+|概要|https://butter.takoyaki3.com/|
+|タグ作成|https://tag-maker.butter.takoyaki3.com|
+|ライブラリ|https://www.npmjs.com/package/butter-lib|
+|タグ|https://www.npmjs.com/package/butter-tag|
+|時刻表サイト|https://butter-timetable.app.takoyaki3.com|
+
 ## 主な機能
 #### getHostDataList()
 ホストデータのリストを取得します。これは、利用可能な全てのGTFSデータソースのリストを取得するためのメソッドです。
