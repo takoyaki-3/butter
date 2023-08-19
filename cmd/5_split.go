@@ -49,6 +49,8 @@ type Info struct {
 }
 
 type StopTime struct {
+	StopName       string `csv:"stop_name" json:"stop_name"`
+
 	StopID       string `csv:"stop_id" json:"stop_id"`
 	StopSeq      string `csv:"stop_sequence" json:"stop_sequence"`
 	StopHeadSign string `csv:"stop_headsign" json:"stop_headsign"`
@@ -87,9 +89,21 @@ func split(file string, version string) error {
 	if err != nil {
 		return err
 	}
+	// stops.txtからStopのスライスをロード
+	stops := []gtfs.Stop{}
+	err = csvtag.LoadFromPath(srcDir+"/stops.txt", &stops)
+	if err != nil {
+		return err
+	}
+	stopID2Name := map[string]string{}
+	for _,stop := range stops{
+		stopID2Name[stop.ID] = stop.Name
+	}
+
 	// StopTimesの各要素に対応するTrip情報を追加
 	for i, _ := range stopTimes {
 		tripID := stopTimes[i].TripID
+		stopTimes[i].StopName = stopID2Name[stopTimes[i].StopID]
 		for _, trip := range trips {
 			if trip.ID == tripID {
 				stopTimes[i].TripName = trip.Name
@@ -103,6 +117,34 @@ func split(file string, version string) error {
 		}
 	}
 
+	// location_typeが1の停留所と、それに関連するlocation_typeが0の停留所を特定
+	relatedStopIDs := map[string][]string{}
+	for _, stop := range stops {
+		if stop.Type == "1" {
+			for _, relatedStop := range stops {
+				if relatedStop.Parent == stop.ID && relatedStop.Type == "0" {
+					if _,ok:=relatedStopIDs[stop.ID];!ok{
+						relatedStopIDs[stop.ID] = []string{}
+					}
+					relatedStopIDs[stop.ID] = append(relatedStopIDs[stop.ID], relatedStop.ID)
+				}
+			}
+		}
+	}
+	// location_typeが0の関連する停留所のstop_timesを取得
+	var relatedStopTimes []StopTime
+	for _, stopTime := range stopTimes {
+		for baseStopID, stopIDs := range relatedStopIDs {
+			for _,stopID := range stopIDs{
+				if stopTime.StopID == stopID {
+					stopTime.StopID = baseStopID
+					relatedStopTimes = append(relatedStopTimes, stopTime)
+					break
+				}
+			}
+		}
+	}
+
 	// StopTimeのデータを停留所IDとTripIDでグループ化
 	byStop := map[string][]StopTime{}
 	byTrip := map[string][]StopTime{}
@@ -110,6 +152,9 @@ func split(file string, version string) error {
 	for _, stopTime := range stopTimes {
 		byStop[url.QueryEscape(stopTime.StopID)] = append(byStop[url.QueryEscape(stopTime.StopID)], stopTime)
 		byTrip[url.QueryEscape(stopTime.TripID)] = append(byTrip[url.QueryEscape(stopTime.TripID)], stopTime)
+	}
+	for _, stopTime := range relatedStopTimes {
+		byStop[url.QueryEscape(stopTime.StopID)] = append(byStop[url.QueryEscape(stopTime.StopID)], stopTime)
 	}
 
 	// グループ化されたデータをさらにハッシュ値によってサブグループ化
