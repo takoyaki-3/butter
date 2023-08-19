@@ -27,7 +27,7 @@ Butter.init()
 &lt;/html&gt;</code></pre>
         <h3>バス停・リアルタイムバスロケーションの表示</h3>
         <p><b>Butter.getStopsWithinRadius(lat, lon, radius)</b>関数及び<b>Butter.getBusInfo(lat, lon)</b>関数により、特定の緯度、経度、半径の範囲内にあるバス停及びリアルタイムのバス位置情報を取得します。</p>
-        <v-container fluid>
+        <v-container fluid class="map-container">
           <l-map :center="center"
             :zoom="zoom"
             @click.right="mapRclicked"
@@ -196,6 +196,10 @@ console.log(hostData)</code></pre>
 </template>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 <style>
+.map-container {
+  z-index: 0;
+  position: relative; /* z-indexを有効にするためにpositionを設定 */
+}
 #map {
     height: 100vh;
     width: 100vw;
