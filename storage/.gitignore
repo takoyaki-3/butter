@@ -5,3 +5,4 @@ public/*
 !server.json
 *.tar/
 old
+*.txt

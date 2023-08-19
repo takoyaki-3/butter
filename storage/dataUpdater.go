@@ -35,7 +35,7 @@ type OriginalDataItem struct {
 	Key string `json:"key"`
 }
 
-func monitorFile(filePath string, done chan bool) {
+func monitorFile(filePath, timeFilePath string, done chan bool) {
 	ticker := time.NewTicker(1 * time.Minute)
 	var lastFileContent []byte
 	lastFileContent, _ = ioutil.ReadFile(filePath)
@@ -56,6 +56,12 @@ func monitorFile(filePath string, done chan bool) {
 					done <- true
 				})
 			}
+
+			// 現在の時刻を取得し、ファイルに書き込む
+			currentTime := time.Now().Format(time.RFC3339)
+			if err := ioutil.WriteFile(timeFilePath, []byte(currentTime), 0644); err != nil {
+				log.Printf("Error writing last checked time: %v", err)
+			}
 		}
 	}
 }
@@ -63,7 +69,7 @@ func monitorFile(filePath string, done chan bool) {
 func main() {
 
 	done := make(chan bool)
-	go monitorFile("./dataUpdater.go", done)
+	go monitorFile("./dataUpdater.go","./dataUpdaterLastCheckedTime.txt", done)
 
 	go func() {
 
