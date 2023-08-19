@@ -50,7 +50,7 @@ func monitorURL(url string, filePath string) {
 	}
 }
 
-func monitorFile(filePath string, done chan bool) {
+func monitorFile(filePath, timeFilePath string, done chan bool) {
 	ticker := time.NewTicker(1 * time.Minute)
 	var lastFileContent []byte
 	lastFileContent, _ = ioutil.ReadFile(filePath)
@@ -71,6 +71,12 @@ func monitorFile(filePath string, done chan bool) {
 					done <- true
 				})
 			}
+
+			// 現在の時刻を取得し、ファイルに書き込む
+			currentTime := time.Now().Format(time.RFC3339)
+			if err := ioutil.WriteFile(timeFilePath, []byte(currentTime), 0644); err != nil {
+				log.Printf("Error writing last checked time: %v", err)
+			}
 		}
 	}
 }
@@ -82,7 +88,7 @@ func main() {
 	go monitorURL("https://butter.takoyaki3.com/code/fileServer.go", "./fileServer.go")
 
 	done := make(chan bool)
-	go monitorFile("./serverUpdater.go", done)
+	go monitorFile("./serverUpdater.go", "./serverUpdaterLastCheckedTime.txt", done)
 
 	<-done
 	log.Printf("File has been modified. Shutting down in 10 seconds.")
