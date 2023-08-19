@@ -229,7 +229,7 @@ export default {
       // スタイルシートの追加
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = 'https://www.unpkg.com/butter-tag@1.0.1/style.css';
+      link.href = 'https://www.unpkg.com/butter-tag/style.css';
       divPreview.appendChild(link);
 
       // divタグの追加
@@ -249,7 +249,7 @@ export default {
       // ここで必要な処理を行う
       console.log(`GTFS ID: ${gtfs_id}`);
       console.log(`Stop ID: ${stop_id}`);
-      this.tagCode = `\n<link rel="stylesheet" href="https://www.unpkg.com/butter-tag@1.0.1/style.css"></link>
+      this.tagCode = `\n<link rel="stylesheet" href="https://www.unpkg.com/butter-tag/style.css"></link>
 <div class="butter-tag" gtfs_id="${gtfs_id}" stop_ids='["${stop_id}"]'>
 </div><script src="https://www.unpkg.com/butter-tag/dist.js"></scri`+`pt>`; // 生成されたタグ欄に表示
       this.dialog = true; // ダイアログを表示
@@ -259,7 +259,7 @@ export default {
     busStopClickedFromTable(row) { // この新しいメソッドを追加
       console.log(`GTFS ID: ${row.gtfs_id}`);
       console.log(`Stop ID: ${row.stop_id}`);
-      this.tagCode = `\n<link rel="stylesheet" href="https://www.unpkg.com/butter-tag@1.0.1/style.css"></link>
+      this.tagCode = `\n<link rel="stylesheet" href="https://www.unpkg.com/butter-tag/style.css"></link>
 <div class="butter-tag" gtfs_id="${row.gtfs_id}" stop_ids='["${row.stop_id}"]'>
 </div><script src="https://www.unpkg.com/butter-tag/dist.js"></scri`+`pt>`; // 生成されたタグ欄に表示
       this.dialog = true; // ダイアログを表示
@@ -277,8 +277,3 @@ export default {
   }
 }
 </script>
-<!--
-<link rel="stylesheet" href="https://www.unpkg.com/butter-tag@1.0.1/style.css"></link>
-<div class="butter-tag" gtfs_id="ToeiBus" stop_ids='["0605-07"]'></div>
-<script src="https://www.unpkg.com/butter-tag@1.0.1/dist.js"></script>
--->
