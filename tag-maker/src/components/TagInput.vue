@@ -1,45 +1,49 @@
 <template>
   <v-container>
-    <v-tabs class="mb-5"> <!-- vertical 属性を削除 -->
+    <v-tabs class="mb-5" v-model="tabs"> <!-- vertical 属性を削除 -->
       <v-tab>マップから選択</v-tab>
-      <v-tab-item>
-        <v-row class="text-left">
-          <v-col cols="12">
-            <v-container fluid class="map-container">
-              <l-map :center="center"
-                :zoom="zoom"
-                @click.right="mapRclicked"
-                ref="map"
-                style="height: 80vh; width: 100%"
-                >
-                <l-tile-layer :url="url"></l-tile-layer>
-                <l-marker v-for="(marker,index) in busStopMarkers"
-                  :key="index+marker.name"
-                  :lat-lng="marker.latlon"
-                  :name="marker.name"
-                  :icon="BusStopIcon"
-                  @click="busStopClicked(marker.gtfs_id, marker.stop_id)"
-                  >
-                </l-marker>
-              </l-map>
-            </v-container>
-          </v-col>
-        </v-row>
-      </v-tab-item>
       <v-tab>名前から選択</v-tab>
-      <v-tab-item>
-        <v-row class="text-left">
-          <v-col class="mb-5" cols="12" md="6">
-            <h3>文字列から停留所を検索</h3>
-              <v-text-field v-model="substring" label="Stop Name" outlined></v-text-field>
-              <v-data-table
-                :headers="stops_headers"
-                :items="stops"
-                @click:row="busStopClickedFromTable"
-              ></v-data-table>
-          </v-col>
-        </v-row>
-      </v-tab-item>
+      <v-tabs-items v-model="tabs" :touchless="true">
+        <v-tab-item>
+          <v-row class="text-left">
+            <v-col cols="12">
+              <v-container fluid class="map-container">
+                <l-map :center="center"
+                  :zoom="zoom"
+                  @click.right="mapRclicked"
+                  ref="map"
+                  style="height: 60vh; width: 100%"
+                  >
+                  <l-tile-layer :url="url"></l-tile-layer>
+                  <l-marker v-for="(marker,index) in busStopMarkers"
+                    :key="index+marker.name"
+                    :lat-lng="marker.latlon"
+                    :name="marker.name"
+                    :icon="BusStopIcon"
+                    @click="busStopClicked(marker.gtfs_id, marker.stop_id)"
+                    >
+                  </l-marker>
+                </l-map>
+              </v-container>
+            </v-col>
+          </v-row>
+        </v-tab-item>
+        <v-tab-item>
+          <v-row class="text-left">
+            <v-col class="mb-5" cols="12" md="6">
+              <v-container class="my-3">
+                <h3>文字列から停留所を検索</h3>
+                <v-text-field v-model="substring" label="Stop Name" outlined></v-text-field>
+                <v-data-table
+                  :headers="stops_headers"
+                  :items="stops"
+                  @click:row="busStopClickedFromTable"
+                ></v-data-table>
+              </v-container>
+            </v-col>
+          </v-row>
+        </v-tab-item>
+      </v-tabs-items>
     </v-tabs>
     <v-row class="text-left">
       <v-col class="mb-5" cols="12">
@@ -110,6 +114,7 @@ export default {
     LMarker,
   },
   data: () => ({
+    tabs:'',
     dialog: false,
     copySuccess: false,
     dataList: [],
