@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 )
 
-func monitorFile(filePath string, done chan bool) {
+func monitorFile(filePath, timeFilePath string, done chan bool) {
 	ticker := time.NewTicker(1 * time.Minute)
 	var lastFileContent []byte
 	lastFileContent, _ = ioutil.ReadFile(filePath)
@@ -29,6 +29,12 @@ func monitorFile(filePath string, done chan bool) {
 					done <- true
 				})
 			}
+
+			// 現在の時刻を取得し、ファイルに書き込む
+			currentTime := time.Now().Format(time.RFC3339)
+			if err := ioutil.WriteFile(timeFilePath, []byte(currentTime), 0644); err != nil {
+				log.Printf("Error writing last checked time: %v", err)
+			}
 		}
 	}
 }
@@ -39,7 +45,7 @@ func main() {
 
 	fs := http.FileServer(http.Dir(dir))
 	http.HandleFunc("/server", func(w http.ResponseWriter, r *http.Request) {
-		responseMessage := "{\"version\":\"1.1\"}"
+		responseMessage := "{\"version\":\"1.2\"}"
 		w.Write([]byte(responseMessage))
 	})
 	http.Handle("/", fs)
@@ -65,7 +71,7 @@ func main() {
 	}
 
 	done := make(chan bool)
-	go monitorFile("./fileServer.go", done)
+	go monitorFile("./fileServer.go", "./fileServerLastCheckedTime.txt", done)
 
 	go func() {
 		log.Printf("Serving %s on HTTP port: %s\n", dir, port)
