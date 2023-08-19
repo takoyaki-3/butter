@@ -44,7 +44,7 @@ async function addInfo() {
     const info_element = document.createElement("div");
     info_element.className = "info";
     // info_element.textContent = `${info.head_sign}, ${info.name}, ${info.license}, last-update: ${info.updatedAt}`;
-    info_element.textContent = `$東京行き, ${info.name}, ${info.license}, last-update: ${info.updatedAt}`;
+    info_element.textContent = `${info.name}, ${info.license}, last-update: ${info.updatedAt}`;
     butter_tag.appendChild(info_element);
   }
 }
@@ -125,13 +125,13 @@ async function addTimeTable() {
       const tt_card = document.createElement("div");
       tt_card.className = "card";
       const box = document.createElement("div")
-      const h = document.createElement("h2")
-      h.textContent = st.headsign;
+      const h = document.createElement("p")
+      h.innerText = st.headsign +"\n" + st.departure_time.slice(0, 5);
       box.appendChild(h);
-      let new_element = document.createElement("p");
-      new_element.textContent = st.departure_time.slice(0, 5) + " (+X min)";
-      box.appendChild(new_element);
-      box.className = "box";
+      // let new_element = document.createElement("p");
+      // new_element.textContent = st.departure_time.slice(0, 5);// + " (+X min)";
+      // box.appendChild(new_element);
+      // box.className = "box";
       tt_card.appendChild(box);
       // 指定した要素の中の末尾に挿入
       butter_tag.appendChild(tt_card);
