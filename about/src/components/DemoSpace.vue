@@ -244,6 +244,7 @@ export default {
     LMarker,
   },
   data: () => ({
+    menu: false,
     dialog:false,
     dataList: [],
     updateTime: '',
@@ -302,7 +303,7 @@ export default {
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
-    this.date = `${year}${month}${day}`;
+    this.date = `${year}-${month}-${day}`;
 
     // Get data list
     this.dataList = await Butter.getHostDataList()
