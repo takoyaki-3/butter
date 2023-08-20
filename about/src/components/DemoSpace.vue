@@ -233,7 +233,7 @@ console.log(hostData)</code></pre>
 import {latLng,Icon} from 'leaflet';
 import { LMap,LTileLayer,LMarker } from "vue2-leaflet";
 import Butter from 'butter-lib/dist.js';
-await Butter.init()
+await Butter.init(process.env.VUE_APP_BUTTER_ABOUT_ROOT)
 import 'leaflet/dist/leaflet.css'
 
 export default {
