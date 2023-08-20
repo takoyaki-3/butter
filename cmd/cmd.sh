@@ -1,10 +1,12 @@
-docker-compose up 0_rm
-docker-compose up 1_get_data_list
-docker-compose up 2_line2obj
-docker-compose up 3_downloader
-docker-compose up 4_unziper
-docker-compose up subdirectory_fix
-docker-compose up 5_split
-docker-compose up 6_add_gtfs_id_info
-docker-compose up 7_add_datalist
-docker-compose up 8_add_stopdata
+go run 0_rm.go #
+python 1_getDataList.py #
+python 2_line2obj.py #
+python 3_downloader.py #
+python 4_unziper.py #
+python subdirectory_fix.py #
+go run 5_split.go #
+go run 6_add_gtfs_id_info.go #
+go run 7_add_datalist.go #
+python 8_add_stopdata.py #
+go run 999_uploadOriginData.go #
+#

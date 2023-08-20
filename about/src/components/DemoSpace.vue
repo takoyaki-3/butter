@@ -27,7 +27,7 @@ Butter.init()
 &lt;/html&gt;</code></pre>
         <h3>バス停・リアルタイムバスロケーションの表示</h3>
         <p><b>Butter.getStopsWithinRadius(lat, lon, radius)</b>関数及び<b>Butter.getBusInfo(lat, lon)</b>関数により、特定の緯度、経度、半径の範囲内にあるバス停及びリアルタイムのバス位置情報を取得します。</p>
-        <v-container fluid>
+        <v-container fluid class="map-container">
           <l-map :center="center"
             :zoom="zoom"
             @click.right="mapRclicked"
@@ -40,6 +40,7 @@ Butter.init()
               :lat-lng="marker.latlon"
               :name="marker.name"
               :icon="BusStopIcon"
+              @click="busStopClicked(marker.gtfs_id, marker.stop_id, marker.name)"
               >
             </l-marker>
             <l-marker v-for="(marker,index) in busMarkers"
@@ -149,6 +150,7 @@ export default {
         <v-data-table
           :headers="stops_headers"
           :items="stops"
+          @click:row="busStopClickedFromTable"
         ></v-data-table>
 
         <p><br/>コードサンプル</p>
@@ -192,10 +194,35 @@ console.log(hostData)</code></pre>
 
       </v-col>
     </v-row>
+    <v-dialog v-model="dialog" max-width="600px">
+      <v-card>
+        <v-card-title>{{stop_name}} （{{gtfs_name}}）</v-card-title>
+        <v-card-text>
+          <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field v-model="date" label="日付選択" prepend-icon="mdi-calendar" readonly v-bind="attrs" v-on="on"></v-text-field>
+            </template>
+            <v-date-picker v-model="date" @input="menu = false; fetchTimeTable()"></v-date-picker>
+          </v-menu>
+        </v-card-text>
+        <v-data-table
+            :headers="stop_times_headers"
+            :items="stop_times.stop_times"
+          ></v-data-table>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="dialog = false">閉じる</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 <style>
+.map-container {
+  z-index: 0;
+  position: relative; /* z-indexを有効にするためにpositionを設定 */
+}
 #map {
     height: 100vh;
     width: 100vw;
@@ -206,7 +233,7 @@ console.log(hostData)</code></pre>
 import {latLng,Icon} from 'leaflet';
 import { LMap,LTileLayer,LMarker } from "vue2-leaflet";
 import Butter from 'butter-lib/dist.js';
-await Butter.init()
+await Butter.init(process.env.VUE_APP_BUTTER_ABOUT_ROOT)
 import 'leaflet/dist/leaflet.css'
 
 export default {
@@ -217,6 +244,8 @@ export default {
     LMarker,
   },
   data: () => ({
+    menu: false,
+    dialog:false,
     dataList: [],
     updateTime: '',
     substring:'東京駅',
@@ -265,6 +294,7 @@ export default {
       {text:"Last updated",value:"updated"},
     ],
     host_updated:[],
+    gtfs_id2name:{},
   }),
   async mounted (){
 
@@ -273,7 +303,7 @@ export default {
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
-    this.date = `${year}${month}${day}`;
+    this.date = `${year}-${month}-${day}`;
 
     // Get data list
     this.dataList = await Butter.getHostDataList()
@@ -293,6 +323,8 @@ export default {
           latlon:latLng(bus_stop.stop_lat, bus_stop.stop_lon),
           name:bus_stop.stop_name,
           bindPopup:bus_stop.stop_name,
+          stop_id: bus_stop.stop_id,
+          gtfs_id: bus_stop.gtfs_id
         });
       });
 
@@ -327,9 +359,36 @@ export default {
 
     // 対応事業者取得
     this.gtfs_list = await Butter.getHostDataList();
+    for(let i=0;i<this.dataList.length;i++) this.gtfs_id2name[this.dataList[i].gtfs_id] = this.dataList[i].name;
 
     // データ最終更新日時取得
     this.host_updated = await Butter.getHostUpdated();
+  },
+  methods:{
+    async busStopClicked(gtfs_id, stop_id, stop_name) {
+      // クリックされたバス停のgtfs_idとstop_idを取得
+      // ここで必要な処理を行う
+      console.log(`GTFS ID: ${gtfs_id}`);
+      console.log(`Stop ID: ${stop_id}`);
+      this.dialog = true; // ダイアログを表示
+      this.stop_times = await Butter.fetchTimeTableV1(gtfs_id, {
+        date: this.date.replaceAll('-',''),
+        stop_ids: [stop_id]
+      });
+      this.stop_name = stop_name;
+      this.gtfs_name = this.gtfs_id2name[gtfs_id];
+    },
+    async busStopClickedFromTable(row) { // この新しいメソッドを追加
+      console.log(`GTFS ID: ${row.gtfs_id}`);
+      console.log(`Stop ID: ${row.stop_id}`);
+      this.dialog = true; // ダイアログを表示
+      this.stop_times = await Butter.fetchTimeTableV1(row.gtfs_id, {
+        date: this.date.replaceAll('-',''),
+        stop_ids: [row.stop_id]
+      });
+      this.stop_name = row.stop_name;
+      this.gtfs_name = this.gtfs_id2name[row.gtfs_id];
+    },
   },
   watch:{
     async substring(){
