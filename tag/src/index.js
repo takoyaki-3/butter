@@ -26,7 +26,7 @@ async function addStopName(){
     if(tt.stop_times.length==0) continue;
     const stopName = tt.stop_times[0].stop_name;
     e.innerText = `${stopName} (${info.name})`;
-    butter_tag.appendChild(e)
+    butter_tag.insertBefore(e, butter_tag.firstChild);
   }
 }
 
