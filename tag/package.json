@@ -1,6 +1,6 @@
 {
   "name": "butter-tag",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "description": "",
   "main": "webpack.config.js",
   "scripts": {
@@ -16,7 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "bus-time-table-by-edge-runtime": "^1.0.1",
-    "butter-lib": "^1.0.6",
+    "butter-lib": "^1.0.9",
     "webpack-cli": "^5.1.4"
   }
 }

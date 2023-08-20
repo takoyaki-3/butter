@@ -17,13 +17,13 @@
       const hostData = (await Butter.getHostDataList())
       console.log({ "getHostDataList": hostData })
 
-      const agencyInfo = await Butter.getAgencyInfo(hostData[0].gtfs_id)
+      const agencyInfo = await Butter.getAgencyInfo('ToeiBus')
       console.log({ "GetInfo": agencyInfo })
 
-      const stops = await Butter.getBusStops(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      const stops = await Butter.getBusStops('ToeiBus', agencyInfo[0].version_id)
       console.log({ "getBusStops": stops })
 
-      const trips = await Butter.getTrips(hostData[0].gtfs_id, agencyInfo[0].version_id)
+      const trips = await Butter.getTrips('ToeiBus', agencyInfo[0].version_id)
       console.log({ "getTrips": trips })
 
       // 名前からの停留所検索使用例
@@ -47,13 +47,13 @@
 
       // 時刻表情報の取得
       let tt = await Butter.fetchTimeTableV1('ToeiBus', {
-        date: "20230813",
+        date: "20230820",
         stop_ids: ['0605-07']
       })
       console.log({ "ttFetched1": tt })
 
-      tt = await Butter.fetchTimeTableV1(hostData[0].gtfs_id, {
-        date: "20230813",
+      tt = await Butter.fetchTimeTableV1('ToeiBus', {
+        date: "20230820",
         trip_ids: [trips[0].trip_id]
       })
       console.log({ "ttFetched2": tt })
