@@ -104,6 +104,30 @@ async function addOption() {
   }
 }
 
+function toRadians(degrees) {
+  return degrees * (Math.PI / 180);
+}
+
+function haversineDistance(coords1, coords2) {
+  const R = 6371e3; // 地球の半径（メートル）
+  const lat1 = toRadians(coords1.latitude);
+  const lon1 = toRadians(coords1.longitude);
+  const lat2 = toRadians(coords2.latitude);
+  const lon2 = toRadians(coords2.longitude);
+
+  const dLat = lat2 - lat1;
+  const dLon = lon2 - lon1;
+
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1) * Math.cos(lat2) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  const distance = R * c;
+
+  return distance; // メートル単位での距離
+}
+
 async function addTimeTable() {
   // 時刻表を追加
   let butter_tag_list = document.getElementsByClassName("butter-tag");
@@ -119,6 +143,20 @@ async function addTimeTable() {
 
     let gtfs_id = butter_tag.getAttribute("gtfs_id");
     let stop_ids = butter_tag.getAttribute("stop_ids");
+
+    // リアルタイム情報を取得
+    const busInfo = await Butter.getBusRealTimeInfo({gtfs_id})
+    const busRTPositions = {};
+    busInfo.forEach((e)=>{
+      busRTPositions[e.vehicle.trip.tripId] = e.vehicle;
+    })
+    // 停留所情報を取得
+    const busStops = await Butter.getBusStops('ToeiBus')
+    let stop;
+    const stop_id = JSON.parse(stop_ids)[0]
+    busStops.forEach((s)=>{
+      if (s.stop_id == stop_id) stop = s;
+    })
 
     // 時刻表情報の取得
     let tt = await Butter.fetchTimeTableV1(gtfs_id, {
@@ -145,7 +183,17 @@ async function addTimeTable() {
       tt_card.className = "card";
       const box = document.createElement("div")
       const h = document.createElement("p")
-      h.innerText = st.headsign +"\n" + st.departure_time.slice(0, 5);
+      let rtString = '';
+      if (st.trip_id in busRTPositions){
+        const p = busRTPositions[st.trip_id].position;
+
+        // 位置情報が存在するか
+        // 2点間の距離を求める
+        rtString = "\n"+'バス停から' + Math.round(haversineDistance({latitude:p.latitude,longitude:p.longitude},{latitude:stop.stop_lat,longitude:stop.stop_lon}))+'mの箇所にいます';
+
+        // 車内混雑情報が存在するか
+      }
+      h.innerText = st.headsign +"\n" + st.departure_time.slice(0, 5)+rtString;
       box.appendChild(h);
       // let new_element = document.createElement("p");
       // new_element.textContent = st.departure_time.slice(0, 5);// + " (+X min)";
