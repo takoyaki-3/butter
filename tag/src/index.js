@@ -183,15 +183,22 @@ async function addTimeTable() {
       tt_card.className = "card";
       const box = document.createElement("div")
       const h = document.createElement("p")
-      let rtString = '';
+      let rtString = "\n";
       if (st.trip_id in busRTPositions){
-        const p = busRTPositions[st.trip_id].position;
 
-        // 位置情報が存在するか
-        // 2点間の距離を求める
-        rtString = "\n"+'バス停から' + Math.round(haversineDistance({latitude:p.latitude,longitude:p.longitude},{latitude:stop.stop_lat,longitude:stop.stop_lon}))+'mの箇所にいます';
+        // 位置情報
+        if (position in busRTPositions[st.trip_id]){
+          // 2点間の距離を求める
+          const p = busRTPositions[st.trip_id].position;
+          rtString += `バス停から${Math.round(haversineDistance({latitude:p.latitude,longitude:p.longitude},{latitude:stop.stop_lat,longitude:stop.stop_lon}))}mの所にいます。`;
+        }
 
         // 車内混雑情報が存在するか
+        if (position in busRTPositions[st.trip_id]){
+          // 2点間の距離を求める
+          const o = busRTPositions[st.trip_id].occupancy_status;
+          rtString += "\n混雑度："+cong[o];
+        }
       }
       h.innerText = st.headsign +"\n" + st.departure_time.slice(0, 5)+rtString;
       box.appendChild(h);
