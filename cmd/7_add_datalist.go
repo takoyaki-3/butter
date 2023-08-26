@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"time"
+	"net/http"
 	"strings"
 
 	. "github.com/takoyaki-3/butter/cmd/helper"
@@ -68,16 +69,56 @@ func main() {
 	}
 
 	for _, v := range data {
+		time.Sleep(time.Second)
 		t, err := time.Parse("2006-01-02", v.UpdateDate)
 		if err != nil {
 			continue
 		}
 
-		// ODPT API Keyを削除
-		v.GTFSURL = strings.Split(v.GTFSURL,"acl:consumerKey=")[0]
-		v.AlertURL = strings.Split(v.AlertURL,"acl:consumerKey=")[0]
-		v.TripUpdateURL = strings.Split(v.TripUpdateURL,"acl:consumerKey=")[0]
-		v.VehiclePositionURL = strings.Split(v.VehiclePositionURL,"acl:consumerKey=")[0]
+		if v.VehiclePositionURL != "" {
+			// ODPT API Keyが含まれるか確認
+			if strings.Contains(v.VehiclePositionURL,"acl:consumerKey=") {
+				// ODPT API Keyを削除
+				v.GTFSURL = strings.Split(v.GTFSURL,"acl:consumerKey=")[0]
+				v.AlertURL = strings.Split(v.AlertURL,"acl:consumerKey=")[0]
+				v.TripUpdateURL = strings.Split(v.TripUpdateURL,"acl:consumerKey=")[0]
+				v.VehiclePositionURL = strings.Split(v.VehiclePositionURL,"acl:consumerKey=")[0]
+			} else {
+				// CROSが許可されているか確認
+				
+				// HTTPクライアントの設定
+				client := &http.Client{
+					Timeout: time.Second * 10,
+				}
+
+				url := v.VehiclePositionURL
+
+				// GETリクエストの作成
+				req, err := http.NewRequest("GET", url, nil)
+				if err != nil {
+					fmt.Printf("Failed to create request for %s: %v\n", url, err)
+					continue
+				}
+
+				// リクエストの実行
+				resp, err := client.Do(req)
+				if err != nil {
+					fmt.Printf("Failed to perform request for %s: %v\n", url, err)
+					continue
+				}
+				defer resp.Body.Close()
+
+				// CORS設定をチェック
+				corsHeader := resp.Header.Get("Access-Control-Allow-Origin")
+				if corsHeader == "*" {
+					// CROS OK
+					fmt.Printf("The URL %s has CORS settings set to '*'.\n", url)
+				} else {
+					fmt.Printf("The URL %s does not have CORS settings set to '*'. It is set to: %s\n", url, corsHeader)
+					v.VehiclePositionURL = "https://cros-proxy.butter.takoyaki3.com/" + v.VehiclePositionURL;
+				}
+			}
+		}
 
 		datalist.Data = append(datalist.Data, DataItem{
 			GtfsID: v.GtfsID,
