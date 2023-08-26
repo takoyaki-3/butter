@@ -166,5 +166,24 @@ const main = async () => {
   addOption();
   addTimeTable();
   addInfo();
+
+  // 使用状況を通知
+  // 現在のページのURLを取得
+  const url = window.location.href;
+
+  // APIのエンドポイント
+  const apiEndpoint = "https://notification.butter.takoyaki3.com/executedLog";
+
+  // fetchを使用してAPIにリクエストを送信
+  fetch(apiEndpoint + "?url=" + encodeURIComponent(url))
+    .then(response => response.text())
+    .then(text => {
+      // レスポンスを処理する（必要に応じて）
+      console.log(text);
+    })
+    .catch(error => {
+      // エラー処理（必要に応じて）
+      console.error('Error fetching URL:', error);
+    });
 }
 main()
