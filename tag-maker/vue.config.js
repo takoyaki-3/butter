@@ -1,6 +1,6 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
-  outputDir: '../dist/timetable',
+  outputDir: '../dist/tag-maker',
   transpileDependencies: [
     'vuetify'
   ]

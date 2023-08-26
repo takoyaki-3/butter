@@ -1,47 +1,41 @@
-## BuTTER
+<h1 align="center">
+  BuTTER | <a href="https://butter.takoyaki3.com">Website</a> | <a href="https://tag-maker.butter.takoyaki3.com/">Tag Maker</a> | <a href="https://timetable.butter.takoyaki3.com">Timetable</a>
+</h1>
+<h3></h3>
+
+<div style="text-align:center">
+  <image src="https://raw.githubusercontent.com/takoyaki-3/butter/main/about/public/butter.png" style="width:200px">
+</div>
 
 BuTTER (Bus Time-Table by Edge-Rumtime) は、数行のBuTTER TagをWebページに貼り付けることで最新の時刻表をWebページに埋め込むことができるツールです。また、それに付随したライブラリ、データ変換ツール、WebAPIを提供しています。
 
-各ディレクトリの役割は次の通りです。
+|ディレクトリ|概要|URL|ホスト先|
+|---|---|---|---|
+|about|プロジェクト概要|https://butter.takoyaki3.com|Cloudflare Pages|
+|tag-maker|タグを生成するためのWebアプリケーション|https://tag-maker.butter.takoyaki3.com|Cloudflare Pages|
+|timetable-app|BuTTERを活用した時刻表アプリ|https://timetable.butter.takoyaki3.com|Cloudflare Pages|
+|api|時刻表情報をAPIとして提供するためのコード||Cloudflare Worker|
+|cmd|GTFSを分割ファイル形式（butter形式）に変換するスクリプト|||
+|lib|分割ファイル形式（butter形式）をダウンロードして必要な情報に加工するライブラリ|https://www.npmjs.com/package/butter-lib|npm|
+|tag|タグ|https://www.npmjs.com/package/butter-tag|npm|
 
-|ディレクトリ|役割|
-|---|---|
-|api|時刻表情報をAPIとして提供するためのコード|
-|cmd|GTFSを分割ファイル形式（butter形式）に変換するスクリプト|
-|lib|分割ファイル形式（butter形式）をダウンロードして必要な情報に加工するライブラリ|
-|webapp|タグを生成するためのWebアプリケーション|
+## ツール目的
 
-## 関連URL
-|項目|URL|
-|---|---|
-|概要|https://butter.takoyaki3.com/|
-|タグ作成|https://tag-maker.butter.takoyaki3.com|
-|ライブラリ|https://www.npmjs.com/package/butter-lib|
-|タグ|https://www.npmjs.com/package/butter-tag|
-|時刻表サイト|https://butter-timetable.app.takoyaki3.com|
+バスで地方の温泉に行くとき、レストランに行くとき、最寄りのバス停は記載があるものの、バスの時刻はバス会社へのPDFリンクのみであることが一般的です。
+BuTTERを使うと、たった3行をWebページに貼り付けることで、ダイヤ改正を自動で反映したバスの時刻表をWebサイト上に載せることができます。
 
-## 主な機能
-#### getHostDataList()
-ホストデータのリストを取得します。これは、利用可能な全てのGTFSデータソースのリストを取得するためのメソッドです。
-#### getAgencyInfo(gtfs_id)
-特定のGTFSデータソースから代理店情報を取得します。
-#### getBusStops(gtfs_id, version_id)
-特定のGTFSデータソースからバス停のリストを取得します。
-#### getTrips(gtfs_id, version_id)
-特定のGTFSデータソースからトリップのリストを取得します。
-#### utils.getStopsBySubstring(substring)
-バス停の名前から部分文字列による検索を行います。
-#### utils.getStopsWithinRadius(lat, lon, radius)
-指定した緯度、経度、半径（メートル単位）の範囲内のバス停を検索します。
-#### utils.getBusInfo(lat,lon)
-指定した緯度、経度からバスのリアルタイム情報を取得します。
-#### utils.fetchTimeTableV1(gtfs_id, options)
-特定のGTFSデータソースから時刻表を取得します。optionsオブジェクトは、取得したい日付と停留所IDまたはトリップIDを指定します。
-#### getComsumedOp()
-これまでに消費された操作数を取得します。
+![](https://gyazo.com/4917b8468acca712bf82b3d45637f919.png)
+
+## ビルド方法
+
+次のコマンドにより`about`,`tag-maker`,`timetable-app`の３つをまとめてビルドできます。
+```
+docker-compose up
+```
 
 ## ライセンス
 MIT License
+レポジトリをクローンして独自のサーバで運営しても構いません。万が一、このプロジェクトオーナーがサーバ運営をやめた場合でも独自ホストにより引き続き表示することができます。
 
 ## 貢献
 バグレポートやフィーチャーリクエストは、GitHubのIssuesにて受け付けています。また、Pull Requestも歓迎します。

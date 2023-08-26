@@ -11,6 +11,25 @@ function formatDate(date, format) {
   return format;
 }
 
+async function addStopName(){
+  const butter_tag_list = document.getElementsByClassName("butter-tag");
+  for (let butter_tag of butter_tag_list) {
+    const gtfs_id = butter_tag.getAttribute("gtfs_id");
+    const stop_ids = butter_tag.getAttribute("stop_ids");
+    const info = await Butter.getDataInfo(gtfs_id);
+    const e = document.createElement("h2");
+    let date = document.getElementsByClassName("date")[0].value.replace("-", "").replace("-", "");
+    let tt = await Butter.fetchTimeTableV1(gtfs_id, {
+      date: date,
+      stop_ids: JSON.parse(stop_ids)
+    })
+    if(tt.stop_times.length==0) continue;
+    const stopName = tt.stop_times[0].stop_name;
+    e.innerText = `${stopName} (${info.name})`;
+    butter_tag.insertBefore(e, butter_tag.firstChild);
+  }
+}
+
 function addCalender() {
   // 日付選択カレンダーを表示
   let butter_tag_list = document.getElementsByClassName("butter-tag");
@@ -42,9 +61,9 @@ async function addInfo() {
     let gtfs_id = butter_tag.getAttribute("gtfs_id");
     const info = await Butter.getDataInfo(gtfs_id);
     const info_element = document.createElement("div");
-    info_element.className = "info";
+    // info_element.className = "info";
     // info_element.textContent = `${info.head_sign}, ${info.name}, ${info.license}, last-update: ${info.updatedAt}`;
-    info_element.textContent = `$東京行き, ${info.name}, ${info.license}, last-update: ${info.updatedAt}`;
+    info_element.textContent = `${info.name}, ${info.license}, last-update: ${info.updatedAt}`;
     butter_tag.appendChild(info_element);
   }
 }
@@ -125,13 +144,13 @@ async function addTimeTable() {
       const tt_card = document.createElement("div");
       tt_card.className = "card";
       const box = document.createElement("div")
-      const h = document.createElement("h2")
-      h.textContent = st.headsign;
+      const h = document.createElement("p")
+      h.innerText = st.headsign +"\n" + st.departure_time.slice(0, 5);
       box.appendChild(h);
-      let new_element = document.createElement("p");
-      new_element.textContent = st.departure_time.slice(0, 5) + " (+X min)";
-      box.appendChild(new_element);
-      box.className = "box";
+      // let new_element = document.createElement("p");
+      // new_element.textContent = st.departure_time.slice(0, 5);// + " (+X min)";
+      // box.appendChild(new_element);
+      // box.className = "box";
       tt_card.appendChild(box);
       // 指定した要素の中の末尾に挿入
       butter_tag.appendChild(tt_card);
@@ -142,6 +161,7 @@ async function addTimeTable() {
 
 const main = async () => {
   Butter.init();
+  addStopName();
   addCalender();
   addOption();
   addTimeTable();
