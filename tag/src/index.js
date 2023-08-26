@@ -1,4 +1,4 @@
-import Butter from "butter-lib/dist.js"
+import Butter from "../../lib/dist.js"
 
 function formatDate(date, format) {
   format = format.replace(/yyyy/g, date.getFullYear());
@@ -160,7 +160,7 @@ async function addTimeTable() {
 }
 
 const main = async () => {
-  Butter.init();
+  await Butter.init();
   addStopName();
   addCalender();
   addOption();
