@@ -16,15 +16,19 @@ async function addStopName(){
   for (let butter_tag of butter_tag_list) {
     const gtfs_id = butter_tag.getAttribute("gtfs_id");
     const stop_ids = butter_tag.getAttribute("stop_ids");
-    const info = await Butter.getDataInfo(gtfs_id);
-    const e = document.createElement("h2");
-    let date = document.getElementsByClassName("date")[0].value.replace("-", "").replace("-", "");
-    let tt = await Butter.fetchTimeTableV1(gtfs_id, {
-      date: date,
-      stop_ids: JSON.parse(stop_ids)
+    const stop_id = JSON.parse(stop_ids)[0]
+
+    // 停留所情報を取得
+    const busStops = await Butter.getBusStops(gtfs_id)
+    let stop;
+    busStops.forEach((s)=>{
+      if (s.stop_id == stop_id) stop = s;
     })
-    if(tt.stop_times.length==0) continue;
-    const stopName = tt.stop_times[0].stop_name;
+    
+    const info = await Butter.getDataInfo(gtfs_id);
+    const stopName = stop.stop_name;
+    
+    const e = document.createElement("h2");
     e.innerText = `${stopName} (${info.name})`;
     butter_tag.insertBefore(e, butter_tag.firstChild);
   }
@@ -44,7 +48,6 @@ function addCalender() {
 
     // 日付が選択されたらTimeTableを更新
     date.addEventListener("input", addTimeTable);
-    date.addEventListener("input", addInfo);
   }
 }
 
@@ -63,7 +66,7 @@ async function addInfo() {
     const info_element = document.createElement("div");
     // info_element.className = "info";
     // info_element.textContent = `${info.head_sign}, ${info.name}, ${info.license}, last-update: ${info.updatedAt}`;
-    info_element.textContent = `${info.name}, ${info.license}, last-update: ${info.updatedAt}`;
+    info_element.textContent = `${info.name}, ${info.license}, データ更新日: ${info.updatedAt.substr(0,10)}`;
     butter_tag.appendChild(info_element);
   }
 }
@@ -187,14 +190,14 @@ async function addTimeTable() {
       if (st.trip_id in busRTPositions){
 
         // 位置情報
-        if (position in busRTPositions[st.trip_id]){
+        if ('position' in busRTPositions[st.trip_id]){
           // 2点間の距離を求める
           const p = busRTPositions[st.trip_id].position;
           rtString += `バス停から${Math.round(haversineDistance({latitude:p.latitude,longitude:p.longitude},{latitude:stop.stop_lat,longitude:stop.stop_lon}))}mの所にいます。`;
         }
 
         // 車内混雑情報が存在するか
-        if (position in busRTPositions[st.trip_id]){
+        if ('occupancy_status' in busRTPositions[st.trip_id]){
           // 2点間の距離を求める
           const o = busRTPositions[st.trip_id].occupancy_status;
           rtString += "\n混雑度："+cong[o];
