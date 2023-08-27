@@ -4,34 +4,41 @@
       <v-tab>マップから選択</v-tab>
       <v-tab>名前から選択</v-tab>
       <v-tabs-items v-model="tabs" :touchless="true">
-      <v-tab-item>
-          <v-row class="text-left">
-              <v-col cols="9">
-                  <v-text-field v-model="searchQuery" placeholder="地区名を入力"></v-text-field>
-              </v-col>
-              <v-col cols="3">
-                  <v-btn @click="searchLocation">検索</v-btn>
-              </v-col>
-              <v-col cols="12">
-                  <v-container fluid class="map-container">
-                      <l-map :center="center"
-                          :zoom="zoom"
-                          @click.right="mapRclicked"
-                          ref="map"
-                          style="height: 60vh; width: 100%">
-                          <l-tile-layer :url="url"></l-tile-layer>
-                          <l-marker v-for="(marker, index) in busStopMarkers"
-                              :key="index + marker.name"
-                              :lat-lng="marker.latlon"
-                              :name="marker.name"
-                              :icon="BusStopIcon"
-                              @click="busStopClicked(marker.gtfs_id, marker.stop_id)">
-                          </l-marker>
-                      </l-map>
-                  </v-container>
-              </v-col>
+        <v-tab-item>
+          <v-row class="text-left,py-1">
+            <v-container class="my-3,py-1">
+              <v-container class="my-3,py-1">
+                <v-row class="py-1">
+                  <v-col class="py-1">
+                    <v-text-field v-model="searchQuery" placeholder="例）東京都新宿区"></v-text-field>
+                  </v-col>
+                  <v-col class="py-1">
+                    <v-btn @click="searchLocation" style="marginRight: 20px;">検索</v-btn>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-container>
+            <v-col cols="12">
+              <v-container fluid class="map-container" style="padding-top: 0;">
+                <l-map :center="center"
+                  :zoom="zoom"
+                  @click.right="mapRclicked"
+                  ref="map"
+                  style="height: 60vh; width: 100%">
+                  <l-tile-layer :url="url"></l-tile-layer>
+                  <l-marker v-for="(marker, index) in busStopMarkers"
+                    :key="index + marker.name"
+                    :lat-lng="marker.latlon"
+                    :name="marker.name"
+                    :icon="BusStopIcon"
+                    @click="busStopClicked(marker.gtfs_id, marker.stop_id)">
+                  </l-marker>
+                </l-map>
+              </v-container>
+            </v-col>
           </v-row>
-      </v-tab-item>
+        </v-tab-item>
+
         <v-tab-item>
           <v-row class="text-left">
             <v-col class="mb-5" cols="12" md="6">
@@ -260,7 +267,7 @@ export default {
           this.center = [lat, lon];
           this.zoom = 15;  // ズームレベルを調整することができます
         } else {
-          alert("地区が見つかりませんでした。");
+          // alert("地区が見つかりませんでした。");
         }
       } catch (error) {
         console.error("エラー:", error);
