@@ -19,7 +19,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y build-essential
 
 # Copy requirements file
-COPY requirements.txt .
+COPY * .
 
 # Install required packages
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
