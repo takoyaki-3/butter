@@ -16,6 +16,8 @@ ENV PATH $PATH:/usr/local/go/bin
 # Set the working directory
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y build-essential
+
 # Copy requirements file
 COPY requirements.txt .
 
