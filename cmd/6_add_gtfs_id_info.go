@@ -66,7 +66,6 @@ func main() {
 			}
 
 			json.DumpToFile(versionInfo, "./v0.0.0/"+dir.Name()+"/info.json")
-			AddSing("./v0.0.0/"+dir.Name()+"/info.json", privateKeyBytes)
 		}
 	}
 }
