@@ -2,13 +2,10 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
-	"log"
 	"time"
 	"net/http"
 	"strings"
 
-	. "github.com/takoyaki-3/butter/cmd/helper"
 	json "github.com/takoyaki-3/go-json"
 )
 
@@ -53,12 +50,6 @@ type Data []struct {
 }
 
 func main() {
-	// RSA秘密鍵を読み込む
-	privateKeyBytes, err := ioutil.ReadFile("key.pem")
-	if err != nil {
-		log.Fatalln(err)
-	}
-
 	//
 	data := Data{}
 	json.LoadFromPath("data.json", &data)
@@ -136,6 +127,6 @@ func main() {
 		})
 	}
 
-	json.DumpToFile(datalist, "v0.0.0/datalist.json")
+	err := json.DumpToFile(datalist, "v0.0.0/datalist.json")
 	fmt.Println(err)
 }
