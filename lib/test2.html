@@ -1,57 +1,63 @@
-<script>
-async function generateKeyPair() {
-  return await crypto.subtle.generateKey(
+<html>
+  <script>
+async function fetchAsArrayBuffer(url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${url}`);
+  }
+  return await response.arrayBuffer();
+}
+
+async function pemToPublicKey(pem) {
+  const uint8Array = pemToUint8Array(pem);
+  return await crypto.subtle.importKey(
+    'spki',
+    uint8Array,
     {
-      name: "RSASSA-PKCS1-v1_5",
-      modulusLength: 2048,
-      publicExponent: new Uint8Array([1, 0, 1]),
-      hash: "SHA-256",
+      name: 'RSASSA-PKCS1-v1_5',
+      hash: 'SHA-256',
     },
-    true,
-    ["sign", "verify"]
+    false,
+    ['verify']
   );
 }
 
-async function signMessage(privateKey, message) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(message);
-  return await crypto.subtle.sign(
-    {
-      name: "RSASSA-PKCS1-v1_5",
-    },
-    privateKey,
-    data
-  );
+function pemToUint8Array(pem) {
+  const base64String = pem.replace(/-----[A-Z ]+-----/g, '').trim();
+  const raw = window.atob(base64String);
+  const uint8Array = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) {
+    uint8Array[i] = raw.charCodeAt(i);
+  }
+  return uint8Array;
 }
 
-async function verifySignature(publicKey, message, signature) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(message);
+async function verifySignatureFromUrls(publicKeyUrl, contentUrl, signatureUrl) {
+  const [pem, content, signature] = await Promise.all([
+    fetch(publicKeyUrl).then((res) => res.text()),
+    fetchAsArrayBuffer(contentUrl),
+    fetchAsArrayBuffer(signatureUrl),
+  ]);
+
+  const publicKey = await pemToPublicKey(pem);
   return await crypto.subtle.verify(
     {
-      name: "RSASSA-PKCS1-v1_5",
+      name: 'RSASSA-PKCS1-v1_5',
     },
     publicKey,
     signature,
-    data
+    content
   );
 }
 
 // 使用例
 (async function () {
-  const message = "Hello, world!";
+  const publicKeyUrl = 'https://pub-ad1f4a48b8ef46779b720e734b0c2e1d.r2.dev/public_key.pem';
+  const contentUrl = 'https://storage.app.takoyaki3.com/datalist.json';
+  const signatureUrl = 'https://storage.app.takoyaki3.com/datalist.json.sig';
 
-  // キーペアを生成
-  const { publicKey, privateKey } = await generateKeyPair();
-
-  console.log(publicKey, privateKey)
-
-  // メッセージに署名
-  const signature = await signMessage(privateKey, message);
-  console.log("Signature:", signature);
-
-  // 署名を検証
-  const isValid = await verifySignature(publicKey, message, signature);
-  console.log("Signature valid?", isValid);
+  const isValid = await verifySignatureFromUrls(publicKeyUrl, contentUrl, signatureUrl);
+  console.log('Signature valid?', isValid);
 })();
-</script>
+  </script>
+</html>
