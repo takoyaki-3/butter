@@ -1,6 +1,6 @@
 {
   "name": "butter-lib",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "",
   "main": "webpack.config.js",
   "scripts": {
