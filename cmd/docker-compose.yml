@@ -3,6 +3,6 @@ services:
   converter:
     build:
       context: .
-      dockerfile: Dockerfile.python
+      dockerfile: Dockerfile
     volumes:
       - ./:/app

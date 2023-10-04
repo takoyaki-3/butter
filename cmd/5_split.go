@@ -246,6 +246,5 @@ func split(file string, version string) error {
 	if err != nil {
 		return err
 	}
-	err = AddSing(dstDir+"/info.json", privateKeyBytes)
 	return err
 }
