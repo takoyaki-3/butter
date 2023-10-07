@@ -125,9 +125,11 @@ export default {
     this.updateBusLocations();
 
     // 地図の移動が終わったときのイベントハンドラを設定
-    this.$refs.map.mapObject.on('moveend', () => {
-      const newCenter = this.$refs.map.mapObject.getCenter();
-      this.center = [newCenter.lat, newCenter.lng];
+    this.$nextTick(() => {
+      this.$refs.map.mapObject.on('moveend', () => {
+        const newCenter = this.$refs.map.mapObject.getCenter();
+        this.center = [newCenter.lat, newCenter.lng];
+      });
     });
   },
   watch:{
@@ -349,9 +351,11 @@ export default {
     this.updateBusLocations();
 
     // 地図の移動が終わったときのイベントハンドラを設定
-    this.$refs.map.mapObject.on('moveend', () => {
-      const newCenter = this.$refs.map.mapObject.getCenter();
-      this.center = [newCenter.lat, newCenter.lng];
+    this.$nextTick(() => {
+      this.$refs.map.mapObject.on('moveend', () => {
+        const newCenter = this.$refs.map.mapObject.getCenter();
+        this.center = [newCenter.lat, newCenter.lng];
+      });
     });
 
     // 停留所名
