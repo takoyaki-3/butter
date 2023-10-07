@@ -232,10 +232,6 @@ func split(file string, version string) error {
 	if err != nil {
 		return err
 	}
-	err = AddDirfileSing(dstDir+"/GTFS", privateKeyBytes)
-	if err != nil {
-		return err
-	}
 
 	// 設定ファイル作成
 	info := Info{

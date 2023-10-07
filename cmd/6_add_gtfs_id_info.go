@@ -3,10 +3,8 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"path/filepath"
 
-	. "github.com/takoyaki-3/butter/cmd/helper"
 	json "github.com/takoyaki-3/go-json"
 )
 
@@ -17,11 +15,6 @@ type InfoType struct {
 }
 
 func main() {
-	// RSA秘密鍵を読み込む
-	privateKeyBytes, err := ioutil.ReadFile("key.pem")
-	if err != nil {
-		log.Fatalln(err)
-	}
 
 	// Set the root directory path
 	root := "v0.0.0"
