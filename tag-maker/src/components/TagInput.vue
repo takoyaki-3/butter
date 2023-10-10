@@ -1,5 +1,8 @@
 <template>
   <v-container>
+    <!-- モード切り替えトグルを追加 -->
+    <v-switch v-model="isBothStopsMode" label="出発と到着のバス停を選択"></v-switch>
+
     <v-tabs class="mb-5" v-model="tabs"> <!-- vertical 属性を削除 -->
       <v-tab>マップから選択</v-tab>
       <v-tab>名前から選択</v-tab>
@@ -125,6 +128,9 @@ export default {
     LMarker,
   },
   data: () => ({
+    boardingStop: null, // 乗車するバス停
+    alightingStop: null, // 降車するバス停
+    isBothStopsMode: false, // デフォルトでは出発バス停のみのモード
     tabs:'',
     dialog: false,
     copySuccess: false,
@@ -232,6 +238,12 @@ export default {
     },
     center(){
       this.updateBusLocations();
+    },
+    isBothStopsMode: {
+        immediate: true,
+        handler() {
+            this.resetState();
+        }
     }
   },
   methods: {
@@ -277,16 +289,35 @@ export default {
       }
     },
     busStopClicked(gtfs_id, stop_id) {
-      // クリックされたバス停のgtfs_idとstop_idを取得
-      // ここで必要な処理を行う
-      console.log(`GTFS ID: ${gtfs_id}`);
-      console.log(`Stop ID: ${stop_id}`);
-      this.tagCode = `\n<link rel="stylesheet" href="https://www.unpkg.com/butter-tag/style.css"></link>
-<div class="butter-tag" gtfs_id="${gtfs_id}" stop_ids='["${stop_id}"]'>
-</div><script src="https://www.unpkg.com/butter-tag/dist.js"></scri`+`pt>`; // 生成されたタグ欄に表示
-      this.dialog = true; // ダイアログを表示
-      this.loadPreviewTag(gtfs_id, [stop_id]);
-      console.log(this.tagCode)
+      if (!this.boardingStop) {
+        this.boardingStop = { gtfs_id, stop_id };
+        if (this.isBothStopsMode) {
+          alert("乗車するバス停を選択しました。次に降車するバス停を選択してください。");
+        } else {
+          this.generateTagForOneStop();
+        }
+      } else if (this.isBothStopsMode && !this.alightingStop) {
+        this.alightingStop = { gtfs_id, stop_id };
+        this.generateTagForBothStops();
+      } else {
+        alert("既に2つのバス停が選択されています。再選択する場合は、モードを切り替えてください。");
+      }
+    },
+    generateTagForOneStop() {
+      this.tagCode = `
+        <link rel="stylesheet" href="https://www.unpkg.com/butter-tag/style.css"></link>
+        <div class="butter-tag" gtfs_id="${this.boardingStop.gtfs_id}" stop_ids='["${this.boardingStop.stop_id}"]'>
+        </div><script src="https://www.unpkg.com/butter-tag/dist.js"></scri`+`pt>`;
+      this.dialog = true;
+      this.loadPreviewTag(this.boardingStop.gtfs_id, [this.boardingStop.stop_id]);
+    },
+    generateTagForBothStops() {
+      this.tagCode = `
+        <link rel="stylesheet" href="https://www.unpkg.com/butter-tag/style.css"></link>
+        <div class="butter-tag" gtfs_id="${this.boardingStop.gtfs_id}" stop_ids='["${this.boardingStop.stop_id}"]' to_stop_ids='["${this.alightingStop.stop_id}"]'>
+        </div><script src="https://www.unpkg.com/butter-tag/dist.js"></scri`+`pt>`;
+      this.dialog = true;
+      this.loadPreviewTag(this.boardingStop.gtfs_id, [this.boardingStop.stop_id, this.alightingStop.stop_id]);
     },
     busStopClickedFromTable(row) { // この新しいメソッドを追加
       console.log(`GTFS ID: ${row.gtfs_id}`);
@@ -305,6 +336,11 @@ export default {
           this.copySuccess = false;
         }, 2000); // 2秒後にメッセージを隠す
       });
+    },
+    resetState() {
+      this.boardingStop = null;
+      this.alightingStop = null;
+      this.tagCode = "";
     },
   }
 }

@@ -146,6 +146,7 @@ async function addTimeTable() {
 
     let gtfs_id = butter_tag.getAttribute("gtfs_id");
     let stop_ids = butter_tag.getAttribute("stop_ids");
+    let to_stop_ids = butter_tag.getAttribute("to_stop_ids") ? butter_tag.getAttribute("to_stop_ids") : null;
 
     // リアルタイム情報を取得
     const busInfo = await Butter.getBusRealTimeInfo({gtfs_id})
@@ -167,6 +168,14 @@ async function addTimeTable() {
       stop_ids: JSON.parse(stop_ids)
     })
 
+    let to_stop_tt;
+    if (to_stop_ids) {
+      to_stop_tt = await Butter.fetchTimeTableV1(gtfs_id, {
+        date: date,
+        stop_ids: JSON.parse(to_stop_ids)
+      });
+    }
+
     let is_first_bus = butter_tag.getElementsByClassName("is_first_bus")[0].options[0].selected;
     let threshold_cnt = butter_tag.getElementsByClassName("display_max_num")[0].value;
 
@@ -177,7 +186,7 @@ async function addTimeTable() {
       if (cnt >= threshold_cnt) return;
 
       // 始発からかどうか
-      let threshold_time = parseInt(st.departure_time.slice(0, 2)) * 60 + parseInt(st.departure_time.slice(3, 5))
+      let threshold_time = parseInt(st.departure_time.slice(0, 2)) * 60 + parseInt(st.departure_time.slice(3, 5));
       let now_time = new Date();
       if (!is_first_bus && threshold_time < now_time.getHours() * 60 + now_time.getMinutes()) return;
 
@@ -203,7 +212,18 @@ async function addTimeTable() {
           rtString += "\n混雑度："+cong[o];
         }
       }
-      h.innerText = st.headsign +"\n" + st.departure_time.slice(0, 5)+rtString;
+
+      let departure_time_string = st.departure_time.slice(0, 5);
+      let arrival_time_string = "";
+
+      if (to_stop_tt) {
+        let matched_arrival = to_stop_tt.stop_times.find(t => t.trip_id === st.trip_id);
+        if (matched_arrival) {
+          arrival_time_string = matched_arrival.arrival_time.slice(0, 5);
+        }
+      }
+
+      h.innerText = `${st.headsign}\n出発: ${departure_time_string} / 到着: ${arrival_time_string}`;
       box.appendChild(h);
       // let new_element = document.createElement("p");
       // new_element.textContent = st.departure_time.slice(0, 5);// + " (+X min)";
