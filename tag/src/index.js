@@ -31,8 +31,6 @@ async function addStopName(){
       if (s.stop_id == to_stop_id) to_stop = s;
     })
 
-    console.log(stop,to_stop)
-
     const info = await Butter.getDataInfo(gtfs_id);
     const stopName = stop.stop_name; // 乗車するバス停の停留所名
     let toStopName = "";
