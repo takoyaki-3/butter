@@ -16,20 +16,30 @@ async function addStopName(){
   for (let butter_tag of butter_tag_list) {
     const gtfs_id = butter_tag.getAttribute("gtfs_id");
     const stop_ids = butter_tag.getAttribute("stop_ids");
-    const stop_id = JSON.parse(stop_ids)[0]
+    const to_stop_ids = butter_tag.getAttribute("to_stop_ids");
+    const stop_id = JSON.parse(stop_ids)[0]// 乗車するバス停のstop_id
+    let to_stop_id;
+    if(to_stop_ids){
+      to_stop_id = JSON.parse(to_stop_ids)[0]// 降車するバス停のstop_id
+    }
 
     // 停留所情報を取得
     const busStops = await Butter.getBusStops(gtfs_id)
-    let stop;
+    let stop, to_stop;
     busStops.forEach((s)=>{
       if (s.stop_id == stop_id) stop = s;
+      if (s.stop_id == to_stop_id) to_stop = s;
     })
-    
+
     const info = await Butter.getDataInfo(gtfs_id);
-    const stopName = stop.stop_name;
-    
+    const stopName = stop.stop_name; // 乗車するバス停の停留所名
+    let toStopName = "";
+    if (to_stop !== undefined) {
+      toStopName = " ➜ " + to_stop.stop_name; // 乗車するバス停の停留所名
+    }
+
     const e = document.createElement("h2");
-    e.innerText = `${stopName} (${info.name})`;
+    e.innerText = `${stopName}${toStopName} (${info.name})`;
     butter_tag.insertBefore(e, butter_tag.firstChild);
   }
 }
@@ -223,7 +233,11 @@ async function addTimeTable() {
         }
       }
 
-      h.innerText = `${st.headsign}\n出発: ${departure_time_string} / 到着: ${arrival_time_string}`;
+      if (to_stop_tt) {
+        h.innerText = `${st.headsign} 行\n出発: ${departure_time_string} / 到着: ${arrival_time_string}`;
+      } else {
+        h.innerText = `${st.headsign} 行\n出発: ${departure_time_string}`;
+      }
       box.appendChild(h);
       // let new_element = document.createElement("p");
       // new_element.textContent = st.departure_time.slice(0, 5);// + " (+X min)";
