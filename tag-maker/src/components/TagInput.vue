@@ -97,6 +97,18 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="alertDialog" max-width="400px">
+      <v-card>
+        <v-card-title>バス停選択</v-card-title>
+        <v-card-text>
+          乗車するバス停を選択しました。次に降車するバス停を選択してください。
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="alertDialog = false">閉じる</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -179,6 +191,8 @@ export default {
     host_updated:[],
     tagCode:"",
     searchQuery:"",
+    open: false,  // ダイアログの開閉を管理するためのデータプロパティ
+    alertDialog: false,
   }),
   async mounted (){
 
@@ -292,7 +306,7 @@ export default {
       if (!this.boardingStop) {
         this.boardingStop = { gtfs_id, stop_id };
         if (this.isBothStopsMode) {
-          alert("乗車するバス停を選択しました。次に降車するバス停を選択してください。");
+          this.alertDialog = true;  // ダイアログを開く
         } else {
           this.generateTagForOneStop();
         }
@@ -300,8 +314,11 @@ export default {
         this.alightingStop = { gtfs_id, stop_id };
         this.generateTagForBothStops();
       } else {
-        alert("既に2つのバス停が選択されています。再選択する場合は、モードを切り替えてください。");
+        this.alertDialog = true;  // ダイアログを開く
       }
+    },
+    handleClose() {
+      this.open = false;  // ダイアログを閉じる
     },
     generateTagForOneStop() {
       this.tagCode = `
