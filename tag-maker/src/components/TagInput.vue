@@ -63,7 +63,20 @@
       <v-col class="mb-5" cols="12">
         <h3>プレビュー表示</h3>
         <!--プレビュー表示-->
-        <div id="previewTagCode"></div>
+        <div id="previewTagCode">
+          <h4>乗車時刻</h4>
+          <!-- 乗車時刻表示部分を追加 -->
+          <div v-if="boardingStop">
+            GTFS ID: {{ boardingStop.gtfs_id }}<br>
+            Stop ID: {{ boardingStop.stop_id }}<br>
+          </div>
+          <h4 v-if="isBothStopsMode">降車時刻</h4>
+          <!-- 降車時刻表示部分を追加 -->
+          <div v-if="isBothStopsMode && alightingStop">
+            GTFS ID: {{ alightingStop.gtfs_id }}<br>
+            Stop ID: {{ alightingStop.stop_id }}<br>
+          </div>
+        </div>
       </v-col>
     </v-row>
     <v-row class="text-left">
@@ -261,7 +274,7 @@ export default {
     }
   },
   methods: {
-    async loadPreviewTag(gtfs_id, stop_ids) {
+    async loadPreviewTag(gtfs_id, stop_ids, to_stop_ids) {
 
       const divPreview = document.getElementById('previewTagCode')
       divPreview.innerHTML = ''
@@ -277,11 +290,14 @@ export default {
       div.className = 'butter-tag';
       div.setAttribute('gtfs_id', gtfs_id);
       div.setAttribute('stop_ids', JSON.stringify(stop_ids));
+      if(to_stop_ids){
+        div.setAttribute('to_stop_ids', JSON.stringify(to_stop_ids));
+      }
       divPreview.appendChild(div); // 適切なクラス名またはIDに置き換えてください
 
       // スクリプトの追加
       const script = document.createElement('script');
-      script.src = 'https://www.unpkg.com/butter-tag/dist.js';
+      script.src = 'https://www.unpkg.com/butter-tag@1.0.15/dist.js';
       divPreview.appendChild(script);
     },
     async searchLocation() {
@@ -334,7 +350,7 @@ export default {
         <div class="butter-tag" gtfs_id="${this.boardingStop.gtfs_id}" stop_ids='["${this.boardingStop.stop_id}"]' to_stop_ids='["${this.alightingStop.stop_id}"]'>
         </div><script src="https://www.unpkg.com/butter-tag/dist.js"></scri`+`pt>`;
       this.dialog = true;
-      this.loadPreviewTag(this.boardingStop.gtfs_id, [this.boardingStop.stop_id, this.alightingStop.stop_id]);
+      this.loadPreviewTag(this.boardingStop.gtfs_id, [this.boardingStop.stop_id], [this.alightingStop.stop_id]);
     },
     busStopClickedFromTable(row) { // この新しいメソッドを追加
       console.log(`GTFS ID: ${row.gtfs_id}`);

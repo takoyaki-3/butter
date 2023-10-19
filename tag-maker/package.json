@@ -12,7 +12,7 @@
   },
   "main": "index.js",
   "dependencies": {
-    "butter-lib": "^1.0.14",
+    "butter-lib": "^1.0.15",
     "ci": "^2.3.0",
     "core-js": "^3.8.3",
     "highlight.js": "^11.8.0",
