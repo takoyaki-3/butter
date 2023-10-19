@@ -1,5 +1,52 @@
 <template>
   <v-container>
+    <div v-if="isSurveyShown" class="modal-overlay" @click="closeModal">
+      <div class="survey-modal" @click.stop>        
+        <div v-if="currentQuestion === 1">
+          <h3>1/3 バスを利用する際に調べる手段は何ですか？</h3>
+          <label>
+            <input type="checkbox" v-model="surveyAnswers.question1.option1"> 地図アプリ
+          </label><br/>
+          <label>
+            <input type="checkbox" v-model="surveyAnswers.question1.option2"> 目的地のホームページのアクセス情報
+          </label><br/>
+          <label>
+            <input type="checkbox" v-model="surveyAnswers.question1.option3"> 情報まとめサイト（紙媒体を含む）
+          </label>
+        </div>
+
+        <div v-if="currentQuestion === 2">
+          <h3>2/3 バスを利用するうえで困った経験はありますか？</h3>
+          <label>
+            <input type="radio" name="question2" v-model="surveyAnswers.question2"> 地図アプリ
+          </label><br/>
+          <label>
+            <input type="radio" name="question2" v-model="surveyAnswers.question2"> 目的地のホームページのアクセス情報
+          </label><br/>
+          <label>
+            <input type="radio" name="question2" v-model="surveyAnswers.question2"> 情報まとめサイト（紙媒体を含む）
+          </label>
+        </div>
+
+        <div v-if="currentQuestion === 3">
+          <!-- 質問3の内容 -->
+          <h3>3/3 バスで困った経験がある項目にチェックしてください</h3>
+          <label>
+            <input type="checkbox" v-model="surveyAnswers.question1.option1"> 地図アプリ
+          </label><br/>
+          <label>
+            <input type="checkbox" v-model="surveyAnswers.question1.option2"> 目的地のホームページのアクセス情報
+          </label><br/>
+          <label>
+            <input type="checkbox" v-model="surveyAnswers.question1.option3"> 情報まとめサイト（紙媒体を含む）
+          </label>
+        </div>
+
+        <button v-on:click="closeModal">閉じる</button>
+        <button v-on:click="nextQuestion" v-if="currentQuestion < 3">次へ</button>
+        <button v-on:click="submitSurvey" v-if="currentQuestion === 3">回答</button>
+      </div>
+    </div>
     <!-- モード切り替えトグルを追加 -->
     <v-switch v-model="isBothStopsMode" label="出発と到着のバス停を選択"></v-switch>
 
@@ -136,6 +183,50 @@
   z-index: 0;
   position: relative; /* z-indexを有効にするためにpositionを設定 */
 }
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.survey-modal {
+  background-color: #ffffff;
+  padding: 20px;
+  width: 300px;
+  border-radius: 8px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+  z-index: 10000;
+}
+
+/* ボタンのスタイル */
+button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* "次へ" と "回答" ボタン */
+button.next, button.submit {
+  background-color: #3f51b5;
+  color: white;
+}
+
+/* "閉じる" ボタン */
+button.close {
+  background-color: #f44336;
+  color: white;
+}
+
 </style>
 
 <script>
@@ -206,8 +297,20 @@ export default {
     searchQuery:"",
     open: false,  // ダイアログの開閉を管理するためのデータプロパティ
     alertDialog: false,
+    isSurveyShown: false,
+    currentQuestion: 1,
+    surveyAnswers: {
+      question1: {},
+      question2: {},
+      question3: {}
+    }
   }),
   async mounted (){
+
+    // アンケート情報取得
+    if (!localStorage.getItem('surveyCompleted')) {
+      this.isSurveyShown = true;
+    }
 
     // 日付取得
     const today = new Date();
@@ -375,6 +478,17 @@ export default {
       this.alightingStop = null;
       this.tagCode = "";
     },
+    closeModal() {
+      this.isSurveyShown = false;
+    },
+    nextQuestion() {
+      this.currentQuestion += 1;
+    },
+    submitSurvey() {
+      console.log(this.surveyAnswers);
+      localStorage.setItem('surveyCompleted', 'true');
+      this.isSurveyShown = false;
+    }
   }
 }
 </script>
