@@ -18,13 +18,16 @@
         <div v-if="currentQuestion === 2">
           <h3>2/3 バスを利用するうえで困った経験はありますか？</h3>
           <label>
-            <input type="radio" name="question2" v-model="surveyAnswers.question2"> 地図アプリ
+            <input type="radio" name="question2" value="よく困る（1ヵ月に一度以上）" v-model="surveyAnswers.question2"> よく困る（1ヵ月に一度以上）
           </label><br/>
           <label>
-            <input type="radio" name="question2" v-model="surveyAnswers.question2"> 目的地のホームページのアクセス情報
+            <input type="radio" name="question2" value="たまに困る（1年に一度以上）" v-model="surveyAnswers.question2"> たまに困る（1年に一度以上）
           </label><br/>
           <label>
-            <input type="radio" name="question2" v-model="surveyAnswers.question2"> 情報まとめサイト（紙媒体を含む）
+            <input type="radio" name="question2" value="困ったことがある（過去に一度以上）" v-model="surveyAnswers.question2"> 困ったことがある（過去に一度以上）
+          </label><br/>
+          <label>
+            <input type="radio" name="question2" value="一度も困ったことがない" v-model="surveyAnswers.question2"> 一度も困ったことがない
           </label>
         </div>
 
@@ -32,13 +35,13 @@
           <!-- 質問3の内容 -->
           <h3>3/3 バスで困った経験がある項目にチェックしてください</h3>
           <label>
-            <input type="checkbox" v-model="surveyAnswers.question1.option1"> 地図アプリ
+            <input type="checkbox" v-model="surveyAnswers.question3.option1"> 地図アプリ
           </label><br/>
           <label>
-            <input type="checkbox" v-model="surveyAnswers.question1.option2"> 目的地のホームページのアクセス情報
+            <input type="checkbox" v-model="surveyAnswers.question3.option2"> 目的地のホームページのアクセス情報
           </label><br/>
           <label>
-            <input type="checkbox" v-model="surveyAnswers.question1.option3"> 情報まとめサイト（紙媒体を含む）
+            <input type="checkbox" v-model="surveyAnswers.question3.option3"> 情報まとめサイト（紙媒体を含む）
           </label>
         </div>
 
@@ -300,10 +303,19 @@ export default {
     isSurveyShown: false,
     currentQuestion: 1,
     surveyAnswers: {
-      question1: {},
-      question2: {},
-      question3: {}
-    }
+      question1: {
+        option1: false,
+        option2: false,
+        option3: false
+      },
+      question2: null,
+      question3: {
+        option1: false,
+        option2: false,
+        option3: false
+      }
+    },
+    identifier: Math.random().toString(36).substring(7),
   }),
   async mounted (){
 
@@ -481,14 +493,34 @@ export default {
     closeModal() {
       this.isSurveyShown = false;
     },
-    nextQuestion() {
+    async nextQuestion() {
+      await this.sendAnswersToAPI(this.currentQuestion);
       this.currentQuestion += 1;
     },
-    submitSurvey() {
+    async submitSurvey() {
       console.log(this.surveyAnswers);
       localStorage.setItem('surveyCompleted', 'true');
       this.isSurveyShown = false;
-    }
+      await this.sendAnswersToAPI(this.currentQuestion);
+    },
+    async sendAnswersToAPI(questionNumber) {
+      const sendBody = JSON.stringify({
+          identifier: this.identifier,
+          question: questionNumber,
+          answers: this.surveyAnswers
+        });
+
+      const response = await fetch("https://key-value-array-store.api.takoyaki3.com", {
+        method: "POST",
+        body: JSON.stringify({key:'butter-survey',value:JSON.stringify(sendBody)}),
+      });
+      
+      if (response.ok) {
+        console.log("Data sent successfully");
+      } else {
+        console.log("Failed to send data");
+      }
+    },
   }
 }
 </script>
