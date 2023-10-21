@@ -172,6 +172,18 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="alertDialog2" max-width="400px">
+      <v-card>
+        <v-card-title>エラー</v-card-title>
+        <v-card-text>
+          新たなタグを生成するには、お手数ですが、ページを再読み込みしてください
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="alertDialog2 = false">閉じる</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -300,6 +312,7 @@ export default {
     searchQuery:"",
     open: false,  // ダイアログの開閉を管理するためのデータプロパティ
     alertDialog: false,
+    alertDialog2: false,
     isSurveyShown: false,
     currentQuestion: 1,
     surveyAnswers: {
@@ -434,18 +447,19 @@ export default {
       }
     },
     busStopClicked(gtfs_id, stop_id) {
-      if (!this.boardingStop) {
+      if (this.isBothStopsMode===false) {
         this.boardingStop = { gtfs_id, stop_id };
-        if (this.isBothStopsMode) {
-          this.alertDialog = true;  // ダイアログを開く
-        } else {
-          this.generateTagForOneStop();
-        }
-      } else if (this.isBothStopsMode && !this.alightingStop) {
-        this.alightingStop = { gtfs_id, stop_id };
-        this.generateTagForBothStops();
+        this.generateTagForOneStop();
       } else {
-        this.alertDialog = true;  // ダイアログを開く
+        if (!this.boardingStop) {
+          this.boardingStop = { gtfs_id, stop_id };
+          this.alertDialog = true;  // ダイアログを開く
+        } else if (this.isBothStopsMode && !this.alightingStop) {
+          this.alightingStop = { gtfs_id, stop_id };
+          this.generateTagForBothStops();
+        } else {
+          this.alertDialog2 = true;  // ダイアログを開く
+        }
       }
     },
     handleClose() {
