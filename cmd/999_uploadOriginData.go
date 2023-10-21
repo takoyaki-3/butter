@@ -132,6 +132,17 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	// 0. index.htmlのコピー	
+	newFile, err := os.Create("v0.0.0/index.html")
+	if err != nil {
+		fmt.Println(err)
+	}
+	oldFile, err := os.Open("index.html")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	io.Copy(newFile, oldFile)
 
 	// 1. 指定したディレクトリ内のファイルを.tar形式にまとめる
 	err = CreateTarArchive(sourceDir, targetFile)

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BuTTER ストレージ追加ツール</title>
+</head>
+<body>
+  <h1>BuTTER ストレージ追加ツール</h1>
+  <button onclick="addHost()">BuTTERストレージとして追加</button>
+  <div id="responseDiv"></div> <!-- レスポンスを表示するためのdiv -->
+
+  <script>
+    async function addHost() {
+      // 現在のWebページのドメイン名を取得
+      const currentDomain = 'https://' + window.location.hostname+'/';
+
+      // API URL
+      const apiUrl = `https://butter-add-storage.api.takoyaki3.com/api/addhost?hostName=${currentDomain}&type=host`;
+      console.log(apiUrl)
+
+      try {
+        // fetch APIでリクエストを送信
+        const response = await fetch(apiUrl, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        });
+
+        // レスポンスをJSON形式で解析
+        const data = await response.json();
+
+        // 結果を表示（コンソールとWebページ上）
+        console.log('Response:', data);
+
+        // Webページ上にレスポンスを表示
+        document.getElementById('responseDiv').innerText = JSON.stringify(data, null, 2);
+
+      } catch (error) {
+        console.error('An error occurred:', error);
+        document.getElementById('responseDiv').innerText = 'An error occurred: ' + error;
+      }
+    }
+  </script>
+</body>
+</html>
