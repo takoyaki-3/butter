@@ -35,13 +35,10 @@
           <!-- 質問3の内容 -->
           <h3>3/3 バスで困った経験がある項目にチェックしてください</h3>
           <label>
-            <input type="checkbox" v-model="surveyAnswers.question3.option1"> 地図アプリ
+            <input type="checkbox" v-model="surveyAnswers.question3.option1"> 生活圏で使うバス
           </label><br/>
           <label>
-            <input type="checkbox" v-model="surveyAnswers.question3.option2"> 目的地のホームページのアクセス情報
-          </label><br/>
-          <label>
-            <input type="checkbox" v-model="surveyAnswers.question3.option3"> 情報まとめサイト（紙媒体を含む）
+            <input type="checkbox" v-model="surveyAnswers.question3.option2"> 旅行帰省などまれに使うバス
           </label>
         </div>
 
