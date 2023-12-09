@@ -64,6 +64,8 @@
 
       const hostList = await Butter.getHostUpdated()
       console.log({"hostUpdated":hostList})
+
+      console.log(await Butter.getStopsForBusPassingThrough('ToeiBus','0955-01'))
     }
     main()
   </script>

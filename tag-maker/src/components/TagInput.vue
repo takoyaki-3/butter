@@ -260,6 +260,7 @@ export default {
     alightingStop: null, // 降車するバス停
     isBothStopsMode: false, // デフォルトでは出発バス停のみのモード
     tabs:'',
+    filteredStopIds:null,
     dialog: false,
     copySuccess: false,
     dataList: [],
@@ -346,7 +347,10 @@ export default {
     
     // バス停・バスロケーションのマーカを設定
     this.updateBusLocations = async () => {
-
+      if(this.filteredStopIds){
+        return
+      }
+      
       // 全ての前回のマーカーを削除
       this.busMarkers = [];
       this.busStopMarkers = [];
@@ -443,14 +447,19 @@ export default {
         alert("検索中にエラーが発生しました。");
       }
     },
-    busStopClicked(gtfs_id, stop_id) {
+    async busStopClicked(gtfs_id, stop_id) {
       if (this.isBothStopsMode===false) {
         this.boardingStop = { gtfs_id, stop_id };
         this.generateTagForOneStop();
       } else {
+        // 乗車バス停・降車バス停を両方選択するモード
         if (!this.boardingStop) {
           this.boardingStop = { gtfs_id, stop_id };
           this.alertDialog = true;  // ダイアログを開く
+          // 表示するバス停を絞り込む処理
+          const stops = await Butter.getStopsForBusPassingThrough(gtfs_id,stop_id)
+          this.filteredStopIds = this.busStopMarkers.filter(stop => stops.includes(stop.stop_id));
+          this.busStopMarkers = this.filteredStopIds
         } else if (this.isBothStopsMode && !this.alightingStop) {
           this.alightingStop = { gtfs_id, stop_id };
           this.generateTagForBothStops();
