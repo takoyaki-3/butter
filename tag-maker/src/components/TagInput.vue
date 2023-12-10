@@ -48,7 +48,7 @@
       </div>
     </div>
     <!-- モード切り替えトグルを追加 -->
-    <v-switch v-model="isBothStopsMode" label="出発と到着のバス停を選択"></v-switch>
+    <v-switch v-model="isBothStopsMode" label="出発と到着のバス停を選択" v-if="!isModeSelected" color="#F07B00"></v-switch>
 
     <v-tabs class="mb-5" v-model="tabs"> <!-- vertical 属性を削除 -->
       <v-tab>マップから選択</v-tab>
@@ -233,7 +233,7 @@ button {
 
 /* "次へ" と "回答" ボタン */
 button.next, button.submit {
-  background-color: #3f51b5;
+  background-color: #F07B00;
   color: white;
 }
 
@@ -259,7 +259,7 @@ button.close {
 
 .loading-spinner {
   border: 5px solid #f3f3f3;
-  border-top: 5px solid #3498db;
+  border-top: 5px solid #F07B00;
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -290,7 +290,7 @@ export default {
   data: () => ({
     boardingStop: null, // 乗車するバス停
     alightingStop: null, // 降車するバス停
-    isBothStopsMode: false, // デフォルトでは出発バス停のみのモード
+    isBothStopsMode: true,
     tabs:'',
     filteredStopIds:null,
     dialog: false,
@@ -360,6 +360,7 @@ export default {
     },
     identifier: Math.random().toString(36).substring(7),
     isLoading: false, // ローディング状態の管理
+    isModeSelected: false,
   }),
   async mounted (){
 
@@ -481,6 +482,7 @@ export default {
       }
     },
     async busStopClicked(gtfs_id, stop_id) {
+      this.isModeSelected = true
       if (this.isBothStopsMode===false) {
         this.boardingStop = { gtfs_id, stop_id };
         this.generateTagForOneStop();
