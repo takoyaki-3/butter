@@ -181,6 +181,10 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <!-- ローディングアニメーション -->
+    <div v-if="isLoading" class="loading-overlay">
+      <div class="loading-spinner"></div>
+    </div>
   </v-container>
 </template>
 
@@ -237,6 +241,34 @@ button.next, button.submit {
 button.close {
   background-color: #f44336;
   color: white;
+}
+
+/* ローディングアニメーションのスタイル */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loading-spinner {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 </style>
@@ -327,6 +359,7 @@ export default {
       }
     },
     identifier: Math.random().toString(36).substring(7),
+    isLoading: false, // ローディング状態の管理
   }),
   async mounted (){
 
@@ -455,11 +488,13 @@ export default {
         // 乗車バス停・降車バス停を両方選択するモード
         if (!this.boardingStop) {
           this.boardingStop = { gtfs_id, stop_id };
-          this.alertDialog = true;  // ダイアログを開く
+          this.isLoading = true; // ローディング開始
           // 表示するバス停を絞り込む処理
           const stops = await Butter.getStopsForBusPassingThrough(gtfs_id,stop_id)
           this.filteredStopIds = this.busStopMarkers.filter(stop => stops.includes(stop.stop_id));
           this.busStopMarkers = this.filteredStopIds
+          this.isLoading = false; // ローディング終了
+          this.alertDialog = true;  // ダイアログを開く
         } else if (this.isBothStopsMode && !this.alightingStop) {
           this.alightingStop = { gtfs_id, stop_id };
           this.generateTagForBothStops();
