@@ -158,12 +158,12 @@ async function addTimeTable() {
     let stop_ids = butter_tag.getAttribute("stop_ids");
     let to_stop_ids = butter_tag.getAttribute("to_stop_ids") ? butter_tag.getAttribute("to_stop_ids") : null;
 
-    // リアルタイム情報を取得
-    const busInfo = await Butter.getBusRealTimeInfo({gtfs_id})
-    const busRTPositions = {};
-    busInfo.forEach((e)=>{
-      busRTPositions[e.vehicle.trip.tripId] = e.vehicle;
-    })
+    // // リアルタイム情報を取得
+    // const busInfo = await Butter.getBusRealTimeInfo({gtfs_id})
+    // const busRTPositions = {};
+    // busInfo.forEach((e)=>{
+    //   busRTPositions[e.vehicle.trip.tripId] = e.vehicle;
+    // })
     // 停留所情報を取得
     const busStops = await Butter.getBusStops('ToeiBus')
     let stop;
@@ -206,22 +206,22 @@ async function addTimeTable() {
       const box = document.createElement("div")
       const h = document.createElement("p")
       let rtString = "\n";
-      if (st.trip_id in busRTPositions){
+      // if (st.trip_id in busRTPositions){
 
-        // 位置情報
-        if ('position' in busRTPositions[st.trip_id]){
-          // 2点間の距離を求める
-          const p = busRTPositions[st.trip_id].position;
-          rtString += `バス停から${Math.round(haversineDistance({latitude:p.latitude,longitude:p.longitude},{latitude:stop.stop_lat,longitude:stop.stop_lon}))}mの所にいます。`;
-        }
+      //   // 位置情報
+      //   if ('position' in busRTPositions[st.trip_id]){
+      //     // 2点間の距離を求める
+      //     const p = busRTPositions[st.trip_id].position;
+      //     rtString += `バス停から${Math.round(haversineDistance({latitude:p.latitude,longitude:p.longitude},{latitude:stop.stop_lat,longitude:stop.stop_lon}))}mの所にいます。`;
+      //   }
 
-        // 車内混雑情報が存在するか
-        if ('occupancy_status' in busRTPositions[st.trip_id]){
-          // 2点間の距離を求める
-          const o = busRTPositions[st.trip_id].occupancy_status;
-          rtString += "\n混雑度："+cong[o];
-        }
-      }
+      //   // 車内混雑情報が存在するか
+      //   if ('occupancy_status' in busRTPositions[st.trip_id]){
+      //     // 2点間の距離を求める
+      //     const o = busRTPositions[st.trip_id].occupancy_status;
+      //     rtString += "\n混雑度："+cong[o];
+      //   }
+      // }
 
       let departure_time_string = st.departure_time.slice(0, 5);
       let arrival_time_string = "";

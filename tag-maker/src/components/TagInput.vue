@@ -426,7 +426,7 @@ export default {
 
       // スクリプトの追加
       const script = document.createElement('script');
-      script.src = 'https://www.unpkg.com/butter-tag@1.0.15/dist.js';
+      script.src = 'https://www.unpkg.com/butter-tag@1.0.16/dist.js';
       divPreview.appendChild(script);
     },
     async searchLocation() {
