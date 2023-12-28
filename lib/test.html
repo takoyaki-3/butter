@@ -25,6 +25,9 @@
 
       const trips = await Butter.getTrips('ToeiBus', agencyInfo[0].version_id)
       console.log({ "getTrips": trips })
+      
+      const versionIds = await Butter.getVersionInfo('ToeiBus')
+      console.log({"getVersionIds":versionIds})
 
       // 名前からの停留所検索使用例
       const substring = "かみ";
