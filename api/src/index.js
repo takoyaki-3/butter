@@ -26,12 +26,14 @@ async function handleRequest(request) {
     // });
 
     // BuTTERライブラリの初期化
-    Butter.init('https://butter.takoyaki3.com/v0.0.0/root.json',{useFetch: true});
+    await Butter.init('https://butter.takoyaki3.com/v0.0.0/root.json',{useFetch: true});
     console.log(Butter);
 
     // 指定されたBuTTER関数の実行
     if (functionName in Butter) {
+      console.log(Butter[functionName])
       const result = await Butter[functionName](...params);
+      console.log({result});
       return new Response(JSON.stringify(result), {
         headers: { 'Content-Type': 'application/json' },
       });
