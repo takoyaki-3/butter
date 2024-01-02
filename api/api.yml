@@ -4,7 +4,7 @@ info:
   description: BuTTER APIは、様々な交通関連情報を提供するREST APIです。
   version: "1.0.0"
 servers:
-  - url: https://butter.hatano-yuuta7921.workers.dev/v1
+  - url: https://api.butter.takoyaki3.com/v1
     description: 本番サーバー
 paths:
   /addNumbers:
@@ -295,7 +295,54 @@ paths:
                     transfers:
                       type: integer
                       description: 乗り換え可能回数
-
+  /getTrips:
+    get:
+      summary: トリップ情報の取得
+      description: 特定のGTFSバージョンのトリップ情報を取得します。
+      parameters:
+        - name: gtfsID
+          in: query
+          required: true
+          description: GTFS ID
+          schema:
+            type: string
+        - name: versionID
+          in: query
+          required: false
+          description: バージョンID（省略可能）
+          schema:
+            type: string
+      responses:
+        '200':
+          description: トリップ情報
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    route_id:
+                      type: string
+                      description: 路線ID
+                    service_id:
+                      type: string
+                      description: サービスID
+                    trip_id:
+                      type: string
+                      description: トリップID
+                    trip_headsign:
+                      type: string
+                      description: 行き先
+                    direction_id:
+                      type: integer
+                      description: 方向ID
+                    block_id:
+                      type: string
+                      description: ブロックID
+                    shape_id:
+                      type: string
+                      description: シェイプID
   /getStopTimes:
     get:
       summary: 停留所時刻情報の取得
@@ -420,87 +467,87 @@ paths:
                     stop_id:
                       type: string
                       description: 停留所ID
-  /getVehiclePositionFromURL:
-    get:
-      summary: URLからの車両位置情報の取得
-      description: 特定のURLからリアルタイムの車両位置情報を取得します。
-      parameters:
-        - name: url
-          in: query
-          required: true
-          description: 車両位置情報を取得するURL
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 車両位置情報
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                      description: 車両ID
-                    vehicle:
-                      type: object
-                      description: 車両の詳細情報
-                    position:
-                      type: object
-                      description: 位置情報
-                    timestamp:
-                      type: integer
-                      format: int64
-                      description: タイムスタンプ
+  # /getVehiclePositionFromURL:
+  #   get:
+  #     summary: URLからの車両位置情報の取得
+  #     description: 特定のURLからリアルタイムの車両位置情報を取得します。
+  #     parameters:
+  #       - name: url
+  #         in: query
+  #         required: true
+  #         description: 車両位置情報を取得するURL
+  #         schema:
+  #           type: string
+  #     responses:
+  #       '200':
+  #         description: 車両位置情報
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: array
+  #               items:
+  #                 type: object
+  #                 properties:
+  #                   id:
+  #                     type: string
+  #                     description: 車両ID
+  #                   vehicle:
+  #                     type: object
+  #                     description: 車両の詳細情報
+  #                   position:
+  #                     type: object
+  #                     description: 位置情報
+  #                   timestamp:
+  #                     type: integer
+  #                     format: int64
+  #                     description: タイムスタンプ
 
-  /getBusInfo:
-    get:
-      summary: 特定地点のバス情報取得
-      description: 指定された緯度と経度に基づいて近くで運行しているバスの情報を取得します。
-      parameters:
-        - name: latitude
-          in: query
-          required: true
-          description: 緯度
-          schema:
-            type: number
-            format: float
-        - name: longitude
-          in: query
-          required: true
-          description: 経度
-          schema:
-            type: number
-            format: float
-      responses:
-        '200':
-          description: 近くのバス情報
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    vehicle_id:
-                      type: string
-                      description: 車両ID
-                    latitude:
-                      type: number
-                      format: float
-                      description: 緯度
-                    longitude:
-                      type: number
-                      format: float
-                      description: 経度
-                    bearing:
-                      type: number
-                      description: 方位角
-                    speed:
-                      type: number
-                      description: 速度
+  # /getBusInfo:
+  #   get:
+  #     summary: 特定地点のバス情報取得
+  #     description: 指定された緯度と経度に基づいて近くで運行しているバスの情報を取得します。
+  #     parameters:
+  #       - name: latitude
+  #         in: query
+  #         required: true
+  #         description: 緯度
+  #         schema:
+  #           type: number
+  #           format: float
+  #       - name: longitude
+  #         in: query
+  #         required: true
+  #         description: 経度
+  #         schema:
+  #           type: number
+  #           format: float
+  #     responses:
+  #       '200':
+  #         description: 近くのバス情報
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: array
+  #               items:
+  #                 type: object
+  #                 properties:
+  #                   vehicle_id:
+  #                     type: string
+  #                     description: 車両ID
+  #                   latitude:
+  #                     type: number
+  #                     format: float
+  #                     description: 緯度
+  #                   longitude:
+  #                     type: number
+  #                     format: float
+  #                     description: 経度
+  #                   bearing:
+  #                     type: number
+  #                     description: 方位角
+  #                   speed:
+  #                     type: number
+  #                     description: 速度
   /getDataInfo:
     get:
       summary: GTFSデータ情報の取得
@@ -529,58 +576,58 @@ paths:
                       type: object
                       description: 関連するデータのリスト
 
-  /getVehiclePositionUrls:
-    get:
-      summary: 車両位置情報URLの取得
-      description: 利用可能な車両位置情報のURLリストを取得します。
-      responses:
-        '200':
-          description: 車両位置情報のURLリスト
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: 
-                  type: string
-                  description: GTFS IDに関連付けられた車両位置情報のURL
-  /getBusRealTimeInfo:
-    get:
-      summary: リアルタイムバス情報の取得
-      description: 特定のGTFS IDに対するリアルタイムのバス情報を取得します。
-      parameters:
-        - name: gtfs_id
-          in: query
-          required: true
-          description: GTFSのID
-          schema:
-            type: string
-      responses:
-        '200':
-          description: リアルタイムバス情報
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    vehicle_id:
-                      type: string
-                      description: 車両ID
-                    latitude:
-                      type: number
-                      format: float
-                      description: 緯度
-                    longitude:
-                      type: number
-                      format: float
-                      description: 経度
-                    bearing:
-                      type: number
-                      description: 方位角
-                    speed:
-                      type: number
-                      description: 速度
+  # /getVehiclePositionUrls:
+  #   get:
+  #     summary: 車両位置情報URLの取得
+  #     description: 利用可能な車両位置情報のURLリストを取得します。
+  #     responses:
+  #       '200':
+  #         description: 車両位置情報のURLリスト
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               additionalProperties: 
+  #                 type: string
+  #                 description: GTFS IDに関連付けられた車両位置情報のURL
+  # /getBusRealTimeInfo:
+  #   get:
+  #     summary: リアルタイムバス情報の取得
+  #     description: 特定のGTFS IDに対するリアルタイムのバス情報を取得します。
+  #     parameters:
+  #       - name: gtfs_id
+  #         in: query
+  #         required: true
+  #         description: GTFSのID
+  #         schema:
+  #           type: string
+  #     responses:
+  #       '200':
+  #         description: リアルタイムバス情報
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: array
+  #               items:
+  #                 type: object
+  #                 properties:
+  #                   vehicle_id:
+  #                     type: string
+  #                     description: 車両ID
+  #                   latitude:
+  #                     type: number
+  #                     format: float
+  #                     description: 緯度
+  #                   longitude:
+  #                     type: number
+  #                     format: float
+  #                     description: 経度
+  #                   bearing:
+  #                     type: number
+  #                     description: 方位角
+  #                   speed:
+  #                     type: number
+  #                     description: 速度
   /getStopsForBusPassingThrough:
     get:
       summary: 特定のバス停を通過するバスの情報取得
@@ -796,15 +843,53 @@ paths:
         - name: options
           in: query
           required: true
-          description: 検索オプション
+          description: |
+            検索オプション。次のフィールドを含むオブジェクト:
+            - `stop_ids`: 検索対象となるバス停のIDリスト（例: 出発地、目的地、経由地のバス停ID）。
+            - `date`: 検索対象の日付（YYYYMMDD形式）。
+            - `trip_ids`: 検索対象となる特定のバスのトリップIDリスト。
+          # - `start_time`: 検索開始時間（HH:MM:SS形式）。
+          # - `end_time`: 検索終了時間（HH:MM:SS形式）。
+          # - `positions`: 検索対象となる位置情報のリスト。各要素は`lat`（緯度）、`lon`（経度）、`r`（半径）を含む。
           schema:
             type: object
-        - name: version
-          in: query
-          required: false
-          description: バージョン（省略可能）
-          schema:
-            type: string
+            properties:
+              stop_ids:
+                type: array
+                items:
+                  type: string
+                description: バス停のIDリスト。
+              date:
+                type: string
+                format: date
+                description: 検索対象の日付（YYYYMMDD形式）。
+              trip_ids:
+                type: array
+                items:
+                  type: string
+                description: バスのトリップIDリスト。
+              # start_time:
+              #   type: string
+              #   description: 検索開始時間（HH:MM:SS形式）。
+              # end_time:
+              #   type: string
+              #   description: 検索終了時間（HH:MM:SS形式）。
+              # positions:
+              #   type: array
+              #   items:
+              #     type: object
+              #     properties:
+              #       lat:
+              #         type: number
+              #         format: float
+              #         description: 緯度。
+              #       lon:
+              #         type: number
+              #         format: float
+              #         description: 経度。
+              #       r:
+              #         type: number
+              #         description: 半径（メートル単位）。
       responses:
         '200':
           description: 指定された条件に基づく時刻表
@@ -821,55 +906,55 @@ paths:
                   properties:
                     type: string
                     description: 追加プロパティ
-  /getStopsWithinRadius:
-    get:
-      summary: 半径内の停留所の取得
-      description: 指定された位置から特定の半径内にある停留所を取得します。
-      parameters:
-        - name: lat
-          in: query
-          required: true
-          description: 緯度
-          schema:
-            type: number
-            format: float
-        - name: lon
-          in: query
-          required: true
-          description: 経度
-          schema:
-            type: number
-            format: float
-        - name: radius
-          in: query
-          required: true
-          description: 半径（メートル単位）
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: 指定された半径内の停留所
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    stop_id:
-                      type: string
-                      description: 停留所ID
-                    stop_name:
-                      type: string
-                      description: 停留所名
-                    stop_lat:
-                      type: number
-                      format: float
-                      description: 緯度
-                    stop_lon:
-                      type: number
-                      format: float
-                      description: 経度
+  # /getStopsWithinRadius:
+  #   get:
+  #     summary: 半径内の停留所の取得
+  #     description: 指定された位置から特定の半径内にある停留所を取得します。
+  #     parameters:
+  #       - name: lat
+  #         in: query
+  #         required: true
+  #         description: 緯度
+  #         schema:
+  #           type: number
+  #           format: float
+  #       - name: lon
+  #         in: query
+  #         required: true
+  #         description: 経度
+  #         schema:
+  #           type: number
+  #           format: float
+  #       - name: radius
+  #         in: query
+  #         required: true
+  #         description: 半径（メートル単位）
+  #         schema:
+  #           type: integer
+  #     responses:
+  #       '200':
+  #         description: 指定された半径内の停留所
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: array
+  #               items:
+  #                 type: object
+  #                 properties:
+  #                   stop_id:
+  #                     type: string
+  #                     description: 停留所ID
+  #                   stop_name:
+  #                     type: string
+  #                     description: 停留所名
+  #                   stop_lat:
+  #                     type: number
+  #                     format: float
+  #                     description: 緯度
+  #                   stop_lon:
+  #                     type: number
+  #                     format: float
+  #                     description: 経度
 
   /getStopsBySubstring:
     get:

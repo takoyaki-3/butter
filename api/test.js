@@ -1,5 +1,8 @@
 const axios = require('axios');
 
+// const API_ENDPOINT = 'https://api.butter.takoyaki3.com/v1';
+const API_ENDPOINT = 'http://localhost:8787/v1';
+
 const functionParams = {
   addNumbers: ['a','b'],
   getHostUpdated: [],
@@ -21,25 +24,25 @@ const functionParams = {
   // getStopTimes: ['gtfs_id', 'version_id'], // 都営バスの場合、大きすぎてエラーとなる
   // getTransfers: ['gtfs_id', 'version_id'], // 都営バスの場合、存在しないためエラーとなる
   getTranslations: ['gtfs_id', 'version_id'],
-  // getTrips: ['gtfs_id', 'version_id'],
-  // getTimeTableByStopHash: ['gtfs_id', 'version_id', 'stop_hash'],
-  // getTimeTableByTripHash: ['gtfs_id', 'version_id', 'trip_hash'],
+  // getTrips: ['gtfs_id', 'version_id'], // 一応動いた
+  getTimeTableByStopHash: ['gtfs_id', 'version_id', 'stop_hash'],
+  getTimeTableByTripHash: ['gtfs_id', 'version_id', 'trip_hash'],
   getTimeTableByStopID: ['gtfs_id', 'version_id', 'stop_id'],
   // getTimeTableByTripID: ['gtfs_id', 'version_id', 'trip_id'],
   getServiceIDs: ['gtfs_id', 'version_id', 'date'],
   findTrips: ['gtfs_id', 'version_id', 'stop_ids'], // 都営バスの場合、大きすぎてエラーとなる
   findTimeTableByStopID: ['gtfs_id', 'version_id', 'stop_id', 'date'],
   findTimeTableByTripIDs: ['gtfs_id', 'version_id', 'trip_ids'],
-  // fetchTimeTableV1: ['gtfs_id', 'options', 'version'],
+  fetchTimeTableV1: ['gtfs_id', 'options', 'version'],
   getStopsWithinRadius: ['lat', 'lon', 'radius'],
   getStopsBySubstring: ['substring'],
   // getVehiclePositionFromURL: ['url'],
 //  getVehiclePositionUrls: [],
   // getBusInfo: ['lat', 'lon'],
-  // getDataInfo: ['gtfs_id'],
+  getDataInfo: ['gtfs_id'],
   // init: ['butter_root', 'config'],
   // getBusRealTimeInfo: [],
-//  getStopsForBusPassingThrough: ['gtfs_id', 'stop_id', 'version_id'], // リクエスト数が多すぎるため失敗する
+  getStopsForBusPassingThrough: ['gtfs_id', 'stop_id', 'version_id'], // リクエスト数が多すぎるため失敗する
 };
 
 const sampleParams = {
@@ -58,13 +61,17 @@ const sampleParams = {
   date: 20240131,
   stop_ids: ['0605-07'],
   trip_ids: ['00106-1-01-105-0913'],
+  options: {
+    stop_ids: ['0605-07'],
+    date: '20230131',
+  }
 }
 
 const main = async () => {
   const results = []
   for(const functionName in functionParams) {
     const params = functionParams[functionName].filter(param => sampleParams[param]!==undefined);
-    const url = `http://localhost:8787/v1/${functionName}?${params.map(param => `${param}=${(typeof(sampleParams[param]) === 'object' || typeof(sampleParams[param]) === 'array') ? JSON.stringify(sampleParams[param]) : sampleParams[param]}`).join('&')}`
+    const url = `${API_ENDPOINT}/${functionName}?${params.map(param => `${param}=${(typeof(sampleParams[param]) === 'object' || typeof(sampleParams[param]) === 'array') ? JSON.stringify(sampleParams[param]) : sampleParams[param]}`).join('&')}`
     try {
       const response = await axios.get(url)
       // results.push({ functionName, params, response: response.data })
