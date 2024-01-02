@@ -5,35 +5,71 @@ addEventListener('fetch', (event) => {
 });
 
 async function handleRequest(request) {
-  if (request.method !== 'POST') {
-    return new Response('Only POST requests are allowed', { status: 405 });
+  if (request.method !== 'GET') {
+    return new Response('Only GET requests are allowed', { status: 405 });
   }
 
-  try {
-    // リクエストのJSONボディを解析
-    const { functionName, params } = await request.json();
+  /* 各関数におけるパラメータ型の変換用構造体 */
+  const functionParams = {
+    addNumbers: ['a','b'], // この関数の正確なパラメータが不明です
+    getHostUpdated: [],
+    getComsumedOp: [],
+    getHostDataList: [],
+    getAgencyInfo: ['gtfsID'],
+    getVersionId: ['gtfsID', 'versionID'],
+    getVersionInfo: ['gtfsID', 'versionID'],
+    getBusStops: ['gtfsID', 'versionID'],
+    getAgency: ['gtfsID', 'versionID'],
+    getCalendar: ['gtfsID', 'versionID'],
+    getCalendarDates: ['gtfsID', 'versionID'],
+    getFareAttributes: ['gtfsID', 'versionID'],
+    getFareRules: ['gtfsID', 'versionID'],
+    getFeedInfo: ['gtfsID', 'versionID'],
+    getOfficeJp: ['gtfsID', 'versionID'],
+    getRoutes: ['gtfsID', 'versionID'],
+    getShapes: ['gtfsID', 'versionID'],
+    getStopTimes: ['gtfsID', 'versionID'],
+    getTransfers: ['gtfsID', 'versionID'],
+    getTranslations: ['gtfsID', 'versionID'],
+    getTrips: ['gtfsID', 'versionID'],
+    getTimeTableByStopHash: ['gtfsID', 'versionID', 'stopHash'],
+    getTimeTableByTripHash: ['gtfsID', 'versionID', 'tripHash'],
+    getTimeTableByStopID: ['gtfsID', 'versionID', 'stopID'],
+    getTimeTableByTripID: ['gtfsID', 'versionID', 'tripID'],
+    getServiceIDs: ['gtfsID', 'versionID', 'dateStr'],
+    findTrips: ['gtfsID', 'versionID', 'stopIDs'],
+    findTimeTableByStopID: ['gtfsID', 'versionID', 'stopID', 'date'],
+    findTimeTableByTripIDs: ['gtfsID', 'versionID', 'TripIDs'],
+    fetchTimeTableV1: ['gtfsID', 'options', 'version'],
+    getStopsWithinRadius: ['lat', 'lon', 'radius'],
+    getStopsBySubstring: ['substring'],
+    getVehiclePositionFromURL: ['url'],
+    getVehiclePositionUrls: [],
+    getBusInfo: ['latitude', 'longitude'],
+    getDataInfo: ['gtfs_id'],
+    init: ['butterRoot', 'config'],
+    getBusRealTimeInfo: [],
+    getStopsForBusPassingThrough: ['gtfsId', 'stopId', 'versionId'],
+  };  
 
-    // // const response = await fetch('https://butter.takoyaki3.com/v0.0.0/root.json'); // ここにデータを取得したいURLを入れます
-    // const response = await fetch('https://butter.oozora283.com/ToeiBus/info.json'); // ここにデータを取得したいURLを入れます
-    // if (!response.ok) {
-    //   console.log({json:JSON.stringify(response)});
-    //   throw new Error('ネットワークレスポンスが不正です。');
-    // }
-    // const data = await response.json();
-    // console.log(data); // ここで取得したデータを扱います
-    // return new Response(JSON.stringify(data), {
-    //   headers: { 'Content-Type': 'application/json' },
-    // });
+  try {
+    const url = new URL(request.url);
+    const functionName = url.pathname.split('/').pop();
+    console.log('functionName', url.searchParams)
+    const paramsObj = Object.fromEntries(url.searchParams);
+    console.log('paramsObj', JSON.stringify(paramsObj))
+    console.log('functionParams', JSON.stringify(functionParams[functionName]))
+    const params = functionParams[functionName].map(param => paramsObj[param]);
+    console.log((JSON.stringify({ functionName, params })));
 
     // BuTTERライブラリの初期化
-    await Butter.init('https://butter.takoyaki3.com/v0.0.0/root.json',{useFetch: true});
-    console.log(Butter);
+    await Butter.init('https://butter.takoyaki3.com/v0.0.0/root.json', { useFetch: true });
 
     // 指定されたBuTTER関数の実行
     if (functionName in Butter) {
-      console.log(Butter[functionName])
+      console.log(Butter[functionName]);
       const result = await Butter[functionName](...params);
-      console.log({result});
+      console.log({ result });
       return new Response(JSON.stringify(result), {
         headers: { 'Content-Type': 'application/json' },
       });
@@ -44,7 +80,7 @@ async function handleRequest(request) {
       });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: {
@@ -56,11 +92,3 @@ async function handleRequest(request) {
     });
   }
 }
-
-// https://butter.hatano-yuuta7921.workers.dev/?method=fetchTimeTableV1&gtfsID=ToeiBus&options={%22date%22:%2220240320%22,%22stop_ids%22:[%220605-07%22]}
-// https://butter.hatano-yuuta7921.workers.dev/?method=fetchTimeTableV1&gtfsID=ToeiBus&options=%7B%22date%22:%2220240320%22,%22stop_ids%22:[%220087-02%22]%7D
-// https://butter.hatano-yuuta7921.workers.dev/?method=fetchTimeTableV1&gtfsID=ToeiBus&options={%22stop_ids%22:[%220605-07%22
-
-// http://192.168.0.2:8787/?method=fetchTimeTableV1&gtfsID=ToeiBus&options=%7B%22date%22:%2220240320%22,%22stop_ids%22:[%220605-03%22]%7D
-// http://192.168.0.2:8787/?method=fetchTimeTableV1&gtfsID=ToeiBus&options={%22date%22:%2220240320%22,%22stop_ids%22:[%220605-03%22]}
-// http://192.168.0.2:8787/?method=fetchTimeTableV1&gtfsID=ToeiBus&options={%22stop_ids%22:[%220605-03%22],%22date%22:%2220240302%22}
