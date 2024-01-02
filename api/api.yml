@@ -1,0 +1,909 @@
+openapi: 3.0.0
+info:
+  title: BuTTER API
+  description: BuTTER APIは、様々な交通関連情報を提供するREST APIです。
+  version: "1.0.0"
+servers:
+  - url: https://butter.hatano-yuuta7921.workers.dev/v1
+    description: 本番サーバー
+paths:
+  /addNumbers:
+    get:
+      summary: 数値の加算
+      description: 二つの数値を加算します。
+      parameters:
+        - name: a
+          in: query
+          required: true
+          description: 最初の数値
+          schema:
+            type: integer
+        - name: b
+          in: query
+          required: true
+          description: 二番目の数値
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 加算結果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: integer
+                    description: 加算された結果
+  /getHostUpdated:
+    get:
+      summary: ホスト更新情報の取得
+      description: ホストが最後に更新された日時を取得します。
+      responses:
+        '200':
+          description: ホスト更新情報
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    host:
+                      type: string
+                      description: ホスト名
+                    updated:
+                      type: string
+                      format: date-time
+                      description: 最終更新日時
+
+  /getAgencyInfo:
+    get:
+      summary: 事業者情報の取得
+      description: 特定のGTFSフィードの事業者情報を取得します。
+      parameters:
+        - name: gtfsID
+          in: query
+          required: true
+          description: GTFSのID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 事業者情報
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  agency_name:
+                    type: string
+                    description: 事業者名
+                  agency_url:
+                    type: string
+                    description: 事業者のウェブサイトURL
+                  agency_timezone:
+                    type: string
+                    description: タイムゾーン
+                  agency_lang:
+                    type: string
+                    description: 使用言語
+  /getVersionId:
+    get:
+      summary: バージョンIDの取得
+      description: 特定のGTFSフィードのバージョンIDを取得または指定します。
+      parameters:
+        - name: gtfsID
+          in: query
+          required: true
+          description: GTFSのID
+          schema:
+            type: string
+        - name: versionID
+          in: query
+          required: false
+          description: バージョンID（省略可能）
+          schema:
+            type: string
+      responses:
+        '200':
+          description: バージョンID
+          content:
+            application/json:
+              schema:
+                type: string
+
+  /getBusStops:
+    get:
+      summary: バス停情報の取得
+      description: 特定のGTFSバージョンのバス停情報を取得します。
+      parameters:
+        - name: gtfsID
+          in: query
+          required: true
+          description: GTFSのID
+          schema:
+            type: string
+        - name: versionID
+          in: query
+          required: false
+          description: バージョンID（省略可能）
+          schema:
+            type: string
+      responses:
+        '200':
+          description: バス停情報
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    stop_id:
+                      type: string
+                      description: バス停ID
+                    stop_name:
+                      type: string
+                      description: バス停名
+                    stop_lat:
+                      type: number
+                      format: float
+                      description: 緯度
+                    stop_lon:
+                      type: number
+                      format: float
+                      description: 経度
+  /getRoutes:
+    get:
+      summary: 路線情報の取得
+      description: 特定のGTFSバージョンの路線情報を取得します。
+      parameters:
+        - name: gtfsID
+          in: query
+          required: true
+          description: GTFSのID
+          schema:
+            type: string
+        - name: versionID
+          in: query
+          required: false
+          description: バージョンID（省略可能）
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 路線情報
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    route_id:
+                      type: string
+                      description: 路線ID
+                    route_short_name:
+                      type: string
+                      description: 路線の短縮名
+                    route_long_name:
+                      type: string
+                      description: 路線の長い名前
+                    route_type:
+                      type: integer
+                      description: 路線のタイプ
+
+  /getCalendar:
+    get:
+      summary: カレンダー情報の取得
+      description: 特定のGTFSバージョンのカレンダー情報を取得します。
+      parameters:
+        - name: gtfsID
+          in: query
+          required: true
+          description: GTFSのID
+          schema:
+            type: string
+        - name: versionID
+          in: query
+          required: false
+          description: バージョンID（省略可能）
+          schema:
+            type: string
+      responses:
+        '200':
+          description: カレンダー情報
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    service_id:
+                      type: string
+                      description: サービスID
+                    monday:
+                      type: boolean
+                      description: 月曜日の運行有無
+                    tuesday:
+                      type: boolean
+                      description: 火曜日の運行有無
+                    wednesday:
+                      type: boolean
+                      description: 水曜日の運行有無
+                    thursday:
+                      type: boolean
+                      description: 木曜日の運行有無
+                    friday:
+                      type: boolean
+                      description: 金曜日の運行有無
+                    saturday:
+                      type: boolean
+                      description: 土曜日の運行有無
+                    sunday:
+                      type: boolean
+                      description: 日曜日の運行有無
+                    start_date:
+                      type: string
+                      format: date
+                      description: 開始日
+                    end_date:
+                      type: string
+                      format: date
+                      description: 終了日
+  /getFareAttributes:
+    get:
+      summary: 運賃属性情報の取得
+      description: 特定のGTFSバージョンの運賃属性情報を取得します。
+      parameters:
+        - name: gtfsID
+          in: query
+          required: true
+          description: GTFSのID
+          schema:
+            type: string
+        - name: versionID
+          in: query
+          required: false
+          description: バージョンID（省略可能）
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 運賃属性情報
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    fare_id:
+                      type: string
+                      description: 運賃ID
+                    price:
+                      type: number
+                      description: 価格
+                    currency_type:
+                      type: string
+                      description: 通貨タイプ
+                    payment_method:
+                      type: integer
+                      description: 支払い方法
+                    transfers:
+                      type: integer
+                      description: 乗り換え可能回数
+
+  /getStopTimes:
+    get:
+      summary: 停留所時刻情報の取得
+      description: 特定のGTFSバージョンの停留所時刻情報を取得します。
+      parameters:
+        - name: gtfsID
+          in: query
+          required: true
+          description: GTFSのID
+          schema:
+            type: string
+        - name: versionID
+          in: query
+          required: false
+          description: バージョンID（省略可能）
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 停留所時刻情報
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    trip_id:
+                      type: string
+                      description: トリップID
+                    arrival_time:
+                      type: string
+                      description: 到着時刻
+                    departure_time:
+                      type: string
+                      description: 出発時刻
+                    stop_id:
+                      type: string
+                      description: 停留所ID
+                    stop_sequence:
+                      type: integer
+                      description: 停留所の順序
+  /getTranslations:
+    get:
+      summary: 翻訳情報の取得
+      description: 特定のGTFSバージョンの翻訳情報を取得します。
+      parameters:
+        - name: gtfsID
+          in: query
+          required: true
+          description: GTFSのID
+          schema:
+            type: string
+        - name: versionID
+          in: query
+          required: false
+          description: バージョンID（省略可能）
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 翻訳情報
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    trans_id:
+                      type: string
+                      description: 翻訳ID
+                    lang:
+                      type: string
+                      description: 言語
+                    translation:
+                      type: string
+                      description: 翻訳テキスト
+
+  /getTimeTableByStopID:
+    get:
+      summary: ストップIDによる時刻表の取得
+      description: 特定のGTFSバージョンとストップIDに基づく時刻表を取得します。
+      parameters:
+        - name: gtfsID
+          in: query
+          required: true
+          description: GTFSのID
+          schema:
+            type: string
+        - name: versionID
+          in: query
+          required: false
+          description: バージョンID（省略可能）
+          schema:
+            type: string
+        - name: stopID
+          in: query
+          required: true
+          description: ストップID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 時刻表
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    trip_id:
+                      type: string
+                      description: トリップID
+                    arrival_time:
+                      type: string
+                      description: 到着時刻
+                    departure_time:
+                      type: string
+                      description: 出発時刻
+                    stop_id:
+                      type: string
+                      description: 停留所ID
+  /getVehiclePositionFromURL:
+    get:
+      summary: URLからの車両位置情報の取得
+      description: 特定のURLからリアルタイムの車両位置情報を取得します。
+      parameters:
+        - name: url
+          in: query
+          required: true
+          description: 車両位置情報を取得するURL
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 車両位置情報
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: 車両ID
+                    vehicle:
+                      type: object
+                      description: 車両の詳細情報
+                    position:
+                      type: object
+                      description: 位置情報
+                    timestamp:
+                      type: integer
+                      format: int64
+                      description: タイムスタンプ
+
+  /getBusInfo:
+    get:
+      summary: 特定地点のバス情報取得
+      description: 指定された緯度と経度に基づいて近くで運行しているバスの情報を取得します。
+      parameters:
+        - name: latitude
+          in: query
+          required: true
+          description: 緯度
+          schema:
+            type: number
+            format: float
+        - name: longitude
+          in: query
+          required: true
+          description: 経度
+          schema:
+            type: number
+            format: float
+      responses:
+        '200':
+          description: 近くのバス情報
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    vehicle_id:
+                      type: string
+                      description: 車両ID
+                    latitude:
+                      type: number
+                      format: float
+                      description: 緯度
+                    longitude:
+                      type: number
+                      format: float
+                      description: 経度
+                    bearing:
+                      type: number
+                      description: 方位角
+                    speed:
+                      type: number
+                      description: 速度
+  /getDataInfo:
+    get:
+      summary: GTFSデータ情報の取得
+      description: 特定のGTFS IDに関連するデータの情報を取得します。
+      parameters:
+        - name: gtfs_id
+          in: query
+          required: true
+          description: GTFSのID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: GTFSデータ情報
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  gtfs_id:
+                    type: string
+                    description: GTFSのID
+                  data_list:
+                    type: array
+                    items:
+                      type: object
+                      description: 関連するデータのリスト
+
+  /getVehiclePositionUrls:
+    get:
+      summary: 車両位置情報URLの取得
+      description: 利用可能な車両位置情報のURLリストを取得します。
+      responses:
+        '200':
+          description: 車両位置情報のURLリスト
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: 
+                  type: string
+                  description: GTFS IDに関連付けられた車両位置情報のURL
+  /getBusRealTimeInfo:
+    get:
+      summary: リアルタイムバス情報の取得
+      description: 特定のGTFS IDに対するリアルタイムのバス情報を取得します。
+      parameters:
+        - name: gtfs_id
+          in: query
+          required: true
+          description: GTFSのID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: リアルタイムバス情報
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    vehicle_id:
+                      type: string
+                      description: 車両ID
+                    latitude:
+                      type: number
+                      format: float
+                      description: 緯度
+                    longitude:
+                      type: number
+                      format: float
+                      description: 経度
+                    bearing:
+                      type: number
+                      description: 方位角
+                    speed:
+                      type: number
+                      description: 速度
+  /getStopsForBusPassingThrough:
+    get:
+      summary: 特定のバス停を通過するバスの情報取得
+      description: 指定されたバス停を通過するバスの情報を取得します。
+      parameters:
+        - name: gtfsId
+          in: query
+          required: true
+          description: GTFSのID
+          schema:
+            type: string
+        - name: stopId
+          in: query
+          required: true
+          description: バス停ID
+          schema:
+            type: string
+        - name: versionId
+          in: query
+          required: false
+          description: バージョンID（省略可能）
+          schema:
+            type: string
+      responses:
+        '200':
+          description: バス停を通過するバスの情報
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: 通過するバスのIDリスト
+  /getServiceIDs:
+    get:
+      summary: 特定日のサービスID取得
+      description: 指定された日付にアクティブなサービスIDを取得します。
+      parameters:
+        - name: gtfsID
+          in: query
+          required: true
+          description: GTFSのID
+          schema:
+            type: string
+        - name: versionID
+          in: query
+          required: true
+          description: バージョンID
+          schema:
+            type: string
+        - name: dateStr
+          in: query
+          required: true
+          description: 日付（YYYYMMDD形式）
+          schema:
+            type: string
+      responses:
+        '200':
+          description: アクティブなサービスIDのリスト
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: サービスID
+  /findTrips:
+    get:
+      summary: 特定の停留所を通るトリップの検索
+      description: 指定された一連の停留所を通るトリップを検索します。
+      parameters:
+        - name: gtfsID
+          in: query
+          required: true
+          description: GTFSのID
+          schema:
+            type: string
+        - name: versionID
+          in: query
+          required: true
+          description: バージョンID
+          schema:
+            type: string
+        - name: stopIDs
+          in: query
+          required: true
+          description: 検索する停留所IDのリスト
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: 指定された停留所を通るトリップIDのリスト
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: トリップID
+
+  /findTimeTableByStopID:
+    get:
+      summary: 停留所IDと日付に基づく時刻表の検索
+      description: 特定の停留所IDと日付に基づいて、時刻表を検索します。
+      parameters:
+        - name: gtfsID
+          in: query
+          required: true
+          description: GTFSのID
+          schema:
+            type: string
+        - name: versionID
+          in: query
+          required: true
+          description: バージョンID
+          schema:
+            type: string
+        - name: stopID
+          in: query
+          required: true
+          description: 停留所ID
+          schema:
+            type: string
+        - name: date
+          in: query
+          required: true
+          description: 日付（YYYYMMDD形式）
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 指定された停留所IDと日付に基づく時刻表
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    trip_id:
+                      type: string
+                      description: トリップID
+                    arrival_time:
+                      type: string
+                      description: 到着時刻
+                    departure_time:
+                      type: string
+                      description: 出発時刻
+                    stop_id:
+                      type: string
+                      description: 停留所ID
+  /findTimeTableByTripIDs:
+    get:
+      summary: トリップIDに基づく時刻表の検索
+      description: 指定されたトリップIDのリストに基づいて、時刻表を検索します。
+      parameters:
+        - name: gtfsID
+          in: query
+          required: true
+          description: GTFSのID
+          schema:
+            type: string
+        - name: versionID
+          in: query
+          required: true
+          description: バージョンID
+          schema:
+            type: string
+        - name: TripIDs
+          in: query
+          required: true
+          description: トリップIDのリスト
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: 指定されたトリップIDに基づく時刻表
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    trip_id:
+                      type: string
+                      description: トリップID
+                    arrival_time:
+                      type: string
+                      description: 到着時刻
+                    departure_time:
+                      type: string
+                      description: 出発時刻
+                    stop_id:
+                      type: string
+                      description: 停留所ID
+
+  /fetchTimeTableV1:
+    get:
+      summary: 柔軟な条件に基づく時刻表の取得
+      description: 特定のGTFSバージョン、オプション、その他のパラメータに基づいて時刻表を取得します。
+      parameters:
+        - name: gtfsID
+          in: query
+          required: true
+          description: GTFSのID
+          schema:
+            type: string
+        - name: options
+          in: query
+          required: true
+          description: 検索オプション
+          schema:
+            type: object
+        - name: version
+          in: query
+          required: false
+          description: バージョン（省略可能）
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 指定された条件に基づく時刻表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stop_times:
+                    type: array
+                    items:
+                      type: object
+                      description: 停留所時刻情報
+                  properties:
+                    type: string
+                    description: 追加プロパティ
+  /getStopsWithinRadius:
+    get:
+      summary: 半径内の停留所の取得
+      description: 指定された位置から特定の半径内にある停留所を取得します。
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          description: 緯度
+          schema:
+            type: number
+            format: float
+        - name: lon
+          in: query
+          required: true
+          description: 経度
+          schema:
+            type: number
+            format: float
+        - name: radius
+          in: query
+          required: true
+          description: 半径（メートル単位）
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 指定された半径内の停留所
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    stop_id:
+                      type: string
+                      description: 停留所ID
+                    stop_name:
+                      type: string
+                      description: 停留所名
+                    stop_lat:
+                      type: number
+                      format: float
+                      description: 緯度
+                    stop_lon:
+                      type: number
+                      format: float
+                      description: 経度
+
+  /getStopsBySubstring:
+    get:
+      summary: 部分文字列による停留所の検索
+      description: 指定された部分文字列を含む停留所を検索します。
+      parameters:
+        - name: substring
+          in: query
+          required: true
+          description: 検索する部分文字列
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 部分文字列に一致する停留所のリスト
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    stop_id:
+                      type: string
+                      description: 停留所ID
+                    stop_name:
+                      type: string
+                      description: 停留所名
+                    stop_lat:
+                      type: number
+                      format: float
+                      description: 緯度
+                    stop_lon:
+                      type: number
+                      format: float
+                      description: 経度
+

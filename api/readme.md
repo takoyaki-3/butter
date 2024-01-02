@@ -46,6 +46,10 @@ npm run build
 npm run publish
 ```
 
+```
+redoc-cli bundle .\api.yml
+```
+
 これにより、指定したルート（この例では example.com/*）で動作するように Worker がデプロイされます。
 
 ## ライセンス

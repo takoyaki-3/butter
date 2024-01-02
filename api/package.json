@@ -23,7 +23,8 @@
     "h3-js": "^4.1.0",
     "haversine": "^1.1.1",
     "pako": "^2.1.0",
-    "path-browserify": "^1.0.1"
+    "path-browserify": "^1.0.1",
+    "redoc-cli": "^0.13.21"
   },
   "devtool": "cheap-module-source-map",
   "main": "dist/index.js"
