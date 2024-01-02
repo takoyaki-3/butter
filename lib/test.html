@@ -95,6 +95,9 @@
       const hostUpdated = await Butter.getHostUpdated();
       console.log({ "getHostUpdated": hostUpdated });
       // hostUpdatedの詳細な検証
+
+      const busStop = await Butter.getStopsForBusPassingThrough('ToeiBus','0955-01')
+      console.log({ "getStopsForBusPassingThrough": busStop });
     };
 
     main().catch(error => console.error(error));
