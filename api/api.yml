@@ -10,7 +10,12 @@ paths:
   /addNumbers:
     get:
       summary: 数値の加算
-      description: 二つの数値を加算します。
+      description: |
+        二つの数値を加算します。
+        ### cURLリクエスト例
+        ```
+        curl -X GET "https://api.butter.takoyaki3.com/v1/addNumbers?a=1&b=2"
+        ```
       parameters:
         - name: a
           in: query
@@ -35,10 +40,16 @@ paths:
                   result:
                     type: integer
                     description: 加算された結果
+
   /getHostUpdated:
     get:
       summary: ホスト更新情報の取得
-      description: ホストが最後に更新された日時を取得します。
+      description: |
+        ホストが最後に更新された日時を取得します。
+        ### cURLリクエスト例
+        ```
+        curl -X GET "https://api.butter.takoyaki3.com/v1/getHostUpdated"
+        ```
       responses:
         '200':
           description: ホスト更新情報
@@ -60,9 +71,14 @@ paths:
   /getAgencyInfo:
     get:
       summary: 事業者情報の取得
-      description: 特定のGTFSフィードの事業者情報を取得します。
+      description: |
+        特定のGTFSフィードの事業者情報を取得します。
+        ### cURLリクエスト例
+        ```
+        curl -X GET "https://api.butter.takoyaki3.com/v1/getAgencyInfo?gtfs_id=ToeiBus"
+        ```
       parameters:
-        - name: gtfsID
+        - name: gtfs_id
           in: query
           required: true
           description: GTFSのID
@@ -91,15 +107,20 @@ paths:
   /getVersionId:
     get:
       summary: バージョンIDの取得
-      description: 特定のGTFSフィードのバージョンIDを取得または指定します。
+      description: |
+        特定のGTFSフィードのバージョンIDを取得または指定します。
+        ### cURLリクエスト例
+        ```
+        curl -X GET "https://api.butter.takoyaki3.com/v1/getVersionId?gtfs_id=ToeiBus"
+        ```
       parameters:
-        - name: gtfsID
+        - name: gtfs_id
           in: query
           required: true
           description: GTFSのID
           schema:
             type: string
-        - name: versionID
+        - name: version_id
           in: query
           required: false
           description: バージョンID（省略可能）
@@ -116,15 +137,20 @@ paths:
   /getBusStops:
     get:
       summary: バス停情報の取得
-      description: 特定のGTFSバージョンのバス停情報を取得します。
+      description: |
+        特定のGTFSバージョンのバス停情報を取得します。
+        ### cURLリクエスト例
+        ```
+        curl -X GET "https://api.butter.takoyaki3.com/v1/getBusStops?gtfs_id=ToeiBus"
+        ```
       parameters:
-        - name: gtfsID
+        - name: gtfs_id
           in: query
           required: true
           description: GTFSのID
           schema:
             type: string
-        - name: versionID
+        - name: version_id
           in: query
           required: false
           description: バージョンID（省略可能）
@@ -159,13 +185,13 @@ paths:
       summary: 路線情報の取得
       description: 特定のGTFSバージョンの路線情報を取得します。
       parameters:
-        - name: gtfsID
+        - name: gtfs_id
           in: query
           required: true
           description: GTFSのID
           schema:
             type: string
-        - name: versionID
+        - name: version_id
           in: query
           required: false
           description: バージョンID（省略可能）
@@ -199,13 +225,13 @@ paths:
       summary: カレンダー情報の取得
       description: 特定のGTFSバージョンのカレンダー情報を取得します。
       parameters:
-        - name: gtfsID
+        - name: gtfs_id
           in: query
           required: true
           description: GTFSのID
           schema:
             type: string
-        - name: versionID
+        - name: version_id
           in: query
           required: false
           description: バージョンID（省略可能）
@@ -258,13 +284,13 @@ paths:
       summary: 運賃属性情報の取得
       description: 特定のGTFSバージョンの運賃属性情報を取得します。
       parameters:
-        - name: gtfsID
+        - name: gtfs_id
           in: query
           required: true
           description: GTFSのID
           schema:
             type: string
-        - name: versionID
+        - name: version_id
           in: query
           required: false
           description: バージョンID（省略可能）
@@ -300,13 +326,13 @@ paths:
       summary: トリップ情報の取得
       description: 特定のGTFSバージョンのトリップ情報を取得します。
       parameters:
-        - name: gtfsID
+        - name: gtfs_id
           in: query
           required: true
           description: GTFS ID
           schema:
             type: string
-        - name: versionID
+        - name: version_id
           in: query
           required: false
           description: バージョンID（省略可能）
@@ -348,13 +374,13 @@ paths:
       summary: 停留所時刻情報の取得
       description: 特定のGTFSバージョンの停留所時刻情報を取得します。
       parameters:
-        - name: gtfsID
+        - name: gtfs_id
           in: query
           required: true
           description: GTFSのID
           schema:
             type: string
-        - name: versionID
+        - name: version_id
           in: query
           required: false
           description: バージョンID（省略可能）
@@ -390,13 +416,13 @@ paths:
       summary: 翻訳情報の取得
       description: 特定のGTFSバージョンの翻訳情報を取得します。
       parameters:
-        - name: gtfsID
+        - name: gtfs_id
           in: query
           required: true
           description: GTFSのID
           schema:
             type: string
-        - name: versionID
+        - name: version_id
           in: query
           required: false
           description: バージョンID（省略可能）
@@ -427,13 +453,13 @@ paths:
       summary: ストップIDによる時刻表の取得
       description: 特定のGTFSバージョンとストップIDに基づく時刻表を取得します。
       parameters:
-        - name: gtfsID
+        - name: gtfs_id
           in: query
           required: true
           description: GTFSのID
           schema:
             type: string
-        - name: versionID
+        - name: version_id
           in: query
           required: false
           description: バージョンID（省略可能）
@@ -633,7 +659,7 @@ paths:
       summary: 特定のバス停を通過するバスの情報取得
       description: 指定されたバス停を通過するバスの情報を取得します。
       parameters:
-        - name: gtfsId
+        - name: gtfs_id
           in: query
           required: true
           description: GTFSのID
@@ -645,7 +671,7 @@ paths:
           description: バス停ID
           schema:
             type: string
-        - name: versionId
+        - name: version_id
           in: query
           required: false
           description: バージョンID（省略可能）
@@ -666,13 +692,13 @@ paths:
       summary: 特定日のサービスID取得
       description: 指定された日付にアクティブなサービスIDを取得します。
       parameters:
-        - name: gtfsID
+        - name: gtfs_id
           in: query
           required: true
           description: GTFSのID
           schema:
             type: string
-        - name: versionID
+        - name: version_id
           in: query
           required: true
           description: バージョンID
@@ -699,13 +725,13 @@ paths:
       summary: 特定の停留所を通るトリップの検索
       description: 指定された一連の停留所を通るトリップを検索します。
       parameters:
-        - name: gtfsID
+        - name: gtfs_id
           in: query
           required: true
           description: GTFSのID
           schema:
             type: string
-        - name: versionID
+        - name: version_id
           in: query
           required: true
           description: バージョンID
@@ -735,13 +761,13 @@ paths:
       summary: 停留所IDと日付に基づく時刻表の検索
       description: 特定の停留所IDと日付に基づいて、時刻表を検索します。
       parameters:
-        - name: gtfsID
+        - name: gtfs_id
           in: query
           required: true
           description: GTFSのID
           schema:
             type: string
-        - name: versionID
+        - name: version_id
           in: query
           required: true
           description: バージョンID
@@ -786,13 +812,13 @@ paths:
       summary: トリップIDに基づく時刻表の検索
       description: 指定されたトリップIDのリストに基づいて、時刻表を検索します。
       parameters:
-        - name: gtfsID
+        - name: gtfs_id
           in: query
           required: true
           description: GTFSのID
           schema:
             type: string
-        - name: versionID
+        - name: version_id
           in: query
           required: true
           description: バージョンID
@@ -834,7 +860,7 @@ paths:
       summary: 柔軟な条件に基づく時刻表の取得
       description: 特定のGTFSバージョン、オプション、その他のパラメータに基づいて時刻表を取得します。
       parameters:
-        - name: gtfsID
+        - name: gtfs_id
           in: query
           required: true
           description: GTFSのID
