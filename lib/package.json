@@ -1,6 +1,6 @@
 {
   "name": "butter-lib",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "",
   "main": "webpack.config.js",
   "scripts": {
@@ -38,12 +38,13 @@
     "crypto": "^1.0.1",
     "crypto-browserify": "^3.12.0",
     "csv-parser": "^3.0.0",
+    "google-protobuf": "^3.21.2",
     "h3-js": "^4.1.0",
     "haversine": "^1.1.1",
     "node-fetch": "^3.3.2",
     "pako": "^2.1.0",
     "process": "^0.11.10",
-    "protobufjs": "^7.2.3",
+    "protobufjs": "^7.2.5",
     "stream-browserify": "^3.0.0"
   }
 }
