@@ -10,6 +10,8 @@ async function handleRequest(request) {
     return new Response('Only GET requests are allowed', { status: 405 });
   }
 
+  // https://api.butter.takoyaki3.com/getShapes?gtfs_id=ToeiBus
+
   try {
     const url = new URL(request.url);
     const functionName = url.pathname.split('/').pop();
