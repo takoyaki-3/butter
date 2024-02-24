@@ -18,6 +18,18 @@ const buildDir = async (dir) => {
   }
 };
 
+// ./storageディレクトリ内のファイルを./distディレクトリにコピーする
+const copyStorage = async () => {
+  try {
+    console.log('storageディレクトリのコピー開始');
+    await execAsync('cp -r ./storage ./dist/code');
+    console.log('storageディレクトリのコピー成功');
+  } catch (err) {
+    console.error('storageディレクトリのコピー中にエラーが発生しました', err);
+  }
+};
+copyStorage();
+
 Promise.all(dirs.map(dir => buildDir(dir)))
   .then(() => console.log('全てのビルドが完了しました'))
   .catch(err => console.error('ビルド中にエラーが発生しました', err));
