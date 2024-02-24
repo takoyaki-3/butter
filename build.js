@@ -29,7 +29,7 @@ const copyStorage = async () => {
   }
 };
 
-Promise.all(dirs.map(dir => buildDir(dir)))
+await Promise.all(dirs.map(dir => buildDir(dir)))
   .then(() => console.log('全てのビルドが完了しました'))
   .catch(err => console.error('ビルド中にエラーが発生しました', err));
 
