@@ -72,9 +72,10 @@ func main() {
 	BUTTER_ROOT_URL := "https://butter.takoyaki3.com/v0.0.0/root.json"
 
 	err := godotenv.Load()
-	if err != nil {
-		fmt.Println(".env file not found")
+	if err == nil {
 		BUTTER_ROOT_URL = os.Getenv("BUTTER_ROOT_URL")
+	} else {
+		fmt.Println(".env file not found")
 	}
 	fmt.Println(BUTTER_ROOT_URL)
 
