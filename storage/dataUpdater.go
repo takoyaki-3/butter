@@ -12,6 +12,7 @@ import (
 	"time"
 	"bytes"
 
+	"github.com/joho/godotenv"
 	json "github.com/takoyaki-3/go-json"
 )
 
@@ -68,6 +69,15 @@ func monitorFile(filePath, timeFilePath string, done chan bool) {
 
 func main() {
 
+	BUTTER_ROOT_URL := "https://butter.takoyaki3.com/v0.0.0/root.json"
+
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println(".env file not found")
+		BUTTER_ROOT_URL = os.Getenv("BUTTER_ROOT_URL")
+	}
+	fmt.Println(BUTTER_ROOT_URL)
+
 	done := make(chan bool)
 	go monitorFile("./dataUpdater.go","./dataUpdaterLastCheckedTime.txt", done)
 
@@ -76,7 +86,7 @@ func main() {
 		isFirst := true
 		for {
 			var root Root
-			rootData, err := downloadFile("https://butter.takoyaki3.com/v0.0.0/root.json")
+			rootData, err := downloadFile(BUTTER_ROOT_URL)
 			if err != nil {
 				log.Fatalln(err)
 			}
