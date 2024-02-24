@@ -45,7 +45,7 @@ func main() {
 
 	fs := http.FileServer(http.Dir(dir))
 	http.HandleFunc("/server", func(w http.ResponseWriter, r *http.Request) {
-		responseMessage := "{\"version\":\"1.2\"}"
+		responseMessage := "{\"version\":\"1.3\"}"
 		w.Write([]byte(responseMessage))
 	})
 	http.Handle("/", fs)
