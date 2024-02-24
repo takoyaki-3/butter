@@ -6,3 +6,4 @@ public/*
 *.tar/
 old
 *.txt
+*.env
