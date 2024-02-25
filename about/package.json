@@ -12,7 +12,7 @@
   },
   "main": "index.js",
   "dependencies": {
-    "butter-lib": "^1.0.17",
+    "butter-lib": "^1.0.22",
     "core-js": "^3.8.3",
     "highlight.js": "^11.8.0",
     "leaflet": "^1.9.4",
