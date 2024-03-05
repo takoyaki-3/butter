@@ -14,16 +14,19 @@
       const currentDomain = 'https://' + window.location.hostname+'/';
 
       // API URL
-      const apiUrl = `https://butter-add-storage.api.takoyaki3.com/api/addhost?hostName=${currentDomain}&type=host`;
-      console.log(apiUrl)
+      const apiUrl = `https://kva-store.api.takoyaki3.com/`;
 
       try {
         // fetch APIでリクエストを送信
         const response = await fetch(apiUrl, {
-          method: 'GET',
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
+          body: {
+            key: 'butterStorageHostList',
+            data: JSON.stringify({hostName: currentDomain, type: 'host',
+          })},
         });
 
         // レスポンスをJSON形式で解析
