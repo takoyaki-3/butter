@@ -23,10 +23,11 @@
           headers: {
             'Content-Type': 'application/json'
           },
-          body: {
+          body: JSON.stringify({
             key: 'butterStorageHostList',
-            data: JSON.stringify({hostName: currentDomain, type: 'host',
-          })},
+            id: currentDomain,
+            data: {hostName: currentDomain, type: 'host'}
+          })
         });
 
         // レスポンスをJSON形式で解析
