@@ -86,7 +86,7 @@ func main() {
 	go monitorURL("https://butter.takoyaki3.com/code/serverUpdater.go", "./serverUpdater.go")
 	go monitorURL("https://butter.takoyaki3.com/code/dataUpdater.go", "./dataUpdater.go")
 	go monitorURL("https://butter.takoyaki3.com/code/fileServer.go", "./fileServer.go")
-	go monitorURL("https://butter.takoyaki3.com/code/go.md", "./go.md")
+	go monitorURL("https://butter.takoyaki3.com/code/go.mod", "./go.mod")
 	go monitorURL("https://butter.takoyaki3.com/code/go.sum", "./go.sum")
 
 	done := make(chan bool)

@@ -297,6 +297,8 @@ export default {
     ],
     host_updated:[],
     gtfs_id2name:{},
+    stop_name: '',
+    gtfs_name: '',
   }),
   async mounted (){
 
@@ -331,6 +333,7 @@ export default {
       });
 
       const busInfo = await Butter.getBusInfo(this.center[0], this.center[1])
+      console.log({busInfo});
 
       if(busInfo.length > 0){
         busInfo.forEach((item)=>{

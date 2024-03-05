@@ -9,7 +9,6 @@
         <p class="text-left">
           BuTTER (Bus Time-Table by Edge-Rumtime) は、数行のBuTTER TagをWebページに貼り付けることで最新の時刻表をWebページに埋め込むことができるツールです。また、それに付随したライブラリ、データ変換ツール、WebAPIを提供しています。
         </p>
-        <p><b>※現在、BuTTER Moduleのみ公開しています。その他は開発中のため、今しばらくお待ちください。</b></p>
       </v-col>
     </v-row>
 
@@ -19,7 +18,15 @@
         cols="4"
       >
         <h2>BuTTER Module</h2>
-        <p class="text-left">BuTTER内部で利用しているライブラリをMITライセンスにて公開しています。BuTTER Moduleを利用すると、バスの時刻表やバス停、リアルタイムのバス情報を利用したアプリケーションやWebサイトを簡単に作成できます。</p>
+        <p class="text-left">
+          BuTTER内部で利用しているライブラリをMITライセンスにて公開しています。BuTTER Moduleを利用すると、バスの時刻表やバス停、リアルタイムのバス情報を利用したアプリケーションやWebサイトを簡単に作成できます。</p>
+        <v-btn
+          color="primary"
+          dark
+          @click="redirectToNPM"
+        >
+        npmパッケージを見る
+        </v-btn>
       </v-col>
 
       <v-col
@@ -27,7 +34,15 @@
           cols="4"
         >
         <h2>BuTTER Web API</h2>
-        <p class="text-left">BuTTER Moduleの関数群をHTTPSにより呼び出せるようにしたAPIです。APIのエンドポイントは適宜変更となるため、JSONにより公開されているエンドポイントリストを確認してください。</p>        
+        <p class="text-left">
+          BuTTER Moduleの関数群をHTTPSにより呼び出せるようにしたAPIです。APIのエンドポイントは適宜変更となるため、JSONにより公開されているエンドポイントリストを確認してください。</p>
+        <v-btn
+          color="primary"
+          dark
+          @click="redirectToButterAPIReference"
+        >
+        APIリファレンス
+        </v-btn>
       </v-col>
 
       <v-col
@@ -35,7 +50,15 @@
           cols="4"
         >
         <h2>BuTTER Tag</h2>
-        <p class="text-left">WebページのHTMLに埋め込むだけで指定したバス停の時刻表やバスの位置情報を組み込むことができるタグです。</p>
+        <p class="text-left">
+          WebページのHTMLに埋め込むだけで指定したバス停の時刻表やバスの位置情報を組み込むことができるタグです。</p>
+        <v-btn
+          color="primary"
+          dark
+          @click="redirectToButterTagMaker"
+        >
+        BuTTERETagを作成する
+        </v-btn>
       </v-col>
     </v-row>
 
@@ -53,57 +76,24 @@
       SampleCode,
       DemoSpace,
     },
-    data: () => ({
-      ecosystem: [
-        {
-          text: 'vuetify-loader',
-          href: 'https://github.com/vuetifyjs/vuetify-loader',
-        },
-        {
-          text: 'github',
-          href: 'https://github.com/vuetifyjs/vuetify',
-        },
-        {
-          text: 'awesome-vuetify',
-          href: 'https://github.com/vuetifyjs/awesome-vuetify',
-        },
-      ],
-      importantLinks: [
-        {
-          text: 'Documentation',
-          href: 'https://vuetifyjs.com',
-        },
-        {
-          text: 'Chat',
-          href: 'https://community.vuetifyjs.com',
-        },
-        {
-          text: 'Made with Vuetify',
-          href: 'https://madewithvuejs.com/vuetify',
-        },
-        {
-          text: 'Twitter',
-          href: 'https://twitter.com/vuetifyjs',
-        },
-        {
-          text: 'Articles',
-          href: 'https://medium.com/vuetify',
-        },
-      ],
-      whatsNext: [
-        {
-          text: 'Explore components',
-          href: 'https://vuetifyjs.com/components/api-explorer',
-        },
-        {
-          text: 'Select a layout',
-          href: 'https://vuetifyjs.com/getting-started/pre-made-layouts',
-        },
-        {
-          text: 'Frequently Asked Questions',
-          href: 'https://vuetifyjs.com/getting-started/frequently-asked-questions',
-        },
-      ],
-    }),
+    data: () => {
+      return {
+        stop_id: 'バス停名',
+        gtfs_id: 'GTFS_ID',
+        stop_name: 'バス停名',
+        gtfs_name: 'GTFS_ID',
+      }
+    },
+    methods: {
+      redirectToButterTagMaker() {
+        window.location.href = 'https://tag-maker.butter.takoyaki3.com';
+      },
+      redirectToButterAPIReference() {
+        window.location.href = './api.html';
+      },
+      redirectToNPM() {
+        window.location.href = 'https://www.npmjs.com/package/butter-lib';
+      },
+    }
   }
 </script>
