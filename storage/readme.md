@@ -27,6 +27,10 @@ Caddy、NgineやApacheなどを間に挟み、HTTPSによりアクセスでき�
 
 ![](addStoragePage.png)
 
+下のようなメッセージが表示されれば追加成功です。
+
+![](addSuccess.png)
+
 5. 5分ほど待機する
 
 5分ほど待機した後に[https://butter.takoyaki3.com/v0.0.0/root.json](https://butter.takoyaki3.com/v0.0.0/root.json)にアクセスしてROOTファイルを確認すると、ストレージが追加されたか確認できます。
