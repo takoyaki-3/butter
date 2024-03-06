@@ -26,11 +26,16 @@ services:
     command: go run serverUpdater.go
     restart: unless-stopped
 
-  # watchdog-timer:
-  #   image: python:3.9-slim
-  #   volumes:
-  #     - ./:/app
-  #   working_dir: /app
-  #   command: python watchdog.py
-  #   restart: unless-stopped
-
+#   caddy:
+#     image: caddy:2
+#     volumes:
+#       - ./Caddyfile:/etc/caddy/Caddyfile
+#       - caddy_data:/data
+#       - caddy_config:/config
+#     ports:
+#       - "80:80"
+#       - "443:443"
+#     restart: unless-stopped
+# volumes:
+#   caddy_data:
+#   caddy_config:
