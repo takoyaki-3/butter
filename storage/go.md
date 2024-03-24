@@ -1,0 +1,7 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/favicon.ico"><title>BuTTER</title><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet"><style>* {
+      font-family: 'Noto Sans JP', sans-serif;
+    }</style><script defer="defer" src="/js/chunk-vendors.61645158.js"></script><script defer="defer" src="/js/app.4ac1777f.js"></script><link href="/css/chunk-vendors.cb82489d.css" rel="stylesheet"><link href="/css/app.fd748385.css" rel="stylesheet"></head><script async src="https://www.googletagmanager.com/gtag/js?id=G-9K6QPGTEWC"></script><script>window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+
+  gtag('config', 'G-9K6QPGTEWC');</script><body><noscript><strong>We're sorry but BuTTER doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app"></div></body></html>
