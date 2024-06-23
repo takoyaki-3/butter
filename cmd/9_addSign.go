@@ -39,4 +39,8 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	err = SignAllFilesInDir("./v1.0.0/", "key.pem")
+	if err != nil {
+		log.Fatalln(err)
+	}
 }

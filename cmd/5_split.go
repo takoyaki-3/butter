@@ -33,12 +33,21 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	_, files := filetool.DirWalk("./gtfs", filetool.DirWalkOption{})
+	_, files := filetool.DirWalk("./feed", filetool.DirWalkOption{})
 	goc.Parallel(8, len(files), func(i, rank int) {
 		file := files[i]
 		if file.Name[len(file.Name)-len(".zip"):] == ".zip" {
-			fmt.Println(file.Name)
-			split(file.Name, time.Now().Format("2006-01-02T15_04_05Z07_00"))
+			fmt.Println("feed:",file.Name)
+			split("feed_dir_out", "v1.0.0", file.Name, time.Now().Format("2006-01-02T15_04_05Z07_00"))
+		}
+	})
+
+	_, files = filetool.DirWalk("./gtfs", filetool.DirWalkOption{})
+	goc.Parallel(8, len(files), func(i, rank int) {
+		file := files[i]
+		if file.Name[len(file.Name)-len(".zip"):] == ".zip" {
+			fmt.Println("gtfs:",file.Name)
+			split("dir_out", "v0.0.0", file.Name, time.Now().Format("2006-01-02T15_04_05Z07_00"))
 		}
 	})
 }
@@ -69,13 +78,13 @@ type StopTime struct {
 	Headsign    string `csv:"trip_headsign" json:"trip_headsign"`
 }
 
-func split(file string, version string) error {
+func split(srcDirRoot string, dstDirRoot string, file string, version string) error {
 
 	// 入力ファイルのディレクトリを設定
-	srcDir := "dir_out/" + file
+	srcDir := srcDirRoot + "/" + file
 
 	// 出力ファイルのディレクトリを設定
-	dstDir := "v0.0.0/" + file[:len(file)-len(".zip")] + "/" + version
+	dstDir := dstDirRoot + "/" + file[:len(file)-len(".zip")] + "/" + version
 
 	// stop_times.txtからStopTimeのスライスをロード
 	stopTimes := []StopTime{}

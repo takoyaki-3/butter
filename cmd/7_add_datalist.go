@@ -50,7 +50,11 @@ type Data []struct {
 }
 
 func main() {
-	//
+	checkCORSandAddList("v0.0.0")
+	checkCORSandAddList("v1.0.0")
+}
+
+func checkCORSandAddList(root string) {
 	data := Data{}
 	json.LoadFromPath("data.json", &data)
 
@@ -127,6 +131,6 @@ func main() {
 		})
 	}
 
-	err := json.DumpToFile(datalist, "v0.0.0/datalist.json")
+	err := json.DumpToFile(datalist, root+"/datalist.json")
 	fmt.Println(err)
 }

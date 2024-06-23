@@ -17,8 +17,11 @@ type InfoType struct {
 func main() {
 
 	// Set the root directory path
-	root := "v0.0.0"
+	moveInfoFile("v0.0.0")
+	moveInfoFile("v1.0.0")
+}
 
+func moveInfoFile(root string) {
 	// Get the list of directories in the root directory
 	dirs, err := ioutil.ReadDir(root)
 	if err != nil {
@@ -58,7 +61,7 @@ func main() {
 				}
 			}
 
-			json.DumpToFile(versionInfo, "./v0.0.0/"+dir.Name()+"/info.json")
+			json.DumpToFile(versionInfo, "./"+root+"/"+dir.Name()+"/info.json")
 		}
 	}
 }
