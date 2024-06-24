@@ -27,6 +27,7 @@ def create_output_text_with_vehicle_position(files, feeds):
     output_text = "-------------\n"
     for file in files:
         organization_id = file['organization_id']
+        feed_id = file['feed_id']
         feed = feeds.get(organization_id, {})
         vehicle_position_url = feed.get('real_time', {}).get('vehicle_position_url', '')
         output_text += f"事業者名:{file['organization_name']}\n"
@@ -35,6 +36,8 @@ def create_output_text_with_vehicle_position(files, feeds):
         output_text += f"GTFSフィード名:{file['feed_name']}\n"
         output_text += f"ライセンス:{file['feed_license_id']}公開元: {file['organization_name']}\n"
         output_text += f"ライセンス_url:{file['feed_license_url']}\n"
+        output_text += f"organization_id:{organization_id}\n"
+        output_text += f"feed_id:{feed_id}\n"
         if vehicle_position_url: # VehiclePositionのURLが存在する場合のみ追加
             output_text += f"URLs:GTFS, VehiclePosition\n"
         else:
@@ -112,6 +115,8 @@ VehiclePosition_url:https://api-public.odpt.org/api/v4/gtfs/realtime/ToeiBus
 最新GTFS開始日:'''+dateStr+'''
 最新GTFS終了日:'''+dateStr+'''
 最終更新日:'''+dateStr+'''
+organization_id:ToeiBus
+feed_id:ToeiBus
 -------------
 '''
 
@@ -134,6 +139,8 @@ VehiclePosition_url:https://api.odpt.org/api/v4/gtfs/realtime/YokohamaMunicipalB
 最新GTFS開始日:'''+dateStr+'''
 最新GTFS終了日:'''+dateStr+'''
 最終更新日:'''+dateStr+'''
+organization_id:YokohamaMunicipal
+feed_id:YokohamaMunicipal
 -------------
 '''
     # 西武バスを後から追加
@@ -150,6 +157,8 @@ VehiclePosition_url:https://api.odpt.org/api/v4/gtfs/realtime/SeibuBus_vehicle?a
 最新GTFS開始日:'''+dateStr+'''
 最新GTFS終了日:'''+dateStr+'''
 最終更新日:'''+dateStr+'''
+organization_id:SeibuBus
+feed_id:SeibuBus
 -------------
 '''
 

@@ -9,6 +9,15 @@ services:
     ports:
       - "8000:8000"
     restart: unless-stopped
+  file-server-v1:
+    image: golang:1.19
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: go run fileServer-v1.go
+    ports:
+      - "8001:8001"
+    restart: unless-stopped
 
   data-updater:
     image: golang:1.19
@@ -17,14 +26,21 @@ services:
     working_dir: /app
     command: go run dataUpdater.go
     restart: unless-stopped
-
-  server-updater:
+  data-updater-v1:
     image: golang:1.19
     volumes:
       - ./:/app
     working_dir: /app
-    command: go run serverUpdater.go
+    command: go run dataUpdater-v1.go
     restart: unless-stopped
+
+  # server-updater:
+  #   image: golang:1.19
+  #   volumes:
+  #     - ./:/app
+  #   working_dir: /app
+  #   command: go run serverUpdater.go
+  #   restart: unless-stopped
 
 #  caddy:
 #    image: caddy:2
