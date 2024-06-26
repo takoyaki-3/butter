@@ -27,7 +27,7 @@ def create_output_text_with_vehicle_position(files, feeds):
     output_text = "-------------\n"
     for file in files:
         organization_id = file['organization_id']
-        feed_id = file['feed_id']
+        feed_id = organization_id + '_FEEDID_' + file['feed_id']
         feed = feeds.get(organization_id, {})
         vehicle_position_url = feed.get('real_time', {}).get('vehicle_position_url', '')
         output_text += f"事業者名:{file['organization_name']}\n"
@@ -116,7 +116,7 @@ VehiclePosition_url:https://api-public.odpt.org/api/v4/gtfs/realtime/ToeiBus
 最新GTFS終了日:'''+dateStr+'''
 最終更新日:'''+dateStr+'''
 organization_id:ToeiBus
-feed_id:ToeiBus
+feed_id:ToeiBus_FEEDID_ToeiBus
 -------------
 '''
 
@@ -140,7 +140,7 @@ VehiclePosition_url:https://api.odpt.org/api/v4/gtfs/realtime/YokohamaMunicipalB
 最新GTFS終了日:'''+dateStr+'''
 最終更新日:'''+dateStr+'''
 organization_id:YokohamaMunicipal
-feed_id:YokohamaMunicipal
+feed_id:YokohamaMunicipal_FEEDID_YokohamaMunicipal
 -------------
 '''
     # 西武バスを後から追加
@@ -158,7 +158,7 @@ VehiclePosition_url:https://api.odpt.org/api/v4/gtfs/realtime/SeibuBus_vehicle?a
 最新GTFS終了日:'''+dateStr+'''
 最終更新日:'''+dateStr+'''
 organization_id:SeibuBus
-feed_id:SeibuBus
+feed_id:SeibuBus_FEEDID_SeibuBus
 -------------
 '''
 

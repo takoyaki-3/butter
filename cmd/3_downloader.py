@@ -32,6 +32,9 @@ if not os.path.isdir('./gtfs'):
   os.makedirs('./gtfs')
 
 for item in datalist:
+    if 'gtfs_id' not in item:
+      continue
+    print(item)
     feed_id = item['feed_id']
     gtfs_id = item['gtfs_id']
     url = item['GTFS_url']

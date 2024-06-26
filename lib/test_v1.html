@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Test</title>
+</head>
+<body>
+  <h1>Test</h1>
+
+  <script type="module">
+    import Butter from './dist.js';
+
+    const assertEqual = (actual, expected, message) => {
+      if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+        throw new Error(message || `Expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);
+      }
+    };
+
+    const main = async () => {
+      await Butter.init('https://v1-test-storage.butter.takoyaki3.com/root.json', {version:"v1.0.0"});
+
+      // getHostDataListの検証
+      const hostList = await Butter.getHostDataList();
+      console.log({ "getHostDataList": hostList });
+      let toeiBusIndex = -1;
+      for (let i = 0; i < hostList.length; i++) {
+        if (hostList[i].feed_id === 'ToeiBus_FEEDID_ToeiBus') {
+          toeiBusIndex = i;
+          break;
+        }
+      }
+      console.log('toeiBusIndex:', toeiBusIndex);
+      assertEqual(hostList[toeiBusIndex].VehiclePosition_url, 'https://api-public.odpt.org/api/v4/gtfs/realtime/ToeiBus')
+      assertEqual(hostList[toeiBusIndex].gtfs_id, 'ToeiBus')
+      assertEqual(hostList[toeiBusIndex].feed_id, 'ToeiBus_FEEDID_ToeiBus')
+      assertEqual(hostList[toeiBusIndex].license, 'CC BY 4.0公開元:東京都交通局・公共交通オープンデータ協議会')
+      assertEqual(hostList[toeiBusIndex].name, '東京都交通局')
+      assertEqual(hostList[toeiBusIndex].providerUrl, 'https://api-public.odpt.org/api/v4/files/Toei/data/ToeiBus-GTFS.zip')
+      assertEqual(hostList[toeiBusIndex].updatedAt, '2024-06-26T00_00_00+09_00')
+
+      // getAgencyInfoの検証
+      const agencyInfo = await Butter.getAgencyInfo('ToeiBus_FEEDID_ToeiBus');
+      console.log({ "GetInfo": agencyInfo });
+      assertEqual(agencyInfo, [{
+        version_id: '2024-06-26T14_54_35Z_00',
+        by_stop_hash_value_size: 2,
+        by_trip_hash_value_size: 2
+      }], "Agency info should match expected data");
+
+      // getBusStopsの検証
+      const stops = await Butter.getBusStops('ToeiBus_FEEDID_ToeiBus');
+      console.log({ "getBusStops": stops });
+      // stopsの詳細な検証（例：stops[0]の構造など）
+
+      // getTripsの検証
+      const trips = await Butter.getTrips('ToeiBus_FEEDID_ToeiBus');
+      console.log({ "getTrips": trips });
+      // tripsの詳細な検証（例：trips[0]の構造など）
+
+      // getVersionInfoの検証
+      const versionInfo = await Butter.getVersionInfo('ToeiBus_FEEDID_ToeiBus');
+      console.log({ "getVersionInfo": versionInfo });
+      // versionInfoの詳細な検証
+
+      // getStopsBySubstringの検証
+      const substring = "東京国際";
+      const stopsBySubstring = await Butter.getStopsBySubstring(substring);
+      console.log({ "getStopsBySubstring": stopsBySubstring });
+      // stopsBySubstringの詳細な検証
+
+      // getStopsWithinRadiusの検証
+      const lat = 35.693906;
+      const lon = 139.701504;
+      const radius = 100;
+      const aroundStops = await Butter.getStopsWithinRadius(lat, lon, radius);
+      console.log({ "getStopsWithinRadius": aroundStops });
+      // aroundStopsの詳細な検証
+
+      // getBusInfoの検証
+      const busInfo = await Butter.getBusInfo(lat, lon);
+      console.log({ "getBusInfo": busInfo });
+      // busInfoの詳細な検証
+
+      // fetchTimeTableV1の検証
+      const queryParams = {
+        date: "20240630",
+        stop_ids: ['0605-07']
+      };
+      const tt = await Butter.fetchTimeTableV1('ToeiBus_FEEDID_ToeiBus', queryParams);
+      console.log({ "fetchTimeTableV1": tt },tt.stop_times.length);
+      assertEqual(tt.stop_times.length,18)
+
+      // getComsumedOpの検証
+      const consumedOps = Butter.getComsumedOp();
+      console.log({ "getComsumedOp": consumedOps });
+      // assertEqual(consumedOps, 11)
+
+      // getDataInfoの検証
+      const dataInfo = await Butter.getDataInfo('ToeiBus_FEEDID_ToeiBus');
+      console.log({ "getDataInfo": dataInfo });
+      // dataInfoの詳細な検証
+
+      // getHostUpdatedの検証
+      const hostUpdated = await Butter.getHostUpdated();
+      console.log({ "getHostUpdated": hostUpdated });
+      // hostUpdatedの詳細な検証
+
+      const busStop = await Butter.getStopsForBusPassingThrough('ToeiBus_FEEDID_ToeiBus','0955-01')
+      console.log({ "getStopsForBusPassingThrough": busStop });
+    };
+
+    main().catch(error => console.error(error));
+  </script>
+</body>
+</html>

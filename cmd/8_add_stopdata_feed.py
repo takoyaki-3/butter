@@ -15,15 +15,17 @@ csv_files = []
 
 for dir in subdirectories:
   dir = dir.replace('\\','/',-1)
-  gtfsID = dir.split('/')[2][:-4]
-  print(gtfsID)
+  feedID = dir.split('/')[2][:-4]
+  gtfsID = feedID.split('_FEEDID_')[0]
+  print(gtfsID, feedID)
 
   # GTFS stop_times.txtファイルを読み込む
-  stop_times = pd.read_csv(directory+'/'+gtfsID+'.zip/stops.txt')
+  stop_times = pd.read_csv(directory+'/'+feedID+'.zip/stops.txt')
   stop_times['gtfs_id'] = gtfsID
+  stop_times['feed_id'] = feedID
 
   # インデックスを含むstop_times.txtファイルを書き出す
-  filename = 'stop_times_with_h3index_' + gtfsID + '.txt'
+  filename = 'stop_times_with_h3index_' + feedID + '.txt'
   stop_times.to_csv(filename, index=False)
   csv_files.append(filename)
 
@@ -38,7 +40,7 @@ for file in csv_files:
 merged_df = pd.concat(df_list)
 
 # # 結合したDataFrameをCSVファイルに書き出す
-merged_df.to_csv('merged_csv_file.csv', index=False)
+merged_df.to_csv('feed_merged_csv_file.csv', index=False)
 
 import pandas as pd
 import h3
@@ -83,7 +85,7 @@ from nltk.util import ngrams
 for N in range (1,2):
 
   # Load stops.txt file into a pandas DataFrame
-  df_stops = pd.read_csv("merged_csv_file.csv")
+  df_stops = pd.read_csv("feed_merged_csv_file.csv")
 
   # Create n-grams for each stop_name
   ngram_lists = df_stops["stop_name"].apply(lambda x: [''.join(ngram) for ngram in ngrams(x, N)])

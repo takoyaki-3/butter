@@ -34,13 +34,13 @@ services:
     command: go run dataUpdater-v1.go
     restart: unless-stopped
 
-  # server-updater:
-  #   image: golang:1.19
-  #   volumes:
-  #     - ./:/app
-  #   working_dir: /app
-  #   command: go run serverUpdater.go
-  #   restart: unless-stopped
+  server-updater:
+    image: golang:1.19
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: go run serverUpdater.go
+    restart: unless-stopped
 
 #  caddy:
 #    image: caddy:2
