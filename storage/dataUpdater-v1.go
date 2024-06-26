@@ -134,9 +134,9 @@ func main() {
 
 			fmt.Println("dev")
 
-			err = os.Rename("./public","./old")
+			err = os.Rename("./public_v1","./old")
 			fmt.Println(err)
-			err = os.Rename("./" + info.DataList[len(info.DataList)-1].Key, "public")
+			err = os.Rename("./" + info.DataList[len(info.DataList)-1].Key, "public_v1")
 			fmt.Println(err)
 			if err != nil {
 				continue

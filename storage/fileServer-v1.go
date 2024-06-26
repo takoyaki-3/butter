@@ -40,7 +40,7 @@ func monitorFile(filePath, timeFilePath string, done chan bool) {
 }
 
 func main() {
-	dir := "./public/v1.0.0"
+	dir := "./public_v1/v1.0.0"
 	port := "8001"
 
 	fs := http.FileServer(http.Dir(dir))
