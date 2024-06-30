@@ -252,7 +252,7 @@ async function addTimeTable() {
 }
 
 const main = async () => {
-  await Butter.init();
+  await Butter.init('https://butter.takoyaki3.com/v1.0.0/root.json', {version: 'v1.0.0'});
   addStopName();
   addCalender();
   addOption();
