@@ -119,6 +119,8 @@ func checkData()error{
 
 func main() {
 
+	fmt.Println("start upload origin data")
+
 	if err:=checkData();err!=nil{
 		log.Fatalln(err)
 		return
