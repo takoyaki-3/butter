@@ -8,13 +8,13 @@ json_open = open('data.json', 'r', encoding='utf-8')
 datalist = json.load(json_open)
 
 for item in datalist:
-    if 'feed_id' in item:
-      print(item['feed_id'])
-      feed_id = item['feed_id']
+    if 'gtfs_id' in item:
+      print(item['gtfs_id'])
+      gtfs_id = item['gtfs_id']
       url = item['GTFS_url']
       print(url)
 
-      save_path = './feed/'+feed_id+'.zip'
+      save_path = './feed/'+gtfs_id+'.zip'
       if not os.path.isdir('./feed'):
         os.makedirs('./feed')
 
@@ -35,12 +35,12 @@ for item in datalist:
     if 'gtfs_id' not in item:
       continue
     print(item)
-    feed_id = item['feed_id']
     gtfs_id = item['gtfs_id']
+    organization_id = item['organization_id']
     url = item['GTFS_url']
 
-    origin_path = './feed/'+feed_id+'.zip'
-    dest_path = './gtfs/'+gtfs_id+'.zip'
+    origin_path = './feed/'+gtfs_id+'.zip'
+    dest_path = './gtfs/'+organization_id+'.zip'
 
     # copy origin_path to dest_path
     with open(origin_path, 'rb') as origin_file:

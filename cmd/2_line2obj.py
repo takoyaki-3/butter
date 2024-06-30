@@ -19,38 +19,53 @@ with open('dataList.txt', 'r', encoding='utf-8') as f:
             # IDの設定
             # 都営バス・GTFSデータレポジトリ・ODPT一般公開・ODPT限定公開ごとにURLからgtfs_idを生成する
             if 'GTFS_url' in d:
+                print(d)
                 # 都営バス
                 if d['GTFS_url'] == 'https://api-public.odpt.org/api/v4/files/Toei/data/ToeiBus-GTFS.zip':
-                    d['gtfs_id'] = d['organization_id']
-                    print(d['feed_id'])
+                    d['gtfs_id'] = d['feed_id']
+                    d['feed_id'] = d['feed_id'].split('_FEEDID_')[1]
+                    d['organization_id'] = d['feed_id'].split('_FEEDID_')[0]
+                    print('gtfs_id:',d['gtfs_id'])
+                    print('feed_id',d['feed_id'])
                 # GTFSデータレポジトリ
                 elif 'https://api.gtfs-data.jp/v2/organizations/' in d['GTFS_url']:
-                    d['gtfs_id'] = d['organization_id']
-                    print(d['feed_id'])
+                    d['gtfs_id'] = d['feed_id']
+                    d['feed_id'] = d['feed_id'].split('_FEEDID_')[0]
+                    d['organization_id'] = d['feed_id'].split('_FEEDID_')[0]
+                    print('gtfs_id:',d['gtfs_id'])
+                    print('feed_id',d['feed_id'])
                 # ODPT一般公開
                 elif 'https://api-public.odpt.org/api/v4/files/odpt/' in d['GTFS_url']:
                     gtfs_id = d['GTFS_url'].split('https://api-public.odpt.org/api/v4/files/odpt/')[1]
                     feed_id = gtfs_id.split('/')[1].split('.zip')[0]
                     gtfs_id = gtfs_id.split('/')[0]
-                    d['gtfs_id'] = gtfs_id
-                    d['feed_id'] = gtfs_id + "_FEEDID_" + feed_id
-                    print(d['feed_id'])
+                    d['feed_id'] = feed_id
+                    d['gtfs_id'] = gtfs_id + "_FEEDID_" + feed_id
+                    d['organization_id'] = d['feed_id'].split('_FEEDID_')[0]
+                    print('gtfs_id:',d['gtfs_id'])
+                    print('feed_id',d['feed_id'])
                 # ODPT限定公開
                 elif 'https://api.odpt.org/api/v4/files/odpt/' in d['GTFS_url']:
                     gtfs_id = d['GTFS_url'].split('https://api.odpt.org/api/v4/files/odpt/')[1]
                     feed_id = gtfs_id.split('/')[1].split('.zip')[0]
                     gtfs_id = gtfs_id.split('/')[0]
-                    d['gtfs_id'] = gtfs_id
-                    d['feed_id'] = gtfs_id + "_FEEDID_" + feed_id
-                    print(d['feed_id'])
+                    d['gtfs_id'] = gtfs_id + "_FEEDID_" + feed_id
+                    d['feed_id'] = d['gtfs_id'].split('_FEEDID_')[1]
+                    d['organization_id'] = d['feed_id'].split('_FEEDID_')[0]
+                    print('gtfs_id:',d['gtfs_id'])
+                    print('feed_id',d['feed_id'])
                 elif 'https://api.odpt.org/api/v4/files/' in d['GTFS_url']:
                     gtfs_id = d['GTFS_url'].split('https://api.odpt.org/api/v4/files/')[1]
                     feed_id = gtfs_id.split('/')[1].split('.zip')[0]
                     gtfs_id = gtfs_id.split('/')[0]
-                    d['gtfs_id'] = gtfs_id
-                    d['feed_id'] = gtfs_id + "_FEEDID_" + feed_id
-                    print(d['feed_id'])
-            data.append(d)  # リストに追加する
+                    d['gtfs_id'] = gtfs_id + "_FEEDID_" + feed_id
+                    d['feed_id'] = d['gtfs_id'].split('_FEEDID_')[1]
+                    d['organization_id'] = d['feed_id'].split('_FEEDID_')[0]
+                    print('gtfs_id:',d['gtfs_id'])
+                    print('feed_id',d['feed_id'])
+            print('d:',d)
+            if 'gtfs_id' in d:
+                data.append(d)  # リストに追加する
 
 # オブジェクトをJSON形式に変換してファイルに書き込む
 with open('data.json', 'w', encoding='utf-8') as f:
