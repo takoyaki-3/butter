@@ -73,7 +73,7 @@ func main() {
 
 	err := godotenv.Load()
 	if err == nil {
-		BUTTER_ROOT_URL = os.Getenv("BUTTER_ROOT_URL")
+		BUTTER_ROOT_URL = os.Getenv("BUTTER_ROOT_URL_V0")
 	} else {
 		fmt.Println(".env file not found")
 	}
