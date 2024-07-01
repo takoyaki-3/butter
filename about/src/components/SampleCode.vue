@@ -10,10 +10,10 @@
       >
         <p>BuTTER Moduleを用いたサンプルコード及び実行例を紹介します。</p>
 
-        <h3>インポートと初期化：Butter.init()</h3>
+        <h3>インポートと初期化：Butter.init("https://butter.takoyaki3.com/v0.0.0/root.json", {version: '1.0.0'})</h3>
         <p>BuTTERライブラリの初期化を行います。最初に呼び出してください。</p>
         <pre><code class="language-javascript">import Butter from 'https://butter.takoyaki3.com/v0.0.0/dist.js';
-Butter.init()</code></pre>
+Butter.init("https://butter.takoyaki3.com/v0.0.0/root.json", {version: '1.0.0'})</code></pre>
 
 
 <h3>対応データ一覧取得：Butter.getHostDataList()</h3>

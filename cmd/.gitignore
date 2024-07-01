@@ -3,6 +3,7 @@ data.json
 gtfs/*
 dir_out/*
 v0.0.0/*
+v1.0.0/*
 *.pem
 s3-conf.json
 *.exe
@@ -13,3 +14,5 @@ archive.tar
 *.tar
 dist
 conf.json
+feed/*
+feed_dir_out/*

@@ -11,6 +11,7 @@ import (
 
 type DataItem struct {
 	GtfsID             string `json:"gtfs_id"`
+	FeedID 					 	 string `json:"feed_id"`
 	AgencyID           string `json:"agency_id"`
 	Name               string `json:"name"`
 	License            string `json:"license"`
@@ -44,13 +45,18 @@ type Data []struct {
 	UpdateDate         string `json:"最終更新日,omitempty"`
 	Detail             string `json:"詳細,omitempty"`
 	GtfsID             string `json:"gtfs_id,omitempty"`
+	FeedID             string `json:"feed_id,omitempty"`
 	AlertURL           string `json:"Alert_url,omitempty"`
 	TripUpdateURL      string `json:"TripUpdate_url,omitempty"`
 	VehiclePositionURL string `json:"VehiclePosition_url,omitempty"`
 }
 
 func main() {
-	//
+	checkCORSandAddList("v0.0.0")
+	checkCORSandAddList("v1.0.0")
+}
+
+func checkCORSandAddList(root string) {
 	data := Data{}
 	json.LoadFromPath("data.json", &data)
 
@@ -113,6 +119,7 @@ func main() {
 
 		datalist.Data = append(datalist.Data, DataItem{
 			GtfsID: v.GtfsID,
+			FeedID: v.FeedID,
 			// AgencyID: v.,
 			Name:               v.AgentName,
 			License:            v.License,
@@ -127,6 +134,6 @@ func main() {
 		})
 	}
 
-	err := json.DumpToFile(datalist, "v0.0.0/datalist.json")
+	err := json.DumpToFile(datalist, root+"/datalist.json")
 	fmt.Println(err)
 }

@@ -8,6 +8,8 @@ go run 5_split.go #
 go run 6_add_gtfs_id_info.go #
 go run 7_add_datalist.go #
 python 8_add_stopdata.py #
+python 8_add_stopdata_feed.py #
 go run 9_addSign.go #
 go run 999_uploadOriginData.go #
+go run 999_uploadOriginData_feed.go #
 #
