@@ -106,7 +106,7 @@ func main() {
 				log.Fatalln(err)
 			}
 
-			infoPath := "info.json"
+			infoPath := "info_v1.json"
 			var oldInfo Info
 			err = json.LoadFromPath(infoPath, &oldInfo)
 			fmt.Println("info.json:",oldInfo)
