@@ -24,25 +24,25 @@
       console.log({ "getHostDataList": hostList });
       let toeiBusIndex = -1;
       for (let i = 0; i < hostList.length; i++) {
-        if (hostList[i].feed_id === 'ToeiBus_FEEDID_ToeiBus') {
+        if (hostList[i].gtfs_id === 'ToeiBus_FEEDID_ToeiBus') {
           toeiBusIndex = i;
           break;
         }
       }
       console.log('toeiBusIndex:', toeiBusIndex);
       assertEqual(hostList[toeiBusIndex].VehiclePosition_url, 'https://api-public.odpt.org/api/v4/gtfs/realtime/ToeiBus')
-      assertEqual(hostList[toeiBusIndex].gtfs_id, 'ToeiBus')
-      assertEqual(hostList[toeiBusIndex].feed_id, 'ToeiBus_FEEDID_ToeiBus')
+      assertEqual(hostList[toeiBusIndex].feed_id, 'ToeiBus')
+      assertEqual(hostList[toeiBusIndex].gtfs_id, 'ToeiBus_FEEDID_ToeiBus')
       assertEqual(hostList[toeiBusIndex].license, 'CC BY 4.0公開元:東京都交通局・公共交通オープンデータ協議会')
       assertEqual(hostList[toeiBusIndex].name, '東京都交通局')
       assertEqual(hostList[toeiBusIndex].providerUrl, 'https://api-public.odpt.org/api/v4/files/Toei/data/ToeiBus-GTFS.zip')
-      assertEqual(hostList[toeiBusIndex].updatedAt, '2024-06-26T00_00_00+09_00')
+      assertEqual(hostList[toeiBusIndex].updatedAt, '2024-06-30T00_00_00+09_00')
 
       // getAgencyInfoの検証
       const agencyInfo = await Butter.getAgencyInfo('ToeiBus_FEEDID_ToeiBus');
       console.log({ "GetInfo": agencyInfo });
       assertEqual(agencyInfo, [{
-        version_id: '2024-06-26T14_54_35Z_00',
+        version_id: '2024-06-30T13_55_40Z_00',
         by_stop_hash_value_size: 2,
         by_trip_hash_value_size: 2
       }], "Agency info should match expected data");

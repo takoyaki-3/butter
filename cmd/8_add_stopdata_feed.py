@@ -15,17 +15,17 @@ csv_files = []
 
 for dir in subdirectories:
   dir = dir.replace('\\','/',-1)
-  feedID = dir.split('/')[2][:-4]
-  gtfsID = feedID.split('_FEEDID_')[0]
+  gtfsID = dir.split('/')[2][:-4]
+  feedID = dir.split('_FEEDID_')[1].replace('.zip','')
   print(gtfsID, feedID)
 
   # GTFS stop_times.txtファイルを読み込む
-  stop_times = pd.read_csv(directory+'/'+feedID+'.zip/stops.txt')
+  stop_times = pd.read_csv(directory+'/'+gtfsID+'.zip/stops.txt')
   stop_times['gtfs_id'] = gtfsID
   stop_times['feed_id'] = feedID
 
   # インデックスを含むstop_times.txtファイルを書き出す
-  filename = 'stop_times_with_h3index_' + feedID + '.txt'
+  filename = 'stop_times_with_h3index_' + gtfsID + '.txt'
   stop_times.to_csv(filename, index=False)
   csv_files.append(filename)
 
