@@ -1,5 +1,6 @@
 output.txt
-data.json
+data_v0.json
+data_v1.json
 gtfs/*
 dir_out/*
 v0.0.0/*

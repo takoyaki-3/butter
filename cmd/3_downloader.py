@@ -4,7 +4,7 @@ import urllib.request
 import time
 import os
 
-json_open = open('data.json', 'r', encoding='utf-8')
+json_open = open('data_v1.json', 'r', encoding='utf-8')
 datalist = json.load(json_open)
 
 for item in datalist:
