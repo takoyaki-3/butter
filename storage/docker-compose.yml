@@ -1,16 +1,26 @@
 version: '3.8'
 services:
-  file-server:
+  file-server-v0:
     image: golang:1.19
     volumes:
       - ./:/app
     working_dir: /app
     command: go run fileServer.go
     ports:
-      - "8000:8000"
+      - "${FILE_SERVER_V0_PORT:-8000}:8000"
     restart: unless-stopped
 
-  data-updater:
+  file-server-v1:
+    image: golang:1.19
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: go run fileServer-v1.go
+    ports:
+      - "${FILE_SERVER_V1_PORT:-8001}:8001"
+    restart: unless-stopped
+
+  data-updater-v0:
     image: golang:1.19
     volumes:
       - ./:/app
@@ -18,7 +28,15 @@ services:
     command: go run dataUpdater.go
     restart: unless-stopped
 
-  server-updater:
+  data-updater-v1:
+    image: golang:1.19
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: go run dataUpdater-v1.go
+    restart: unless-stopped
+
+  server-updater-v0-v1:
     image: golang:1.19
     volumes:
       - ./:/app

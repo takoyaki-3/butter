@@ -108,7 +108,7 @@ func CheckAllSignaturesInDir(directory, publicKeyPath string) error {
 }
 
 func checkData()error{
-	directory := "./v0.0.0"
+	directory := "./v1.0.0"
 	publicKeyPath := "./public_Key.pem" // 公開鍵ファイルのパス
 
 	if err := CheckAllSignaturesInDir(directory, publicKeyPath); err != nil {
@@ -119,14 +119,14 @@ func checkData()error{
 
 func main() {
 
-	fmt.Println("start upload origin data")
+	fmt.Println("start upload origin data feed")
 
 	if err:=checkData();err!=nil{
 		log.Fatalln(err)
 		return
 	}
 
-	sourceDir := "./v0.0.0/"
+	sourceDir := "./v1.0.0/"
 	now := time.Now().Format("20060102-150405")
 	targetFile := now + ".tar"
 
@@ -135,7 +135,7 @@ func main() {
 		log.Fatalln(err)
 	}
 	// 0. index.htmlのコピー	
-	newFile, err := os.Create("v0.0.0/index.html")
+	newFile, err := os.Create("v1.0.0/index.html")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -155,7 +155,7 @@ func main() {
 
 	// 2. 現在のバージョン情報を取得する
 	var originalData OriginalData
-	err = s3.DownloadToReaderFunc("v0.0.0/originalData/info.json", func(r io.Reader) error {
+	err = s3.DownloadToReaderFunc("v1.0.0/originalData/info.json", func(r io.Reader) error {
 		err := json.LoadFromReader(r, &originalData)
 		if err != nil {
 			return err
@@ -164,7 +164,7 @@ func main() {
 	})
 
 	// 3. 新しいデータをアップロードする
-	key := "v0.0.0/originalData/" + targetFile
+	key := "v1.0.0/originalData/" + targetFile
 	err = s3.UploadFromPath(targetFile, key)
 	if err != nil {
 		log.Fatalln(err)
@@ -172,7 +172,7 @@ func main() {
 
 	// 4. ファイルとオリジナルデータバージョン情報をアップロードする
 	originalData.DataList = append(originalData.DataList, OriginalDataItem{Key: targetFile})
-	key = "v0.0.0/originalData/info.json"
+	key = "v1.0.0/originalData/info.json"
 	str, _ := json.DumpToString(originalData)
 	err = s3.UploadFromRaw([]byte(str), key)
 	if err != nil {

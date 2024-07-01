@@ -69,11 +69,11 @@ func monitorFile(filePath, timeFilePath string, done chan bool) {
 
 func main() {
 
-	BUTTER_ROOT_URL := "https://butter.takoyaki3.com/v0.0.0/root.json"
+	BUTTER_ROOT_URL := "https://butter.takoyaki3.com/v1.0.0/root.json"
 
 	err := godotenv.Load()
 	if err == nil {
-		BUTTER_ROOT_URL = os.Getenv("BUTTER_ROOT_URL_V0")
+		BUTTER_ROOT_URL = os.Getenv("BUTTER_ROOT_URL_V1")
 	} else {
 		fmt.Println(".env file not found")
 	}
@@ -134,9 +134,9 @@ func main() {
 
 			fmt.Println("dev")
 
-			err = os.Rename("./public","./old")
+			err = os.Rename("./public_v1","./old")
 			fmt.Println(err)
-			err = os.Rename("./" + info.DataList[len(info.DataList)-1].Key, "public")
+			err = os.Rename("./" + info.DataList[len(info.DataList)-1].Key, "public_v1")
 			fmt.Println(err)
 			if err != nil {
 				continue

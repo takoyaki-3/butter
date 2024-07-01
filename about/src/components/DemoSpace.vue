@@ -19,7 +19,7 @@
         <pre><code class="language-javascript">&lt;html&gt;
 &lt;script type="module"&gt;
 import Butter from 'https://www.unpkg.com/butter-lib@1.0.4/dist.js';
-Butter.init()
+Butter.init("https://butter.takoyaki3.com/v0.0.0/root.json", {version: '1.0.0'})
 
 // ここに処理を書いていく
 
@@ -55,7 +55,7 @@ Butter.init()
           <pre><code class="language-javascript">import {latLng,Icon} from 'leaflet';
 import { LMap,LTileLayer,LMarker } from "vue2-leaflet";
 import Butter from 'butter-lib/dist.js';
-Butter.init()
+Butter.init("https://butter.takoyaki3.com/v0.0.0/root.json", {version: '1.0.0'})
 import 'leaflet/dist/leaflet.css'
 
 export default {
@@ -235,7 +235,7 @@ console.log(hostData)</code></pre>
 import {latLng,Icon} from 'leaflet';
 import { LMap,LTileLayer,LMarker } from "vue2-leaflet";
 import Butter from 'butter-lib/dist.js';
-await Butter.init(process.env.VUE_APP_BUTTER_ABOUT_ROOT)
+await Butter.init('https://butter.takoyaki3.com/v1.0.0/root.json', {version: '1.0.0'})
 import 'leaflet/dist/leaflet.css'
 
 export default {
@@ -251,7 +251,7 @@ export default {
     dataList: [],
     updateTime: '',
     substring:'東京駅',
-    gtfs_id:'ToeiBus',
+    gtfs_id:'ToeiBus_FEEDID_ToeiBus',
     stop_id:'0965-01',
     date:'2023-06-30',
     stops:[],

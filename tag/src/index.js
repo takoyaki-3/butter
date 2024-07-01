@@ -165,7 +165,7 @@ async function addTimeTable() {
     //   busRTPositions[e.vehicle.trip.tripId] = e.vehicle;
     // })
     // 停留所情報を取得
-    const busStops = await Butter.getBusStops('ToeiBus')
+    const busStops = await Butter.getBusStops(gtfs_id)
     let stop;
     const stop_id = JSON.parse(stop_ids)[0]
     busStops.forEach((s)=>{
@@ -252,7 +252,7 @@ async function addTimeTable() {
 }
 
 const main = async () => {
-  await Butter.init();
+  await Butter.init('https://butter.takoyaki3.com/v1.0.0/root.json', {version: '1.0.0'});
   addStopName();
   addCalender();
   addOption();

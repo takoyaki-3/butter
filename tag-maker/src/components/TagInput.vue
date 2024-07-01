@@ -277,7 +277,7 @@ button.close {
 import {latLng,Icon} from 'leaflet';
 import { LMap,LTileLayer,LMarker } from "vue2-leaflet";
 import Butter from 'butter-lib/dist.js';
-await Butter.init()
+await Butter.init("https://butter.takoyaki3.com/v1.0.0/root.json", {version: '1.0.0'});
 import 'leaflet/dist/leaflet.css'
 
 export default {
@@ -298,7 +298,7 @@ export default {
     dataList: [],
     updateTime: '',
     substring:'東京駅',
-    gtfs_id:'ToeiBus',
+    gtfs_id:'ToeiBus_FEEDID_ToeiBus',
     stop_id:'0965-01',
     date:'2023-06-30',
     stops:[],
@@ -445,7 +445,7 @@ export default {
       // スタイルシートの追加
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = 'https://www.unpkg.com/butter-tag/style.css';
+      link.href = 'https://www.unpkg.com/butter-tag-v1/style.css';
       divPreview.appendChild(link);
 
       // divタグの追加
@@ -460,7 +460,7 @@ export default {
 
       // スクリプトの追加
       const script = document.createElement('script');
-      script.src = 'https://www.unpkg.com/butter-tag@1.0.16/dist.js';
+      script.src = 'https://www.unpkg.com/butter-tag-v1/dist.js';
       divPreview.appendChild(script);
     },
     async searchLocation() {
@@ -510,26 +510,26 @@ export default {
     },
     generateTagForOneStop() {
       this.tagCode = `
-        <link rel="stylesheet" href="https://www.unpkg.com/butter-tag/style.css"></link>
+        <link rel="stylesheet" href="https://www.unpkg.com/butter-tag-v1/style.css"></link>
         <div class="butter-tag" gtfs_id="${this.boardingStop.gtfs_id}" stop_ids='["${this.boardingStop.stop_id}"]'>
-        </div><script src="https://www.unpkg.com/butter-tag/dist.js"></scri`+`pt>`;
+        </div><script src="https://www.unpkg.com/butter-tag-v1/dist.js"></scri`+`pt>`;
       this.dialog = true;
       this.loadPreviewTag(this.boardingStop.gtfs_id, [this.boardingStop.stop_id]);
     },
     generateTagForBothStops() {
       this.tagCode = `
-        <link rel="stylesheet" href="https://www.unpkg.com/butter-tag/style.css"></link>
+        <link rel="stylesheet" href="https://www.unpkg.com/butter-tag-v1/style.css"></link>
         <div class="butter-tag" gtfs_id="${this.boardingStop.gtfs_id}" stop_ids='["${this.boardingStop.stop_id}"]' to_stop_ids='["${this.alightingStop.stop_id}"]'>
-        </div><script src="https://www.unpkg.com/butter-tag/dist.js"></scri`+`pt>`;
+        </div><script src="https://www.unpkg.com/butter-tag-v1/dist.js"></scri`+`pt>`;
       this.dialog = true;
       this.loadPreviewTag(this.boardingStop.gtfs_id, [this.boardingStop.stop_id], [this.alightingStop.stop_id]);
     },
     busStopClickedFromTable(row) { // この新しいメソッドを追加
       console.log(`GTFS ID: ${row.gtfs_id}`);
       console.log(`Stop ID: ${row.stop_id}`);
-      this.tagCode = `\n<link rel="stylesheet" href="https://www.unpkg.com/butter-tag/style.css"></link>
+      this.tagCode = `\n<link rel="stylesheet" href="https://www.unpkg.com/butter-tag-v1/style.css"></link>
 <div class="butter-tag" gtfs_id="${row.gtfs_id}" stop_ids='["${row.stop_id}"]'>
-</div><script src="https://www.unpkg.com/butter-tag/dist.js"></scri`+`pt>`; // 生成されたタグ欄に表示
+</div><script src="https://www.unpkg.com/butter-tag-v1/dist.js"></scri`+`pt>`; // 生成されたタグ欄に表示
       this.dialog = true; // ダイアログを表示
       this.loadPreviewTag(row.gtfs_id, [row.stop_id]);
       console.log(this.tagCode)

@@ -2,3 +2,4 @@ h3==3.7.6
 pandas==2.0.0
 nltk==3.8.1
 requests==2.31.0
+numpy==1.24.3
