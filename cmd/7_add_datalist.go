@@ -52,13 +52,13 @@ type Data []struct {
 }
 
 func main() {
-	checkCORSandAddList("v0.0.0")
-	checkCORSandAddList("v1.0.0")
+	checkCORSandAddList("v0.0.0", "data_v0.json")
+	checkCORSandAddList("v1.0.0", "data_v1.json")
 }
 
-func checkCORSandAddList(root string) {
+func checkCORSandAddList(root string, filename string) {
 	data := Data{}
-	json.LoadFromPath("data.json", &data)
+	json.LoadFromPath(filename, &data)
 
 	t := time.Now()
 	datalist := DataList{

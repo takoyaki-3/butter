@@ -1,0 +1,20 @@
+{
+  "name": "Bus TimeTable",
+  "short_name": "BuTTER",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4A90E2",
+  "icons": [
+    {
+      "src": "icon/timetable-app-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon/timetable-app-192.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
