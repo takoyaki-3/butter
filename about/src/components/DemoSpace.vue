@@ -19,7 +19,7 @@
         <pre><code class="language-javascript">&lt;html&gt;
 &lt;script type="module"&gt;
 import Butter from 'https://www.unpkg.com/butter-lib@1.0.4/dist.js';
-Butter.init("https://butter.takoyaki3.com/v0.0.0/root.json", {version: '1.0.0'})
+Butter.init("https://butter.takoyaki3.com/v1.0.0/root.json", {version: '1.0.0'})
 
 // ここに処理を書いていく
 
@@ -55,7 +55,7 @@ Butter.init("https://butter.takoyaki3.com/v0.0.0/root.json", {version: '1.0.0'})
           <pre><code class="language-javascript">import {latLng,Icon} from 'leaflet';
 import { LMap,LTileLayer,LMarker } from "vue2-leaflet";
 import Butter from 'butter-lib/dist.js';
-Butter.init("https://butter.takoyaki3.com/v0.0.0/root.json", {version: '1.0.0'})
+Butter.init("https://butter.takoyaki3.com/v1.0.0/root.json", {version: '1.0.0'})
 import 'leaflet/dist/leaflet.css'
 
 export default {
