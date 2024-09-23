@@ -26,4 +26,4 @@ COPY helper /app/helper
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
 # Run the script
-CMD ["bash", "./cmd.sh"]
+CMD while true; do bash ./cmd.sh; sleep 604800; done
